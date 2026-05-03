@@ -1,0 +1,3153 @@
+================================================================================
+           🚀 30-DAY ROBOTICS PLAN: BEGINNER → FUNCTIONAL BUILDER 🚀
+              A Complete Hands-On Guide to Building Your First Robot
+================================================================================
+
+ABOUT THIS GUIDE
+================================================================================
+
+This 30-day plan is designed to take you from absolute zero to building a fully
+functional obstacle-avoiding robot. No prior electronics or programming
+experience is required. Each day builds on the previous one, creating a solid
+foundation of skills that compound over time.
+
+What makes this guide different:
+  • Every day has a THEORY section (what you need to understand)
+  • Every day has a PRACTICAL section (what you physically build)
+  • Every day has a CHECKPOINT (how you know you succeeded)
+  • Troubleshooting tips are included for common mistakes
+  • Real-world context explains WHY each concept matters for robotics
+
+Time Commitment: ~1-2 hours per day
+Total Cost: ~$50-80 for all components (shopping list provided separately)
+Difficulty: Absolute beginner → Intermediate builder
+
+REQUIRED MATERIALS (Overview)
+================================================================================
+
+Before starting, gather these essentials:
+  • Breadboard (full-size, 830 tie points recommended)
+  • Jumper wires (male-to-male, male-to-female, at least 30 of each)
+  • Arduino Uno R3 (or compatible clone)
+  • USB-A to USB-B cable (for Arduino)
+  • LEDs (assorted colors, at least 10)
+  • Resistors (220Ω, 330Ω, 1kΩ, 10kΩ — at least 5 of each)
+  • Capacitors (100μF electrolytic, 0.1μF ceramic — at least 3 of each)
+  • Diodes (1N4007 — at least 3)
+  • NPN Transistor (2N2222 or BC547 — at least 3)
+  • Potentiometer (10kΩ — at least 2)
+  • Push buttons (at least 3)
+  • DC motors (3-6V — at least 2)
+  • L298N motor driver module
+  • HC-SR04 ultrasonic sensor
+  • 9V battery + battery clip (or 4xAA holder)
+  • Robot chassis kit (2WD with wheels)
+  • Multimeter (basic digital)
+  • Wire strippers (optional but helpful)
+
+See the separate Shopping List document for links and pricing.
+
+
+================================================================================
+📅 WEEK 1: ELECTRICAL FOUNDATIONS (Days 1–7)
+================================================================================
+
+The first week is entirely about understanding electricity and basic components.
+You will NOT touch a microcontroller yet — and that's intentional. Many beginners
+rush to Arduino and then struggle because they don't understand the underlying
+electrical principles. By the end of this week, you'll be able to wire circuits
+confidently and debug them when things go wrong.
+
+
+--------------------------------------------------------------------------------
+DAY 1: WHAT IS ELECTRICITY?
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand voltage, current, and resistance
+  • Learn Ohm's Law and apply it to a real circuit
+  • Light your first LED with proper current limiting
+
+📖 THEORY:
+
+Electricity is the flow of electrons through a conductor. To understand it,
+you need three fundamental concepts:
+
+1. VOLTAGE (V) — Measured in Volts
+   Think of voltage as "electrical pressure." It's the force that pushes
+   electrons through a circuit. A 9V battery has more "push" than a 1.5V
+   battery. Voltage is always measured BETWEEN two points — it's a difference
+   in electrical potential.
+
+   Real-world analogy: Voltage is like water pressure in a pipe. Higher
+   pressure means water flows faster and harder.
+
+2. CURRENT (I) — Measured in Amperes (Amps)
+   Current is the actual flow of electrons — how many electrons pass a point
+   per second. In robotics, most of our circuits use milliamps (mA), which
+   is 1/1000 of an amp.
+
+   Real-world analogy: Current is like the volume of water flowing through
+   the pipe. You can have high pressure (voltage) but low flow (current)
+   if the pipe is narrow.
+
+3. RESISTANCE (R) — Measured in Ohms (Ω)
+   Resistance opposes the flow of current. Every component has some
+   resistance. Resistors are components specifically designed to provide
+   a precise amount of resistance.
+
+   Real-world analogy: Resistance is like the narrowness of the pipe.
+   A narrow pipe restricts water flow even under high pressure.
+
+OHM'S LAW — THE MOST IMPORTANT FORMULA IN ELECTRONICS:
+
+   V = I × R
+
+   This can be rearranged:
+   • I = V / R  (to find current)
+   • R = V / I  (to find resistance)
+
+   Example: You have a 5V supply and want 20mA through an LED.
+   The LED itself drops about 2V, leaving 3V across the resistor.
+   R = V / I = 3V / 0.020A = 150Ω
+   So you need at least a 150Ω resistor (220Ω is commonly used for safety).
+
+WHY THIS MATTERS FOR ROBOTICS:
+   Every motor, sensor, and microcontroller in your robot operates within
+   specific voltage and current ranges. Exceed them, and you destroy
+   components. Ohm's Law lets you calculate the right resistor values,
+   predict current draw, and design safe circuits.
+
+🔨 PRACTICAL: LIGHT AN LED WITH A RESISTOR
+
+Materials needed:
+  • 1 breadboard
+  • 1 LED (any color)
+  • 1 resistor (220Ω — red, red, brown, gold bands)
+  • 2 jumper wires
+  • 1 battery (9V with clip, or 4xAA pack giving ~6V)
+
+Understanding the breadboard:
+  A breadboard is a reusable platform for building circuits without soldering.
+  • The outer columns (marked + and −) are POWER RAILS — all holes in each
+    rail are connected vertically
+  • The inner rows are connected HORIZONTALLY in groups of 5
+  • There is a gap in the middle that separates left and right sections
+
+Step-by-step build:
+  1. Insert the LED into the breadboard. Note: the LONGER leg is positive
+     (anode) and the SHORTER leg is negative (cathode). There's also a flat
+     edge on the negative side of the LED casing.
+
+  2. Connect one end of the 220Ω resistor to the SAME row as the LED's
+     positive leg (anode).
+
+  3. Connect a jumper wire from the OTHER end of the resistor to the
+     positive (+) power rail.
+
+  4. Connect a jumper wire from the LED's negative leg (cathode) to the
+     negative (−) power rail.
+
+  5. Connect your battery: positive terminal to the + rail, negative
+     terminal to the − rail.
+
+  6. The LED should light up!
+
+What to observe:
+  • The LED lights up — current is flowing through the circuit
+  • The resistor may feel slightly warm — it's converting excess energy
+    to heat (this is normal and expected)
+
+What to try:
+  • Reverse the LED (swap the legs) — it should NOT light up because LEDs
+    only allow current in one direction
+  • Remove the resistor and connect directly — DON'T actually do this with
+    high voltage, but with a small coin cell (3V) you can briefly see the
+    LED is much brighter. With a 9V battery and no resistor, the LED will
+    burn out almost instantly.
+
+⚠️ TROUBLESHOOTING:
+  • LED doesn't light: Check polarity (long leg = positive). Make sure
+    components are in the SAME row on the breadboard.
+  • LED is very dim: Battery might be dead. Try a fresh one.
+  • LED burned out: You probably forgot the resistor or used too low a value.
+
+✅ DAY 1 CHECKPOINT:
+  □ Can you explain voltage, current, and resistance in your own words?
+  □ Can you use Ohm's Law to calculate the resistor needed for an LED?
+  □ Did your LED circuit work?
+  □ Do you understand why the resistor is needed?
+
+If you answered yes to all four — you're ready for Day 2.
+
+
+--------------------------------------------------------------------------------
+DAY 2: USING TOOLS — THE MULTIMETER
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand what a multimeter measures and how to use it
+  • Measure voltage across a battery and components
+  • Measure resistance of resistors
+  • Learn continuity testing for debugging
+
+📖 THEORY:
+
+A multimeter is the single most important debugging tool in electronics. It
+measures three things (hence "multi"):
+
+1. VOLTAGE (V) — DC Voltage mode
+   • Set the dial to "V" with a straight line (DC) or "V" with a wavy
+     line (AC — we won't use this for robotics)
+   • Place the RED probe on the higher-voltage point
+   • Place the BLACK probe on the lower-voltage point (ground)
+   • The display shows the voltage difference
+
+2. RESISTANCE (Ω) — Ohm mode
+   • Set the dial to "Ω"
+   • Touch both probes to the two ends of a resistor
+   • The display shows the resistance value
+   • IMPORTANT: The component must be DISCONNECTED from the circuit,
+     otherwise you'll get a false reading
+
+3. CONTINUITY (🔊) — Beep mode
+   • Set the dial to the speaker/diode symbol
+   • Touch the probes to two points
+   • If there's a connection (very low resistance), it BEEPS
+   • This is incredibly useful for checking if wires are connected
+     properly, or if a wire is broken
+
+READING RESISTOR COLOR BANDS:
+   Resistors have colored bands that encode their value:
+   
+   Band 1 (1st digit) | Band 2 (2nd digit) | Band 3 (multiplier) | Band 4 (tolerance)
+   
+   Color codes:
+   Black = 0    Brown = 1    Red = 2      Orange = 3
+   Yellow = 4   Green = 5    Blue = 6     Violet = 7
+   Gray = 8     White = 9
+   
+   Multiplier: Brown = ×10, Red = ×100, Orange = ×1000, Yellow = ×10000
+   Tolerance: Gold = ±5%, Silver = ±10%
+   
+   Example: Red-Red-Brown-Gold = 2, 2, ×10 = 220Ω ±5%
+   Example: Brown-Black-Orange-Gold = 1, 0, ×1000 = 10,000Ω (10kΩ) ±5%
+
+WHY THIS MATTERS FOR ROBOTICS:
+   When your robot doesn't work (and it WILL happen), the multimeter is
+   how you find the problem. Is the battery dead? Is a wire broken? Is a
+   motor getting power? The multimeter answers all of these questions.
+
+🔨 PRACTICAL EXERCISES:
+
+Exercise 1: Measure Battery Voltage
+  1. Set multimeter to DC Voltage (V⎓), 20V range
+  2. Touch RED probe to battery positive terminal
+  3. Touch BLACK probe to battery negative terminal
+  4. A fresh 9V battery should read 8.5-9.5V
+  5. A "dead" 9V battery typically reads below 7V
+
+Exercise 2: Measure Resistor Values
+  1. Set multimeter to Resistance (Ω), 20kΩ range
+  2. Take your 220Ω resistor
+  3. Touch one probe to each end
+  4. Reading should be close to 220 (±5% means 209-231Ω is normal)
+  5. Repeat with other resistors — verify they match their color bands
+
+Exercise 3: Measure Voltage in Your Day 1 Circuit
+  1. Rebuild your LED + resistor circuit from Day 1
+  2. Set multimeter to DC Voltage
+  3. Measure voltage across the BATTERY terminals (should be ~9V or ~6V)
+  4. Measure voltage across the RESISTOR (should be ~7V with 9V battery)
+  5. Measure voltage across the LED (should be ~2V)
+  6. NOTICE: Voltage across resistor + voltage across LED ≈ battery voltage
+     This is Kirchhoff's Voltage Law — voltages in a loop add up!
+
+Exercise 4: Continuity Testing
+  1. Set multimeter to continuity mode (🔊 symbol)
+  2. Touch both probes to the same breadboard row — it should BEEP
+  3. Touch probes to DIFFERENT rows — no beep (no connection)
+  4. Touch probes to the same power rail — it should BEEP
+  5. This confirms how breadboard connections work internally
+
+⚠️ TROUBLESHOOTING:
+  • Multimeter shows "0L" or "OL": You're on the wrong range. Switch to a
+    higher range setting.
+  • Resistance reading fluctuates: Your fingers might be touching both
+    probes/leads. Finger resistance adds to the reading.
+  • Battery reads 0V: Check that you're in DC voltage mode, not AC or Ω.
+
+✅ DAY 2 CHECKPOINT:
+  □ Can you accurately measure voltage from a battery?
+  □ Can you measure a resistor and get a reading within 5% of expected?
+  □ Can you use continuity mode to test connections?
+  □ Do you understand Kirchhoff's Voltage Law (voltages in a loop sum to zero)?
+
+If yes to all — you now have the debugging skills for the rest of this journey.
+
+
+--------------------------------------------------------------------------------
+DAY 3: SERIES & PARALLEL CIRCUITS
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand the difference between series and parallel circuits
+  • Build both types and observe real differences
+  • Learn how voltage and current distribute in each configuration
+
+📖 THEORY:
+
+There are two fundamental ways to connect components:
+
+SERIES CIRCUITS:
+   Components are connected end-to-end, forming a single path for current.
+
+   [Battery +] → [LED 1] → [LED 2] → [LED 3] → [Battery −]
+
+   Key properties:
+   • Current is the SAME through all components
+   • Voltage is DIVIDED among components
+   • If one component fails (opens), the ENTIRE circuit stops
+   • Total resistance = R1 + R2 + R3 + ...
+
+   Example: Christmas tree lights wired in series — when one bulb burns
+   out, the whole string goes dark.
+
+   For LEDs in series with a 9V battery:
+   Each LED drops ~2V, so you can run about 3 LEDs in series (3 × 2V = 6V)
+   with a 150Ω resistor to drop the remaining 3V.
+
+PARALLEL CIRCUITS:
+   Components are connected side-by-side, each having its own path to the
+   power source.
+
+   [Battery +] → splits → [LED 1] → joins → [Battery −]
+                        → [LED 2] →
+                        → [LED 3] →
+
+   Key properties:
+   • Voltage is the SAME across all components
+   • Current is DIVIDED among branches
+   • If one component fails, the others KEEP WORKING
+   • Total resistance: 1/Rtotal = 1/R1 + 1/R2 + 1/R3 + ...
+
+   Example: Your home electrical outlets are wired in parallel — turning
+   off one lamp doesn't affect the others.
+
+WHY THIS MATTERS FOR ROBOTICS:
+   Your robot will use BOTH configurations. Motors are typically wired in
+   parallel (so they can be controlled independently). Sensor power lines
+   are in parallel. Understanding this lets you design circuits where
+   each part works independently — critical for a working robot.
+
+🔨 PRACTICAL: BUILD BOTH CIRCUIT TYPES
+
+Build 1: Three LEDs in Series
+  Materials: 3 LEDs, 1 resistor (100-150Ω), battery, breadboard, wires
+
+  1. Place LED 1 anode (long leg) connected to the resistor
+  2. Connect the resistor's other end to battery positive (+)
+  3. Connect LED 1 cathode (short leg) to LED 2 anode (long leg)
+  4. Connect LED 2 cathode to LED 3 anode
+  5. Connect LED 3 cathode to battery negative (−)
+  6. Observe: All three LEDs light up, but they're DIMMER than a single LED
+
+Build 2: Three LEDs in Parallel
+  Materials: 3 LEDs, 3 resistors (220Ω each), battery, breadboard, wires
+
+  1. Connect battery + to the positive power rail
+  2. Connect battery − to the negative power rail
+  3. For EACH LED: connect a 220Ω resistor from the + rail to the LED anode
+  4. Connect each LED cathode to the − rail
+  5. Observe: All three LEDs are BRIGHTER than the series circuit
+     (each LED gets the full voltage minus its resistor drop)
+
+Experiment:
+  • Remove one LED from each circuit
+  • Series: remaining LEDs go OUT (circuit is broken)
+  • Parallel: remaining LEDs STAY ON (independent paths)
+
+  Use your multimeter to measure:
+  • Voltage across each LED in both circuits
+  • Series: each LED has ~2V across it
+  • Parallel: each LED has ~2V across it, but the current per branch is higher
+
+⚠️ TROUBLESHOOTING:
+  • Series LEDs don't light: Ensure all LEDs face the same direction
+    (anode → cathode → anode → cathode → ...)
+  • Parallel LEDs uneven brightness: Check all resistors are the same value
+  • No LEDs light: Check battery voltage with multimeter
+
+✅ DAY 3 CHECKPOINT:
+  □ Can you explain the difference between series and parallel?
+  □ Did you observe brightness differences?
+  □ Can you predict what happens when you remove one component from each type?
+  □ Can you identify which type is used in a given circuit diagram?
+
+
+--------------------------------------------------------------------------------
+DAY 4: RESISTORS DEEP DIVE — POWER AND HEAT
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand electrical power and the power formula
+  • Learn about resistor power ratings and why they matter
+  • Calculate proper resistor values for different LED configurations
+  • Understand voltage dividers
+
+📖 THEORY:
+
+POWER (P) — Measured in Watts (W):
+   Power is the rate at which energy is converted. In a resistor, electrical
+   energy is converted to HEAT.
+
+   P = V × I        (Power = Voltage × Current)
+   P = I² × R       (useful when you know current and resistance)
+   P = V² / R       (useful when you know voltage and resistance)
+
+   Example: A 220Ω resistor with 20mA flowing through it:
+   P = (0.020)² × 220 = 0.088W = 88mW
+   Most small resistors are rated for 0.25W (250mW), so this is safe.
+
+   But what if you used a 10Ω resistor with 500mA?
+   P = (0.500)² × 10 = 2.5W
+   A standard 0.25W resistor would BURN UP. You'd need a power resistor.
+
+RESISTOR POWER RATINGS:
+   • Standard small resistors: 1/8W (125mW) or 1/4W (250mW)
+   • Power resistors: 1W, 2W, 5W, 10W+ (physically larger)
+   • Rule: Always choose a resistor rated for at LEAST 2× the calculated
+     power dissipation for safety margin
+
+VOLTAGE DIVIDERS — AN ESSENTIAL CIRCUIT:
+   A voltage divider uses two resistors to create an output voltage that is
+   a fraction of the input voltage.
+
+               Vin
+                |
+              [R1]
+                |──── Vout
+              [R2]
+                |
+               GND
+
+   Formula: Vout = Vin × (R2 / (R1 + R2))
+
+   Example: Vin = 9V, R1 = 10kΩ, R2 = 10kΩ
+   Vout = 9 × (10000 / 20000) = 4.5V
+
+   This is how sensors often output signals, and how you can step down
+   voltages for sensitive components.
+
+WHY THIS MATTERS FOR ROBOTICS:
+   Motors draw significant current. If your resistor can't handle the power,
+   it will overheat and potentially start a fire. Understanding power
+   calculations keeps your robot safe. Voltage dividers are used everywhere
+   in sensor circuits and battery monitoring.
+
+🔨 PRACTICAL EXERCISES:
+
+Exercise 1: Calculate Resistor for Different LEDs
+  Different color LEDs have different forward voltages:
+  • Red LED:    ~1.8V forward voltage, 20mA typical current
+  • Green LED:  ~2.2V forward voltage, 20mA typical current
+  • Blue LED:   ~3.2V forward voltage, 20mA typical current
+
+  With a 9V supply, calculate R for each:
+  • Red:   R = (9 - 1.8) / 0.020 = 360Ω → use 390Ω (nearest standard)
+  • Green: R = (9 - 2.2) / 0.020 = 340Ω → use 330Ω
+  • Blue:  R = (9 - 3.2) / 0.020 = 290Ω → use 300Ω or 330Ω
+
+Exercise 2: Try Different Resistor Values
+  With a single red LED and 9V battery, try these resistors:
+  • 100Ω — LED is bright (high current: ~72mA — near LED max!)
+  • 220Ω — LED is medium brightness (~33mA)
+  • 1kΩ  — LED is dim (~7mA)
+  • 10kΩ — LED is barely visible (~0.7mA)
+
+  Measure the current with your multimeter (set to mA mode, place in
+  SERIES with the circuit) to verify your calculations.
+
+Exercise 3: Build a Voltage Divider
+  1. Connect two 10kΩ resistors in series between 9V and ground
+  2. Measure the voltage at the junction between them
+  3. It should read approximately 4.5V
+  4. Try different ratios: 10kΩ + 20kΩ should give 6V at the junction
+
+⚠️ TROUBLESHOOTING:
+  • Resistor getting hot: Check power calculations — you may need a higher
+    resistance value or a power resistor
+  • Voltage divider reading wrong: Make sure nothing else is connected to
+    the output point (loads affect the voltage)
+
+✅ DAY 4 CHECKPOINT:
+  □ Can you calculate power dissipation in a resistor?
+  □ Can you choose the right resistor for any LED color?
+  □ Can you build and measure a voltage divider?
+  □ Do you understand why power ratings matter?
+
+
+--------------------------------------------------------------------------------
+DAY 5: CAPACITORS — ENERGY STORAGE AND SMOOTHING
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand what capacitors do and how they work
+  • Learn the RC time constant
+  • Build a circuit demonstrating capacitor charging and discharging
+  • Understand why capacitors are essential for stable robot circuits
+
+📖 THEORY:
+
+A capacitor stores electrical energy in an electric field. Think of it as a
+tiny rechargeable battery that charges and discharges very quickly.
+
+CAPACITOR BASICS:
+  • Measured in Farads (F), but most are microfarads (μF) or nanofarads (nF)
+  • Two types you'll use:
+    - Electrolytic: Larger values (1μF to 10000μF), POLARIZED (has + and −)
+    - Ceramic: Smaller values (0.001μF to 1μF), NOT polarized
+
+  ⚠️ CRITICAL: Electrolytic capacitors MUST be connected with correct
+  polarity. The negative leg is marked with a stripe and is shorter.
+  Reversing polarity can cause the capacitor to EXPLODE.
+
+HOW CAPACITORS CHARGE:
+  When you connect a capacitor to a voltage source through a resistor:
+  1. Initially, the capacitor acts like a short circuit (max current flows)
+  2. As it charges, current decreases exponentially
+  3. Eventually, the capacitor is "full" and no current flows
+
+  The TIME CONSTANT (τ) determines how fast this happens:
+  τ = R × C
+
+  After 1τ: capacitor is 63% charged
+  After 3τ: capacitor is 95% charged
+  After 5τ: capacitor is 99% charged (considered "fully" charged)
+
+  Example: R = 10kΩ, C = 100μF
+  τ = 10,000 × 0.000100 = 1 second
+  Full charge takes about 5 seconds
+
+DECOUPLING CAPACITORS — THE UNSUNG HEROES:
+  In real circuits, power supplies are noisy. Motors starting up cause
+  voltage dips. Digital chips switching create high-frequency noise.
+  Capacitors placed across the power supply absorb these fluctuations
+  and provide stable power.
+
+  Rule of thumb:
+  • Place a 100μF electrolytic near the main power input
+  • Place a 0.1μF ceramic near each IC (chip) power pin
+
+WHY THIS MATTERS FOR ROBOTICS:
+  Without decoupling capacitors, your robot's Arduino will randomly reset
+  when motors start. Sensors will give garbage readings. The motor driver
+  will behave erratically. Capacitors are the difference between a robot
+  that works reliably and one that glitches constantly.
+
+🔨 PRACTICAL EXERCISES:
+
+Exercise 1: Observe Charging and Discharging
+  Materials: 1000μF electrolytic capacitor, 10kΩ resistor, LED, 9V battery
+
+  Charging:
+  1. Connect the resistor and capacitor in series across the battery
+  2. Connect the LED in parallel with the capacitor (with a 220Ω resistor)
+  3. When you connect the battery, the LED will start bright and slowly dim
+     as the capacitor charges (it absorbs the current)
+
+  Discharging:
+  1. Disconnect the battery
+  2. The LED should glow for a moment as the capacitor releases its stored
+     energy — like a tiny battery!
+  3. With a 1000μF capacitor, the LED may glow for 1-2 seconds
+
+Exercise 2: Power Supply Smoothing
+  1. Build your basic LED circuit from Day 1
+  2. Observe the LED with no capacitor (it should look steady, but
+     with sensitive equipment you'd see small fluctuations)
+  3. Add a 100μF capacitor across the power rails (+ to +, − to −)
+  4. This won't look different with an LED, but when you add motors
+     later, this will be critical for stability
+
+⚠️ TROUBLESHOOTING:
+  • Capacitor gets hot: WRONG POLARITY — disconnect immediately!
+  • Circuit doesn't seem different with capacitor: For LEDs, the effect is
+    subtle. The real benefit appears with motors and microcontrollers.
+  • LED stays lit after removing power: The capacitor is discharging. This
+    is expected behavior!
+
+✅ DAY 5 CHECKPOINT:
+  □ Can you identify electrolytic vs ceramic capacitors?
+  □ Can you calculate the RC time constant?
+  □ Did you observe the capacitor charging and discharging?
+  □ Do you understand why decoupling capacitors are needed in robot circuits?
+
+
+--------------------------------------------------------------------------------
+DAY 6: DIODES — ONE-WAY VALVES FOR ELECTRICITY
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand how diodes work and why they're essential
+  • Learn about forward voltage drop
+  • Build a protection circuit using diodes
+  • Understand flyback diodes (critical for motor circuits)
+
+📖 THEORY:
+
+A diode is the simplest semiconductor device. It allows current to flow in
+only ONE direction — from anode (+) to cathode (−).
+
+DIODE BASICS:
+  • The cathode is marked with a BAND/STRIPE on the component body
+  • Forward biased: Current flows (anode is more positive than cathode)
+  • Reverse biased: Current is BLOCKED (almost zero current flows)
+  • Forward voltage drop: Diodes "use up" a small voltage
+    - Silicon diode (1N4007): ~0.7V drop
+    - Schottky diode: ~0.3V drop
+    - LED: 1.8-3.3V drop (and it glows!)
+
+   Yes — an LED IS a diode! It's a "Light Emitting Diode." That's why it
+   only works in one direction.
+
+FLYBACK DIODES — PROTECTING YOUR CIRCUITS FROM MOTORS:
+   This is the most important diode application for robotics.
+
+   When a motor is running and you suddenly cut power, the motor's coil
+   generates a voltage spike in the REVERSE direction. This spike can be
+   50V or more — enough to destroy your Arduino or motor driver.
+
+   A flyback diode is placed ACROSS the motor in REVERSE:
+   
+   [Motor +]──┬──[Motor]──┬──[Motor −]
+              │            │
+              └──|◄|───────┘   (Diode: cathode to +, anode to −)
+
+   During normal operation, the diode is reverse-biased (does nothing).
+   When the motor stops, the voltage spike forward-biases the diode,
+   safely absorbing the spike.
+
+REVERSE POLARITY PROTECTION:
+   Place a diode in series with your power input:
+   [Battery +] → |►| → [Circuit] → [Battery −]
+
+   If someone connects the battery backwards, the diode blocks current
+   and protects your circuit. You lose 0.7V, but gain protection.
+
+WHY THIS MATTERS FOR ROBOTICS:
+   Every motor on your robot NEEDS a flyback diode. Without one, the
+   first time you stop a motor, the voltage spike can kill your Arduino
+   ($5-$25 replacement) or your motor driver ($5-$10 replacement).
+   A diode costs $0.05. Always use them.
+
+🔨 PRACTICAL EXERCISES:
+
+Exercise 1: Test Diode Direction
+  1. Build a simple LED circuit from Day 1
+  2. Add a 1N4007 diode in SERIES, oriented so current can flow
+     (band facing away from battery +)
+  3. LED lights up — current flows through the diode
+  4. REVERSE the diode (flip it around)
+  5. LED goes dark — current is blocked
+  6. Measure with multimeter: 0V across LED when diode is reversed
+
+Exercise 2: Build Reverse Polarity Protection
+  1. Place a diode between the battery + and your circuit
+  2. Measure the voltage: it's about 0.7V less than the battery
+     (the diode's forward drop)
+  3. Reverse the battery connections
+  4. Circuit stays OFF — protected!
+
+Exercise 3: Test Flyback Concept (Visual Demo)
+  1. If you have a small motor, connect it to your battery through a switch
+  2. Connect an LED (with resistor) across the motor terminals
+  3. Run the motor, then quickly disconnect power
+  4. You may see the LED briefly flash — that's the flyback voltage!
+  5. Now add a diode across the motor (cathode to +, anode to −)
+  6. The LED flash should be eliminated or greatly reduced
+
+⚠️ TROUBLESHOOTING:
+  • Circuit dead after adding diode: Check orientation — the band indicates
+    the cathode (negative/blocking end)
+  • LED still lights when diode is "reversed": You may have the diode
+    orientation confused. The stripe = cathode.
+
+✅ DAY 6 CHECKPOINT:
+  □ Can you identify the anode and cathode of a diode?
+  □ Do you understand forward voltage drop?
+  □ Can you explain why flyback diodes are needed for motors?
+  □ Did you build a reverse polarity protection circuit?
+
+
+--------------------------------------------------------------------------------
+DAY 7: WEEK 1 REVIEW + MINI PROJECT
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Consolidate everything from Week 1
+  • Build a complete, stable circuit combining all components
+  • Self-assess your understanding before moving to control components
+
+📖 THEORY REVIEW:
+
+Let's review what you've learned:
+
+Day 1: Voltage, Current, Resistance — V = IR
+   → You can calculate any value if you know the other two
+
+Day 2: Multimeter — Measure V, R, and continuity
+   → You can debug any circuit by measuring what's happening
+
+Day 3: Series & Parallel — Two ways to connect components
+   → Series: same current, divided voltage
+   → Parallel: same voltage, divided current
+
+Day 4: Power — P = IV = I²R = V²/R
+   → You can ensure components won't overheat
+
+Day 5: Capacitors — Store energy, smooth power
+   → τ = RC, decoupling prevents glitches
+
+Day 6: Diodes — One-way current flow
+   → Flyback protection prevents motor spikes from killing circuits
+
+COMBINING CONCEPTS:
+  A well-designed circuit uses ALL of these together:
+  • Resistors to limit current
+  • Capacitors to smooth power
+  • Diodes to protect against spikes
+  • Proper series/parallel configurations
+  • Correct power calculations to avoid overheating
+
+🔨 PRACTICAL: BUILD THE "STABLE LED INDICATOR" CIRCUIT
+
+This mini project combines everything from Week 1 into one circuit:
+
+Circuit Description:
+  A stable, protected LED indicator with power smoothing — the kind of
+  sub-circuit you'd find inside any real robot.
+
+Components needed:
+  • Breadboard
+  • 9V battery with clip
+  • 1N4007 diode (reverse polarity protection)
+  • 100μF electrolytic capacitor (power smoothing)
+  • 0.1μF ceramic capacitor (high-frequency filtering)
+  • 220Ω resistor (LED current limiting)
+  • LED (any color)
+  • Jumper wires
+
+Build Steps:
+  1. Connect battery + through a 1N4007 diode to the + power rail
+     (band/cathode toward the rail — current flows toward the circuit)
+  2. Connect battery − to the − power rail
+  3. Place the 100μF electrolytic capacitor across the power rails
+     (longer leg to +, shorter leg with stripe to −)
+  4. Place the 0.1μF ceramic capacitor also across the power rails
+     (these are not polarized, either direction works)
+  5. Connect the 220Ω resistor from the + rail to a free row
+  6. Connect the LED anode (long leg) to the same row as the resistor
+  7. Connect the LED cathode (short leg) to the − rail
+  8. Power it up!
+
+What to verify with your multimeter:
+  • Battery voltage: ~9V
+  • Voltage after the diode: ~8.3V (9V minus 0.7V diode drop)
+  • Voltage across the capacitors: ~8.3V (same as supply after diode)
+  • Voltage across the resistor: ~6.3V (8.3V - 2V LED drop)
+  • Voltage across the LED: ~2V
+  • Current through LED: ~29mA (6.3V / 220Ω)
+
+What this circuit demonstrates:
+  ✓ Reverse polarity protection (try reversing the battery — nothing
+    happens, circuit is protected)
+  ✓ Power smoothing (capacitors filter noise)
+  ✓ Proper current limiting (resistor protects the LED)
+  ✓ Your understanding of voltage drops around the circuit
+
+⚠️ TROUBLESHOOTING:
+  • LED doesn't light: Check diode orientation, capacitor polarity, LED
+    polarity — use continuity mode to trace the circuit
+  • Voltage readings don't match: Check all connections, ensure multimeter
+    is in the right mode
+
+✅ WEEK 1 FINAL CHECKPOINT:
+  □ Can you explain V = IR and use it to design a circuit?
+  □ Can you use a multimeter to diagnose problems?
+  □ Do you understand series vs parallel and when to use each?
+  □ Can you calculate power dissipation?
+  □ Do you know why capacitors and diodes are needed in robot circuits?
+  □ Did your mini project circuit work correctly?
+
+🎉 CONGRATULATIONS! You now understand the electrical foundations that
+   every robotics engineer needs. Week 2 introduces CONTROL — making
+   circuits do things automatically.
+
+
+================================================================================
+📅 WEEK 2: CONTROL COMPONENTS (Days 8–14)
+================================================================================
+
+This week you transition from passive components to ACTIVE control. You'll
+learn to switch power electronically, control motor speed, and finally
+meet the Arduino — the brain of your future robot.
+
+
+--------------------------------------------------------------------------------
+DAY 8: TRANSISTORS — ELECTRONIC SWITCHES
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand how a transistor works as a switch
+  • Learn the three pins: Base, Collector, Emitter
+  • Build a transistor-controlled LED circuit
+  • Understand why transistors are essential for motor control
+
+📖 THEORY:
+
+A transistor is a semiconductor device that can act as an electronically
+controlled switch. Instead of physically flipping a switch, you apply a
+small current to one pin, and the transistor allows a much larger current
+to flow through the other two pins.
+
+NPN TRANSISTOR (2N2222 or BC547):
+  Three pins (looking at the flat face, left to right):
+  • Emitter (E) — connects to ground
+  • Base (B) — the "control" pin (middle)
+  • Collector (C) — connects to the load (LED, motor, etc.)
+
+  How it works:
+  • When NO current flows into the Base → transistor is OFF (open switch)
+  • When a small current flows into the Base → transistor turns ON
+    (closed switch), allowing large current from Collector to Emitter
+
+  The transistor AMPLIFIES: a tiny base current (1-5mA) controls a much
+  larger collector current (up to 500mA+ depending on transistor).
+
+  Current gain (β or hFE): typically 100-300 for small signal transistors
+  This means: I_collector = β × I_base
+
+  Example: You want to switch 200mA through a motor
+  With β = 200: I_base = 200mA / 200 = 1mA
+  Base resistor with 5V control: R = (5V - 0.7V) / 0.001A = 4.3kΩ → use 4.7kΩ
+
+SATURATION vs ACTIVE vs CUTOFF:
+  • Cutoff: No base current → transistor fully OFF
+  • Active: Some base current → transistor partially ON (used in amplifiers)
+  • Saturation: Enough base current → transistor fully ON (used as switch)
+
+  For switching (robotics), we always want SATURATION — fully ON or fully OFF.
+  To ensure saturation, use a base current ~10× more than the minimum.
+
+WHY THIS MATTERS FOR ROBOTICS:
+  Arduino pins can only supply ~20-40mA. Motors need 200-1000mA+.
+  A transistor lets the Arduino's tiny signal control the motor's large
+  current. This is the fundamental building block of motor control.
+
+🔨 PRACTICAL: TRANSISTOR-CONTROLLED LED
+
+Materials: 2N2222 transistor, LED, 220Ω resistor, 1kΩ resistor, battery,
+           breadboard, wires, push button
+
+Build steps:
+  1. Connect the LED + 220Ω resistor in series from battery + to the
+     transistor's Collector pin
+  2. Connect the transistor's Emitter pin to battery −  (ground)
+  3. Connect the 1kΩ resistor from battery + through a push button
+     to the transistor's Base pin
+  4. Press the button: LED turns ON
+  5. Release the button: LED turns OFF
+
+What's happening:
+  • Button pressed → current flows through 1kΩ into Base
+  • Base current turns transistor ON (saturation)
+  • Current flows from Collector to Emitter through the LED
+  • Button released → no base current → transistor OFF → LED off
+
+Experiment:
+  • Try different base resistor values (10kΩ, 47kΩ)
+  • With very high resistance, the LED might be dim (transistor in active
+    region, not fully saturated)
+  • With appropriate resistance (1kΩ-4.7kΩ), the LED is fully bright
+
+⚠️ TROUBLESHOOTING:
+  • LED always on: Check transistor orientation — pins may be in wrong order
+  • LED never turns on: Verify pin identification. Look up your transistor's
+    datasheet for the correct pinout (E-B-C order varies by model!)
+  • Transistor gets hot: Base resistor may be too low, or you're exceeding
+    the transistor's current rating
+
+✅ DAY 8 CHECKPOINT:
+  □ Can you identify E, B, C on your transistor?
+  □ Does your transistor switch the LED on and off?
+  □ Can you explain why a base resistor is needed?
+  □ Do you understand current amplification?
+
+
+--------------------------------------------------------------------------------
+DAY 9: MOTORS + TRANSISTORS — YOUR FIRST ROBOTICS MOMENT
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Control a DC motor using a transistor
+  • Understand back-EMF and why flyback diodes are critical
+  • Build a protected motor control circuit
+  • Experience the thrill of electronically controlling motion
+
+📖 THEORY:
+
+DC MOTORS — HOW THEY WORK:
+  A DC motor converts electrical energy into rotational motion using
+  electromagnetic principles. When current flows through a coil inside
+  a magnetic field, the coil experiences a force that makes it spin.
+
+  Key properties:
+  • Two terminals (no polarity marking usually) — reversing polarity
+    reverses rotation direction
+  • Stall current: the maximum current drawn when the motor can't spin
+    (shaft is held). This can be 5-10× the running current!
+  • Running current: current drawn during normal operation (typically
+    100-500mA for small hobby motors)
+  • Voltage rating: typically 3-6V for small hobby motors
+
+  ⚠️ NEVER connect a motor directly to an Arduino pin!
+  Arduino pins: max ~40mA at 5V
+  Motor needs: 200-1000mA+ at 3-6V
+  Result: Damaged Arduino, sad student
+
+BACK-EMF — THE HIDDEN DANGER:
+  When you cut power to a spinning motor, the motor briefly becomes a
+  GENERATOR. The spinning momentum creates a reverse voltage spike
+  (back-EMF) that can reach 50-100V for a fraction of a second.
+
+  This spike travels back through your circuit and can destroy:
+  • Your transistor
+  • Your Arduino
+  • Your motor driver
+
+  Solution: ALWAYS place a flyback diode across the motor (from Day 6):
+  Cathode to motor +, anode to motor −. The diode absorbs the spike.
+
+🔨 PRACTICAL: MOTOR CONTROL WITH TRANSISTOR + PROTECTION
+
+Materials: DC motor (3-6V), 2N2222 transistor (or TIP120 for larger motors),
+           1N4007 diode, 1kΩ resistor, push button, battery (4xAA = 6V),
+           100μF capacitor, breadboard, wires
+
+Build steps:
+  1. Connect the motor between battery + and the Collector of the transistor
+  2. Connect the transistor Emitter to battery − (ground)
+  3. Place a 1N4007 diode ACROSS the motor:
+     - Diode CATHODE (band) to the motor terminal connected to battery +
+     - Diode ANODE to the motor terminal connected to Collector
+  4. Connect 1kΩ resistor from battery + through push button to Base
+  5. Place 100μF capacitor across power rails for stability
+  6. Press the button — THE MOTOR SPINS! 🎉
+
+This is your FIRST real robotics moment. You just electronically controlled
+a motor using a semiconductor. This is exactly how robots work — electronic
+signals controlling mechanical motion.
+
+Experiment:
+  • Hold the motor shaft gently and feel the torque
+  • Listen for the pitch change when you load the motor
+  • Remove the flyback diode and notice if the transistor gets warm when
+    stopping the motor (put it back immediately!)
+  • Try powering from different voltages (3V vs 6V) — observe speed change
+
+⚠️ TROUBLESHOOTING:
+  • Motor doesn't spin: Check transistor orientation, check motor works
+    by connecting directly to battery briefly
+  • Motor spins but is weak: Battery might be low, or transistor might be
+    in active mode (not saturated) — try a smaller base resistor
+  • Transistor gets very hot: Motor may draw too much current for a 2N2222
+    (max ~800mA). Use a TIP120 Darlington transistor for motors over 500mA
+
+✅ DAY 9 CHECKPOINT:
+  □ Does your motor spin when you press the button?
+  □ Is the flyback diode installed correctly?
+  □ Can you explain why you can't connect a motor directly to Arduino?
+  □ Do you understand back-EMF?
+
+
+--------------------------------------------------------------------------------
+DAY 10: PWM — CONTROLLING MOTOR SPEED
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand Pulse Width Modulation (PWM)
+  • Learn duty cycle and its effect on average voltage
+  • Control motor speed using PWM concept
+  • Prepare for Arduino PWM control
+
+📖 THEORY:
+
+PWM — PULSE WIDTH MODULATION:
+  Instead of reducing voltage to slow a motor (which reduces torque), PWM
+  rapidly switches the motor ON and OFF. The motor's inertia smooths this
+  out, and the motor "feels" an average voltage.
+
+  How it works:
+  • The signal switches between fully ON (high) and fully OFF (low)
+  • The fraction of time spent ON is called the DUTY CYCLE
+  • The motor responds to the AVERAGE voltage
+
+  Duty Cycle examples:
+  • 100% duty cycle = always ON = full speed
+  • 50% duty cycle = ON half the time = ~half speed
+  • 25% duty cycle = ON quarter of time = ~quarter speed
+  • 0% duty cycle = always OFF = stopped
+
+  Formula: V_average = V_supply × (duty_cycle / 100)
+
+  Example: 6V supply, 50% duty cycle
+  V_average = 6V × 0.50 = 3V average → motor runs at roughly half speed
+
+  PWM FREQUENCY:
+  The switching happens very fast — typically 500Hz to 25kHz.
+  • Too slow (<100Hz): Motor physically stutters, audible clicking
+  • Sweet spot (1kHz-20kHz): Smooth motor operation
+  • Too fast (>25kHz): Some transistors can't switch fast enough
+
+WHY PWM IS BETTER THAN VOLTAGE REDUCTION:
+  • A motor at 50% PWM with 6V supply has FULL torque during its ON pulses
+  • A motor at steady 3V has reduced torque at all times
+  • PWM gives better low-speed performance and efficiency
+
+WHY THIS MATTERS FOR ROBOTICS:
+  Every real robot uses PWM for motor control. When your robot needs to
+  slow down for a turn or navigate carefully, it uses PWM. The Arduino
+  has built-in PWM outputs, making this easy to implement.
+
+🔨 PRACTICAL: MANUAL PWM DEMONSTRATION
+
+For now, without an Arduino, you can understand PWM conceptually:
+
+Exercise 1: Manual PWM (Hands-On Feel)
+  Using your transistor motor circuit from Day 9:
+  1. Rapidly press and release the button — try for ~2 times per second
+  2. The motor will stutter and spin slowly
+  3. Press and hold for longer intervals — motor speeds up
+  4. This is "manual PWM" — you're varying the duty cycle by hand
+
+Exercise 2: Understand the Math
+  Calculate average voltages for a 6V supply:
+  • 10% duty cycle: 6V × 0.10 = 0.6V (motor barely turns)
+  • 30% duty cycle: 6V × 0.30 = 1.8V (slow rotation)
+  • 50% duty cycle: 6V × 0.50 = 3.0V (medium speed)
+  • 75% duty cycle: 6V × 0.75 = 4.5V (fast)
+  • 100% duty cycle: 6V × 1.00 = 6.0V (full speed)
+
+  When we get to Arduino, you'll use analogWrite(pin, value) where
+  value is 0-255:
+  • analogWrite(pin, 0) = 0% duty cycle
+  • analogWrite(pin, 127) = ~50% duty cycle
+  • analogWrite(pin, 255) = 100% duty cycle
+
+✅ DAY 10 CHECKPOINT:
+  □ Can you explain what PWM is in your own words?
+  □ Can you calculate average voltage for any duty cycle?
+  □ Do you understand why PWM is better than reducing voltage?
+  □ Can you explain what duty cycle means?
+
+
+--------------------------------------------------------------------------------
+DAY 11: POTENTIOMETER — VARIABLE RESISTANCE
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand how potentiometers work
+  • Use a potentiometer to control LED brightness
+  • Learn the relationship between potentiometers and voltage dividers
+  • Prepare for analog sensor reading concepts
+
+📖 THEORY:
+
+A potentiometer (pot) is a three-terminal variable resistor. Turning the
+knob changes the resistance between the terminals.
+
+HOW IT WORKS:
+  A potentiometer has three pins:
+  • Pin 1: One end of the resistive element
+  • Pin 2: The wiper (movable contact) — this is the OUTPUT
+  • Pin 3: Other end of the resistive element
+
+  Total resistance (Pin 1 to Pin 3) is fixed (e.g., 10kΩ).
+  Turning the knob moves the wiper, changing:
+  • Resistance from Pin 1 to Pin 2
+  • Resistance from Pin 2 to Pin 3
+  • These two always add up to the total resistance
+
+  A potentiometer IS a variable voltage divider!
+
+  If you connect Pin 1 to 5V and Pin 3 to GND:
+  • Turning fully to Pin 1: Pin 2 outputs ~5V
+  • Turning to middle: Pin 2 outputs ~2.5V
+  • Turning fully to Pin 3: Pin 2 outputs ~0V
+
+WHY THIS MATTERS FOR ROBOTICS:
+  Potentiometers are used for:
+  • Manual speed control of motors
+  • Setting threshold values
+  • Joystick inputs (joysticks are just two potentiometers!)
+  • Understanding how analog sensors output variable voltages
+
+🔨 PRACTICAL: POTENTIOMETER-CONTROLLED LED
+
+Materials: 10kΩ potentiometer, LED, 220Ω resistor, battery, breadboard
+
+Build steps:
+  1. Connect battery + to Pot Pin 1
+  2. Connect battery − to Pot Pin 3
+  3. Connect Pot Pin 2 (wiper/middle) through a 220Ω resistor to the LED anode
+  4. Connect LED cathode to battery −
+  5. Turn the knob — LED brightness changes smoothly!
+
+Experiment:
+  • Use your multimeter to measure voltage at Pin 2 as you turn the knob
+  • You should see voltage change smoothly from ~0V to ~battery voltage
+  • Note: the 220Ω resistor is still important for current limiting
+
+Advanced experiment:
+  • Replace the LED circuit with your motor circuit from Day 9
+  • Connect Pot Pin 2 to the transistor Base through a 1kΩ resistor
+  • Turning the pot should change motor speed (though not smoothly —
+    the transistor acts more like a switch than a variable controller
+    in this simple configuration)
+
+⚠️ TROUBLESHOOTING:
+  • No brightness change: Check pot wiring — middle pin must be the output
+  • LED stays off: Pot may be turned to minimum, or wiring is incorrect
+  • Pot gets warm: Don't use low-value pots (under 1kΩ) across the full
+    battery voltage — too much current flows through the resistive element
+
+✅ DAY 11 CHECKPOINT:
+  □ Can you explain how a potentiometer works?
+  □ Does your LED brightness change smoothly?
+  □ Can you measure the voltage output with a multimeter?
+  □ Do you see the connection between pots and voltage dividers?
+
+
+--------------------------------------------------------------------------------
+DAY 12: ANALOG VS DIGITAL SIGNALS
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand the fundamental difference between analog and digital
+  • Learn how microcontrollers convert between analog and digital (ADC/DAC)
+  • Recognize which sensors produce which type of signal
+  • Prepare for Arduino analog and digital I/O
+
+📖 THEORY:
+
+DIGITAL SIGNALS:
+  A digital signal has only two states: HIGH (ON) or LOW (OFF).
+  • In Arduino terms: HIGH = 5V, LOW = 0V
+  • Like a light switch — it's either on or off, nothing in between
+  • Examples: push buttons, switches, IR obstacle sensors (detect/no detect)
+
+  Digital is perfect for YES/NO questions:
+  • Is the button pressed? YES or NO
+  • Is something blocking the sensor? YES or NO
+  • Should the LED be on? YES or NO
+
+ANALOG SIGNALS:
+  An analog signal can be ANY value within a range — it's continuous.
+  • Like a dimmer switch — it can be anywhere from off to full brightness
+  • Examples: temperature sensors, potentiometers, light sensors
+  • In the real world, almost everything is analog
+
+  Analog answers "how much" questions:
+  • How far away is the obstacle? 5cm, 15cm, 100cm...
+  • How hot is it? 20°C, 25°C, 37.5°C...
+  • How bright is the light? Very dim, medium, blinding...
+
+ANALOG-TO-DIGITAL CONVERSION (ADC):
+  Microcontrollers are digital devices — they can only understand 0s and 1s.
+  To read an analog signal, they use an ADC (Analog-to-Digital Converter).
+
+  Arduino Uno's ADC:
+  • 10-bit resolution: converts 0-5V to a number from 0 to 1023
+  • 0V input → reads 0
+  • 2.5V input → reads ~512
+  • 5V input → reads 1023
+
+  Resolution: 5V / 1024 = ~4.9mV per step
+  This means the Arduino can distinguish voltage changes of ~5mV.
+
+  Code: int value = analogRead(A0);  // Returns 0-1023
+
+DIGITAL-TO-ANALOG (PWM as DAC):
+  Arduino doesn't have a true DAC, but PWM simulates analog output.
+  analogWrite(pin, 127) creates a 50% PWM signal that "averages" to ~2.5V.
+
+WHY THIS MATTERS FOR ROBOTICS:
+  Your robot needs to read sensors (analog) AND control outputs (digital/PWM).
+  Understanding the difference tells you which Arduino pins to use and how
+  to interpret the data you receive.
+
+🔨 PRACTICAL: CONCEPTUAL EXERCISES
+
+Exercise 1: Classify Signals
+  For each item, decide if it's analog or digital:
+  • Room temperature → ANALOG (continuous range)
+  • Light switch → DIGITAL (on/off)
+  • Car speedometer → ANALOG (0 to max speed)
+  • Door sensor → DIGITAL (open/closed)
+  • Volume knob → ANALOG (0 to max)
+  • Keyboard key → DIGITAL (pressed/not pressed)
+
+Exercise 2: Calculate ADC Values
+  For Arduino's 10-bit ADC (0-1023 for 0-5V):
+  • What value for 1V?   → 1023 × (1/5) = 205
+  • What value for 3.3V? → 1023 × (3.3/5) = 675
+  • What voltage for ADC value 800? → 5 × (800/1023) = 3.91V
+
+Exercise 3: Hands-On Preview
+  Using your potentiometer from Day 11:
+  • Connect Pot Pin 1 to battery +, Pin 3 to battery −
+  • Measure Pin 2 voltage with multimeter as you turn the knob
+  • This ANALOG voltage is exactly what the Arduino will read!
+  • Imagine the multimeter reading being converted to a 0-1023 number
+
+✅ DAY 12 CHECKPOINT:
+  □ Can you classify any signal as analog or digital?
+  □ Can you calculate ADC values for given voltages?
+  □ Do you understand what 10-bit resolution means?
+  □ Can you explain the difference between analogRead and digitalRead?
+
+
+--------------------------------------------------------------------------------
+DAY 13: INTRODUCTION TO MICROCONTROLLERS — MEET THE ARDUINO
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand what a microcontroller is and how it differs from a computer
+  • Set up the Arduino IDE software
+  • Upload your first program (Blink)
+  • Understand the basic structure of an Arduino program
+
+📖 THEORY:
+
+WHAT IS A MICROCONTROLLER?
+  A microcontroller is a tiny computer on a single chip. It has:
+  • A processor (CPU) — executes your code
+  • Memory (RAM + Flash) — stores your program and data
+  • Input/Output pins — connects to the physical world
+  • Built-in peripherals — ADC, timers, serial communication
+
+  Unlike your PC, a microcontroller:
+  • Has NO operating system — your code runs directly on the hardware
+  • Runs ONE program at a time — whatever you uploaded
+  • Has very limited memory — Arduino Uno: 32KB Flash, 2KB RAM
+  • Starts running your code immediately when powered on
+  • Is designed to interact with the physical world
+
+THE ARDUINO UNO R3:
+  The Arduino Uno is the most popular beginner microcontroller board.
+
+  Key specifications:
+  • Microcontroller: ATmega328P
+  • Clock speed: 16MHz (16 million operations per second)
+  • Digital I/O pins: 14 (6 can do PWM, marked with ~)
+  • Analog input pins: 6 (A0-A5)
+  • Flash memory: 32KB (for your program)
+  • RAM: 2KB (for variables while running)
+  • Operating voltage: 5V
+  • Input voltage: 7-12V (via barrel jack) or 5V (via USB)
+  • Max current per pin: 20mA (absolute max 40mA)
+
+  Important pins:
+  • Pin 13: Has a built-in LED on the board
+  • 5V pin: Outputs regulated 5V (for sensors)
+  • 3.3V pin: Outputs regulated 3.3V (for some sensors)
+  • GND: Ground connections (there are several)
+  • Vin: Raw input voltage (when using external power)
+
+ARDUINO PROGRAM STRUCTURE:
+  Every Arduino program (called a "sketch") has two required functions:
+
+  void setup() {
+    // Runs ONCE when Arduino powers on or resets
+    // Use for: setting pin modes, initializing serial, one-time setup
+  }
+
+  void loop() {
+    // Runs FOREVER, over and over, after setup() completes
+    // Use for: reading sensors, controlling outputs, main logic
+  }
+
+  Key functions you'll use:
+  • pinMode(pin, MODE) — Set a pin as INPUT or OUTPUT
+  • digitalWrite(pin, HIGH/LOW) — Set a digital pin ON or OFF
+  • digitalRead(pin) — Read a digital pin (returns HIGH or LOW)
+  • analogRead(pin) — Read an analog pin (returns 0-1023)
+  • analogWrite(pin, value) — PWM output (0-255)
+  • delay(ms) — Wait for milliseconds
+  • Serial.begin(9600) — Start serial communication
+  • Serial.println(data) — Print data to serial monitor
+
+🔨 PRACTICAL: SETUP & BLINK
+
+Step 1: Install Arduino IDE
+  1. Go to https://www.arduino.cc/en/software
+  2. Download Arduino IDE 2.x for your operating system
+  3. Install and launch it
+
+Step 2: Connect Arduino
+  1. Plug Arduino Uno into your computer with the USB cable
+  2. In Arduino IDE: Tools → Board → Arduino Uno
+  3. In Arduino IDE: Tools → Port → select the COM port that appeared
+     (Windows: COM3, COM4, etc.)
+
+Step 3: Upload Blink
+  1. File → Examples → 01.Basics → Blink
+  2. This opens the Blink sketch:
+
+     void setup() {
+       pinMode(LED_BUILTIN, OUTPUT);    // Pin 13 as output
+     }
+
+     void loop() {
+       digitalWrite(LED_BUILTIN, HIGH); // LED ON
+       delay(1000);                     // Wait 1 second
+       digitalWrite(LED_BUILTIN, LOW);  // LED OFF
+       delay(1000);                     // Wait 1 second
+     }
+
+  3. Click the Upload button (→ arrow)
+  4. Wait for "Done uploading"
+  5. The built-in LED on pin 13 should blink once per second!
+
+Step 4: Modify and Experiment
+  • Change delay(1000) to delay(200) — LED blinks faster
+  • Change delay(1000) to delay(2000) — LED blinks slower
+  • Try different ON vs OFF times: delay(100) then delay(900) for a
+    quick flash effect
+
+Step 5: Blink an External LED
+  1. Connect a 220Ω resistor from Arduino pin 8 to LED anode
+  2. Connect LED cathode to Arduino GND
+  3. Modify the code:
+     Change LED_BUILTIN to 8 everywhere
+  4. Upload — your external LED now blinks!
+
+⚠️ TROUBLESHOOTING:
+  • "Board not found": Try a different USB cable (some are charge-only)
+  • "Port not available": Install Arduino drivers, or try a different USB port
+  • Upload fails: Make sure correct Board and Port are selected
+  • LED doesn't blink: Check wiring polarity (long leg = anode = positive)
+
+✅ DAY 13 CHECKPOINT:
+  □ Is the Arduino IDE installed and working?
+  □ Can you successfully upload a sketch?
+  □ Does the built-in LED blink?
+  □ Did you modify the blink timing?
+  □ Can you blink an external LED on a different pin?
+
+
+--------------------------------------------------------------------------------
+DAY 14: DIGITAL INPUTS + OUTPUTS — BUTTON-CONTROLLED LED
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Read digital inputs (buttons) with Arduino
+  • Combine inputs with outputs for interactive control
+  • Understand pull-up and pull-down resistors
+  • Write your first interactive Arduino program
+
+📖 THEORY:
+
+READING A BUTTON:
+  A push button has two states: pressed (connected) or released (disconnected).
+  In Arduino terms: pressed = LOW or HIGH depending on wiring.
+
+PULL-UP AND PULL-DOWN RESISTORS:
+  When a button is NOT pressed, the input pin is "floating" — it's not
+  connected to anything, so it picks up random electrical noise and gives
+  unpredictable readings.
+
+  Solution: Use a pull-up or pull-down resistor.
+
+  PULL-DOWN (pin defaults to LOW when button is open):
+    [5V] → [Button] → [Arduino Pin]
+                          |
+                       [10kΩ]
+                          |
+                        [GND]
+
+    Button released: pin reads LOW (pulled to GND through 10kΩ)
+    Button pressed: pin reads HIGH (connected directly to 5V)
+
+  PULL-UP (pin defaults to HIGH when button is open):
+    [GND] → [Button] → [Arduino Pin]
+                           |
+                        [10kΩ]
+                           |
+                         [5V]
+
+    Button released: pin reads HIGH (pulled to 5V through 10kΩ)
+    Button pressed: pin reads LOW (connected directly to GND)
+
+  INTERNAL PULL-UP:
+    Arduino has built-in pull-up resistors! You can activate them:
+    pinMode(pin, INPUT_PULLUP);
+    Then you only need the button between the pin and GND (no external resistor).
+
+DEBOUNCING:
+  Mechanical buttons "bounce" — when pressed, the contact rapidly opens
+  and closes for a few milliseconds. This can cause multiple triggers.
+  Simple fix: add a small delay(50) after detecting a press.
+
+🔨 PRACTICAL: BUTTON → LED CONTROL
+
+Materials: Push button, LED, 220Ω resistor, 10kΩ resistor, Arduino, wires
+
+Build 1: Basic Button LED (with external pull-down)
+  Wiring:
+  1. LED + 220Ω resistor from pin 8 to GND
+  2. Button: one side to 5V, other side to pin 2
+  3. 10kΩ resistor from pin 2 to GND (pull-down)
+
+  Code:
+    const int buttonPin = 2;
+    const int ledPin = 8;
+
+    void setup() {
+      pinMode(buttonPin, INPUT);
+      pinMode(ledPin, OUTPUT);
+    }
+
+    void loop() {
+      int buttonState = digitalRead(buttonPin);
+
+      if (buttonState == HIGH) {
+        digitalWrite(ledPin, HIGH);  // Button pressed → LED on
+      } else {
+        digitalWrite(ledPin, LOW);   // Button released → LED off
+      }
+    }
+
+Build 2: Toggle LED (press to toggle on/off)
+  Code:
+    const int buttonPin = 2;
+    const int ledPin = 8;
+    bool ledState = false;
+    bool lastButtonState = LOW;
+
+    void setup() {
+      pinMode(buttonPin, INPUT);
+      pinMode(ledPin, OUTPUT);
+    }
+
+    void loop() {
+      bool currentButtonState = digitalRead(buttonPin);
+
+      if (currentButtonState == HIGH && lastButtonState == LOW) {
+        ledState = !ledState;                // Toggle LED state
+        digitalWrite(ledPin, ledState ? HIGH : LOW);
+        delay(50);                           // Debounce
+      }
+
+      lastButtonState = currentButtonState;
+    }
+
+Build 3: Using Internal Pull-Up (simpler wiring)
+  Wiring:
+  1. LED + 220Ω from pin 8 to GND
+  2. Button from pin 2 to GND (NO external resistor needed!)
+
+  Code:
+    const int buttonPin = 2;
+    const int ledPin = 8;
+
+    void setup() {
+      pinMode(buttonPin, INPUT_PULLUP); // Internal pull-up!
+      pinMode(ledPin, OUTPUT);
+    }
+
+    void loop() {
+      if (digitalRead(buttonPin) == LOW) {  // LOW = pressed with pull-up
+        digitalWrite(ledPin, HIGH);
+      } else {
+        digitalWrite(ledPin, LOW);
+      }
+    }
+
+  Note: With INPUT_PULLUP, the logic is INVERTED — LOW means pressed.
+
+⚠️ TROUBLESHOOTING:
+  • LED flickers randomly: You forgot the pull-down/pull-up resistor
+  • Button seems to trigger multiple times: Add debounce delay
+  • Nothing happens: Check button wiring, try the internal pull-up version
+
+✅ DAY 14 CHECKPOINT:
+  □ Can you read a button with digitalRead()?
+  □ Do you understand pull-up vs pull-down resistors?
+  □ Can you combine input (button) with output (LED)?
+  □ Did you try the toggle version?
+
+🎉 WEEK 2 COMPLETE! You can now electronically control components AND
+   program a microcontroller. Week 3 brings SENSORS — giving your robot
+   the ability to perceive the world.
+
+
+================================================================================
+📅 WEEK 3: SENSORS + REAL INTERACTION (Days 15–21)
+================================================================================
+
+This week your circuits start SENSING the world. You'll read analog values,
+measure distance with ultrasonic sensors, drive motors properly with a
+motor driver, and combine sensors with actuators — the core of robotics.
+
+
+--------------------------------------------------------------------------------
+DAY 15: READING SENSORS WITH ARDUINO — analogRead()
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Use analogRead() to read a potentiometer
+  • Display sensor values on the Serial Monitor
+  • Understand the mapping from voltage to 0-1023 values
+  • Use the map() function to scale values
+
+📖 THEORY:
+
+ANALOG INPUT ON ARDUINO:
+  Arduino Uno has 6 analog input pins: A0 through A5.
+  Each converts a 0-5V signal into a number from 0 to 1023.
+
+  int sensorValue = analogRead(A0);
+  // sensorValue is now 0-1023
+
+SERIAL MONITOR — YOUR DEBUGGING WINDOW:
+  The Serial Monitor lets your Arduino send data back to your computer.
+  This is invaluable for debugging and understanding sensor readings.
+
+  Setup:  Serial.begin(9600);       // In setup(), start at 9600 baud
+  Print:  Serial.println(value);    // Print value + newline
+  Open:   Tools → Serial Monitor (or Ctrl+Shift+M)
+
+THE map() FUNCTION:
+  Converts a value from one range to another:
+  int output = map(input, fromLow, fromHigh, toLow, toHigh);
+
+  Example: Convert 0-1023 to 0-255 (for PWM):
+  int pwmValue = map(sensorValue, 0, 1023, 0, 255);
+
+🔨 PRACTICAL: POTENTIOMETER READING
+
+Wiring:
+  1. Pot Pin 1 → Arduino 5V
+  2. Pot Pin 2 (wiper) → Arduino A0
+  3. Pot Pin 3 → Arduino GND
+
+Code:
+  void setup() {
+    Serial.begin(9600);
+  }
+
+  void loop() {
+    int sensorValue = analogRead(A0);
+    float voltage = sensorValue * (5.0 / 1023.0);
+
+    Serial.print("Raw: ");
+    Serial.print(sensorValue);
+    Serial.print("  Voltage: ");
+    Serial.print(voltage);
+    Serial.println("V");
+
+    delay(100);
+  }
+
+Open Serial Monitor and turn the potentiometer:
+  • Fully counterclockwise: Raw ≈ 0, Voltage ≈ 0.00V
+  • Middle: Raw ≈ 512, Voltage ≈ 2.50V
+  • Fully clockwise: Raw ≈ 1023, Voltage ≈ 5.00V
+
+Advanced: Control LED brightness with potentiometer:
+  void setup() {
+    pinMode(9, OUTPUT);   // PWM pin
+    Serial.begin(9600);
+  }
+
+  void loop() {
+    int sensorValue = analogRead(A0);
+    int brightness = map(sensorValue, 0, 1023, 0, 255);
+    analogWrite(9, brightness);
+
+    Serial.print("Sensor: ");
+    Serial.print(sensorValue);
+    Serial.print("  Brightness: ");
+    Serial.println(brightness);
+    delay(50);
+  }
+
+✅ DAY 15 CHECKPOINT:
+  □ Can you read analog values and display them on Serial Monitor?
+  □ Do you understand the 0-1023 range?
+  □ Can you convert raw values to voltage?
+  □ Did you control LED brightness with the potentiometer?
+
+
+--------------------------------------------------------------------------------
+DAY 16: ULTRASONIC SENSOR — MEASURING DISTANCE
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand how ultrasonic distance sensing works
+  • Wire and program the HC-SR04 sensor
+  • Calculate distance from time-of-flight
+  • Build a distance measurement system
+
+📖 THEORY:
+
+HOW ULTRASONIC SENSING WORKS:
+  The HC-SR04 sensor works like a bat's echolocation:
+  1. It sends out a burst of ultrasonic sound (40kHz — inaudible to humans)
+  2. The sound bounces off an object and returns
+  3. The sensor measures the TIME between sending and receiving
+  4. We calculate distance using the speed of sound
+
+  Speed of sound in air: ~343 m/s (or 0.0343 cm/μs)
+
+  Distance = (speed × time) / 2
+  (Divided by 2 because the sound travels TO the object AND BACK)
+
+  In practical terms:
+  Distance (cm) = duration (μs) × 0.0343 / 2
+  Distance (cm) = duration (μs) / 58
+
+HC-SR04 SPECIFICATIONS:
+  • 4 pins: VCC, Trig, Echo, GND
+  • Range: 2cm to 400cm
+  • Accuracy: ~3mm
+  • Operating voltage: 5V
+  • Trigger: Send a 10μs HIGH pulse
+  • Echo: Returns a pulse whose width = round-trip time
+
+TIMING WITH pulseIn():
+  Arduino's pulseIn(pin, HIGH) function measures how long a pin stays HIGH.
+  It returns the duration in microseconds. This is exactly what we need
+  to measure the Echo pulse width.
+
+🔨 PRACTICAL: DISTANCE MEASUREMENT SYSTEM
+
+Wiring:
+  • VCC → Arduino 5V
+  • GND → Arduino GND
+  • Trig → Arduino pin 9
+  • Echo → Arduino pin 10
+
+Code:
+  const int trigPin = 9;
+  const int echoPin = 10;
+
+  void setup() {
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    Serial.begin(9600);
+    Serial.println("Ultrasonic Distance Sensor");
+    Serial.println("==========================");
+  }
+
+  void loop() {
+    // Send trigger pulse
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+
+    // Read echo pulse duration
+    long duration = pulseIn(echoPin, HIGH);
+
+    // Calculate distance
+    float distance = duration / 58.0;
+
+    // Display result
+    if (distance > 0 && distance < 400) {
+      Serial.print("Distance: ");
+      Serial.print(distance);
+      Serial.println(" cm");
+    } else {
+      Serial.println("Out of range");
+    }
+
+    delay(200);
+  }
+
+Experiment:
+  • Place objects at known distances and verify accuracy
+  • Try soft vs hard surfaces (soft surfaces absorb sound)
+  • Test the minimum range (~2cm) and maximum range (~400cm)
+  • Try angling the sensor — notice how accuracy drops at steep angles
+
+⚠️ TROUBLESHOOTING:
+  • Always reads 0: Check wiring — Trig and Echo may be swapped
+  • Readings are erratic: Add a 100μF capacitor across VCC and GND
+  • Maximum range seems short: Sensor may need a clear line of sight
+
+✅ DAY 16 CHECKPOINT:
+  □ Can you explain how ultrasonic sensing works?
+  □ Does your distance measurement work accurately?
+  □ Can you apply the distance formula?
+  □ Did you verify accuracy with known distances?
+
+
+--------------------------------------------------------------------------------
+DAY 17: MOTOR DRIVER MODULE — THE L298N
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand why direct motor control with Arduino is dangerous
+  • Learn how an H-Bridge motor driver works
+  • Wire and test the L298N motor driver
+  • Control motor direction and speed
+
+📖 THEORY:
+
+WHY YOU NEED A MOTOR DRIVER:
+  Arduino pins: max 40mA at 5V = 0.2W
+  Typical DC motor: 200-500mA at 6V = 1.2-3W
+
+  A motor driver is a power amplifier for motors. It takes small control
+  signals from Arduino and switches high-current power to the motors.
+
+THE H-BRIDGE:
+  An H-Bridge is a circuit that allows current to flow through a motor
+  in EITHER direction, enabling forward AND reverse rotation.
+
+  It uses 4 switches (transistors) arranged in an "H" shape:
+      [+V]         [+V]
+       |             |
+      [S1]         [S2]
+       |──[MOTOR]──|
+      [S3]         [S4]
+       |             |
+      [GND]        [GND]
+
+  • S1+S4 ON, S2+S3 OFF → Current flows left to right → Motor FORWARD
+  • S2+S3 ON, S1+S4 OFF → Current flows right to left → Motor REVERSE
+  • All OFF → Motor stops (coasts)
+  • S1+S3 ON or S2+S4 ON → SHORT CIRCUIT — NEVER do this!
+
+L298N MODULE PINS:
+  Power:
+  • +12V (or +V): Motor power supply (6-12V)
+  • GND: Common ground (MUST connect to Arduino GND too!)
+  • +5V: Can OUTPUT 5V to power Arduino (if jumper is in place and V > 7V)
+
+  Motor outputs:
+  • OUT1, OUT2: Motor A terminals
+  • OUT3, OUT4: Motor B terminals
+
+  Control inputs:
+  • IN1, IN2: Control Motor A direction
+  • IN3, IN4: Control Motor B direction
+  • ENA: Enable/Speed control for Motor A (PWM)
+  • ENB: Enable/Speed control for Motor B (PWM)
+
+  Direction truth table (Motor A):
+  • IN1=HIGH, IN2=LOW  → Forward
+  • IN1=LOW,  IN2=HIGH → Reverse
+  • IN1=LOW,  IN2=LOW  → Stop
+  • IN1=HIGH, IN2=HIGH → Brake (motor actively resists motion)
+
+🔨 PRACTICAL: MOTOR DRIVER TESTING
+
+Wiring:
+  L298N          Arduino
+  IN1         →  pin 5
+  IN2         →  pin 4
+  ENA         →  pin 6 (PWM pin!)
+  GND         →  GND
+  +12V        →  Battery + (6V from 4xAA)
+  Motor wires →  OUT1, OUT2
+
+Code:
+  const int in1 = 5;
+  const int in2 = 4;
+  const int enA = 6;
+
+  void setup() {
+    pinMode(in1, OUTPUT);
+    pinMode(in2, OUTPUT);
+    pinMode(enA, OUTPUT);
+    Serial.begin(9600);
+  }
+
+  void loop() {
+    // Forward at full speed
+    Serial.println("Forward - Full Speed");
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    analogWrite(enA, 255);
+    delay(2000);
+
+    // Forward at half speed
+    Serial.println("Forward - Half Speed");
+    analogWrite(enA, 127);
+    delay(2000);
+
+    // Stop
+    Serial.println("Stop");
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);
+    delay(1000);
+
+    // Reverse at full speed
+    Serial.println("Reverse - Full Speed");
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    analogWrite(enA, 255);
+    delay(2000);
+
+    // Stop
+    Serial.println("Stop");
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);
+    delay(2000);
+  }
+
+⚠️ TROUBLESHOOTING:
+  • Motor doesn't spin: Check GND connection between L298N and Arduino
+  • Motor only goes one direction: Check IN1/IN2 wiring
+  • Speed control doesn't work: Make sure ENA is connected to a PWM pin (~)
+
+✅ DAY 17 CHECKPOINT:
+  □ Can you explain why a motor driver is needed?
+  □ Can you control motor direction (forward/reverse)?
+  □ Can you control motor speed with PWM?
+  □ Do you understand the H-Bridge concept?
+
+
+--------------------------------------------------------------------------------
+DAY 18: COMBINE SENSOR + MOTOR — REACTIVE SYSTEM
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Combine ultrasonic sensor with motor driver
+  • Create a motor that reacts to distance
+  • Write conditional logic for sensor-based control
+  • Build the foundation of obstacle avoidance
+
+📖 THEORY:
+
+SENSOR-ACTUATOR LOOP:
+  This is the fundamental pattern of ALL robotics:
+  1. SENSE — Read data from the environment (sensor)
+  2. THINK — Process the data and make decisions (code)
+  3. ACT — Control something in the physical world (motor)
+  4. REPEAT
+
+  Today you're building your first complete sense-think-act loop!
+
+🔨 PRACTICAL: DISTANCE-REACTIVE MOTOR
+
+Wiring: Combine Day 16 (ultrasonic) and Day 17 (motor driver) circuits.
+
+Code:
+  const int trigPin = 9;
+  const int echoPin = 10;
+  const int in1 = 5;
+  const int in2 = 4;
+  const int enA = 6;
+
+  void setup() {
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    pinMode(in1, OUTPUT);
+    pinMode(in2, OUTPUT);
+    pinMode(enA, OUTPUT);
+    Serial.begin(9600);
+  }
+
+  float getDistance() {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    long duration = pulseIn(echoPin, HIGH);
+    return duration / 58.0;
+  }
+
+  void loop() {
+    float distance = getDistance();
+    Serial.print("Distance: ");
+    Serial.print(distance);
+    Serial.print(" cm → ");
+
+    if (distance > 30) {
+      // Far away — full speed forward
+      Serial.println("FULL SPEED");
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      analogWrite(enA, 255);
+    } else if (distance > 15) {
+      // Getting close — slow down
+      int speed = map(distance, 15, 30, 100, 255);
+      Serial.print("SLOWING: speed=");
+      Serial.println(speed);
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      analogWrite(enA, speed);
+    } else {
+      // Too close — stop!
+      Serial.println("STOP!");
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, LOW);
+      analogWrite(enA, 0);
+    }
+    delay(100);
+  }
+
+Experiment:
+  • Move your hand toward and away from the sensor
+  • Watch the motor speed change in response
+  • Adjust the distance thresholds (30cm, 15cm) to suit your setup
+  • Try adding a reverse mode when objects are very close (<10cm)
+
+✅ DAY 18 CHECKPOINT:
+  □ Does the motor react to distance?
+  □ Does it slow down as objects approach?
+  □ Does it stop when objects are very close?
+  □ Can you explain the sense-think-act loop?
+
+
+--------------------------------------------------------------------------------
+DAY 19: NOISE & STABILITY — MAKING CIRCUITS RELIABLE
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand electrical noise and its sources
+  • Learn how to filter and reduce noise
+  • Apply capacitors and good wiring practices
+  • Make your sensor readings more reliable
+
+📖 THEORY:
+
+WHAT IS ELECTRICAL NOISE?
+  Noise is unwanted electrical signals that interfere with your circuit.
+  Sources include:
+  • Motors (generate electromagnetic interference when spinning)
+  • Power supply fluctuations (battery voltage drops under load)
+  • Long wires (act as antennas picking up interference)
+  • Switching components (transistors, motor drivers)
+
+NOISE SYMPTOMS IN ROBOTICS:
+  • Arduino randomly resets when motors start
+  • Sensor readings jump around erratically
+  • Serial communication becomes garbled
+  • Motors behave unpredictably
+
+SOLUTIONS:
+
+  1. DECOUPLING CAPACITORS (Day 5 revisited):
+     • 100μF electrolytic across motor power supply
+     • 0.1μF ceramic across Arduino VCC and GND
+     • 0.1μF ceramic across sensor VCC and GND
+
+  2. SEPARATE POWER SUPPLIES:
+     • Motors should ideally have their own power source
+     • Arduino + sensors on USB or separate regulated supply
+     • Common ground between all supplies is ESSENTIAL
+
+  3. SOFTWARE FILTERING:
+     Average multiple sensor readings to smooth out noise:
+
+     float getAverageDistance(int samples) {
+       float total = 0;
+       for (int i = 0; i < samples; i++) {
+         total += getDistance();
+         delay(10);
+       }
+       return total / samples;
+     }
+
+  4. GOOD WIRING PRACTICES:
+     • Keep motor wires away from sensor wires
+     • Use short wires whenever possible
+     • Twist power and ground wires together
+     • Solder connections when possible (breadboards add resistance)
+
+🔨 PRACTICAL: ADD STABILITY TO YOUR DAY 18 CIRCUIT
+
+  1. Add a 100μF capacitor across the motor power supply
+  2. Add a 0.1μF ceramic capacitor across Arduino 5V and GND
+  3. Add a 0.1μF ceramic capacitor across the ultrasonic sensor VCC and GND
+  4. Implement software averaging in your distance reading
+  5. Compare readings before and after — they should be smoother
+
+✅ DAY 19 CHECKPOINT:
+  □ Can you identify sources of noise?
+  □ Did you add decoupling capacitors?
+  □ Is software filtering implemented?
+  □ Are your sensor readings more stable now?
+
+
+--------------------------------------------------------------------------------
+DAY 20: DEBUGGING SKILLS — FINDING AND FIXING PROBLEMS
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Develop systematic debugging techniques
+  • Use the Serial Monitor as a diagnostic tool
+  • Learn common Arduino mistakes and their fixes
+  • Build confidence in troubleshooting
+
+📖 THEORY:
+
+THE DEBUGGING PROCESS:
+  1. OBSERVE: What exactly is happening vs what should happen?
+  2. HYPOTHESIZE: What could cause this difference?
+  3. TEST: Check one thing at a time
+  4. FIX: Apply the solution
+  5. VERIFY: Confirm the fix works AND nothing else broke
+
+COMMON HARDWARE PROBLEMS:
+  • Loose breadboard connections: Wiggle wires while circuit runs
+  • Wrong pin connections: Double-check every wire against your diagram
+  • Dead battery: Measure voltage with multimeter
+  • Reversed polarity: Check LEDs, capacitors, diodes orientation
+  • Short circuits: Look for bare wires touching each other
+
+COMMON SOFTWARE PROBLEMS:
+  • Wrong pin number: Verify your code pin numbers match wiring
+  • Missing pinMode(): Pins default to INPUT — forgot to set OUTPUT
+  • Integer division: 5/9 = 0 in C! Use 5.0/9.0 for float division
+  • Serial not initialized: Forgot Serial.begin() in setup()
+  • Variable scope: Variable declared inside if-block isn't accessible outside
+
+SERIAL MONITOR DEBUGGING:
+  The Serial Monitor is your window into what the Arduino is thinking.
+  Add Serial.println() statements at key points:
+
+  void loop() {
+    Serial.println("--- Loop Start ---");
+    float dist = getDistance();
+    Serial.print("Distance read: ");
+    Serial.println(dist);
+
+    if (dist > 30) {
+      Serial.println("Decision: GO FORWARD");
+      // motor code...
+    } else {
+      Serial.println("Decision: STOP");
+      // stop code...
+    }
+    Serial.println("--- Loop End ---");
+  }
+
+🔨 PRACTICAL: INTENTIONAL DEBUGGING EXERCISES
+
+Exercise 1: Fix Wiring Mistakes
+  • Deliberately disconnect one wire in your Day 18 circuit
+  • Systematically find it using multimeter continuity mode
+  • Time yourself — try to get faster with practice
+
+Exercise 2: Fix Code Bugs
+  Upload this intentionally buggy code and fix all the issues:
+
+  // BUGGY CODE — find and fix the errors!
+  const int trigPin = 9;
+  const int echoPin = 10;
+
+  void setup() {
+    pinMode(trigPin, OUTPUT);
+    // Bug 1: Missing pinMode for echoPin
+    // Bug 2: Missing Serial.begin()
+  }
+
+  void loop() {
+    digitalWrite(trigPin, HIGH);    // Bug 3: Should be LOW first
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);     // Bug 4: Should be HIGH then LOW
+
+    long duration = pulseIn(echoPin, HIGH);
+    int distance = duration / 58;   // Bug 5: Should use float
+
+    Serial.println(distance);
+    // Bug 6: Missing delay — runs too fast
+  }
+
+Exercise 3: Serial Monitor Diagnostics
+  Add detailed Serial.print() statements to your Day 18 code
+  Monitor the output and verify every reading makes sense
+
+✅ DAY 20 CHECKPOINT:
+  □ Can you systematically debug a hardware problem?
+  □ Can you find and fix common code bugs?
+  □ Are you comfortable using Serial Monitor for diagnostics?
+  □ Did you fix all bugs in the exercise code?
+
+
+--------------------------------------------------------------------------------
+DAY 21: MINI ROBOT SYSTEM — SENSOR + LOGIC + OUTPUT (NO WHEELS YET)
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Build a complete tabletop system combining all Week 3 skills
+  • Implement multi-threshold logic
+  • Add LED indicators for visual feedback
+  • Create a system ready for robot chassis integration
+
+📖 THEORY:
+
+A COMPLETE SYSTEM:
+  Today you build a stationary robot "brain" — all the electronics that
+  will eventually go on your mobile robot. The system includes:
+  • Ultrasonic sensor (perceive the world)
+  • Motor driver + motor (act on the world)
+  • LEDs (status indicators)
+  • Arduino (process and decide)
+
+  Status LEDs are essential for debugging a mobile robot — you can't always
+  have Serial Monitor connected when the robot is driving around!
+
+🔨 PRACTICAL: THE "SMART PROXIMITY SYSTEM"
+
+Wiring: Combine all previous circuits plus add status LEDs:
+  • Green LED (+ 220Ω) on pin 11 → "All clear, moving"
+  • Yellow LED (+ 220Ω) on pin 12 → "Caution, slowing"
+  • Red LED (+ 220Ω) on pin 13 → "Danger, stopped"
+
+Code:
+  const int trigPin = 9;
+  const int echoPin = 10;
+  const int in1 = 5, in2 = 4, enA = 6;
+  const int greenLED = 11, yellowLED = 12, redLED = 13;
+
+  void setup() {
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    pinMode(in1, OUTPUT);
+    pinMode(in2, OUTPUT);
+    pinMode(enA, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(yellowLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
+    Serial.begin(9600);
+    Serial.println("Smart Proximity System Ready");
+  }
+
+  float getDistance() {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    long duration = pulseIn(echoPin, HIGH, 30000);
+    if (duration == 0) return 999;
+    return duration / 58.0;
+  }
+
+  float getAverageDistance() {
+    float total = 0;
+    for (int i = 0; i < 3; i++) {
+      total += getDistance();
+      delay(10);
+    }
+    return total / 3.0;
+  }
+
+  void allLEDsOff() {
+    digitalWrite(greenLED, LOW);
+    digitalWrite(yellowLED, LOW);
+    digitalWrite(redLED, LOW);
+  }
+
+  void loop() {
+    float distance = getAverageDistance();
+
+    Serial.print("Avg Distance: ");
+    Serial.print(distance);
+    Serial.print(" cm → ");
+
+    allLEDsOff();
+
+    if (distance > 40) {
+      Serial.println("GREEN - Full Speed");
+      digitalWrite(greenLED, HIGH);
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      analogWrite(enA, 255);
+    } else if (distance > 20) {
+      Serial.println("YELLOW - Slow");
+      digitalWrite(yellowLED, HIGH);
+      int speed = map(distance, 20, 40, 80, 200);
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      analogWrite(enA, speed);
+    } else {
+      Serial.println("RED - Stop!");
+      digitalWrite(redLED, HIGH);
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, LOW);
+      analogWrite(enA, 0);
+    }
+    delay(100);
+  }
+
+Test the system:
+  • Move objects toward the sensor
+  • Watch LEDs change: Green → Yellow → Red
+  • Motor should: Full speed → Slow → Stop
+  • Check Serial Monitor for data verification
+
+✅ WEEK 3 FINAL CHECKPOINT:
+  □ Does the complete system work with sensor + motor + LEDs?
+  □ Are the LED indicators showing correct states?
+  □ Is the motor responding smoothly to distance changes?
+  □ Have you added noise filtering (capacitors + software averaging)?
+
+🎉 WEEK 3 COMPLETE! Your stationary robot brain is ready.
+   Week 4: You put it on WHEELS and make it MOVE! 🤖
+
+
+================================================================================
+📅 WEEK 4: FULL ROBOTICS SYSTEM (Days 22–30)
+================================================================================
+
+This is it — the final week. Everything you've learned comes together as you
+build a mobile, autonomous obstacle-avoiding robot. By Day 30, you'll have a
+working robot that navigates on its own.
+
+
+--------------------------------------------------------------------------------
+DAY 22: BUILD THE CHASSIS — MECHANICAL ASSEMBLY
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Assemble the robot chassis and mount motors
+  • Understand mechanical considerations for mobile robots
+  • Secure the wheels and test manual rolling
+  • Plan component placement
+
+📖 THEORY:
+
+CHASSIS DESIGN BASICS:
+  A 2WD (two-wheel drive) robot uses:
+  • 2 powered DC motors with wheels (for driving)
+  • 1 caster wheel or ball caster (for balance — like a shopping cart wheel)
+
+  The two powered wheels provide both movement AND steering:
+  • Both wheels forward → robot goes straight
+  • Left wheel only → robot turns right
+  • Right wheel only → robot turns left
+  • Wheels in opposite directions → robot spins in place
+
+WEIGHT DISTRIBUTION:
+  • Keep the heavy components (battery, motors) LOW for stability
+  • Center of gravity should be between the drive wheels
+  • The sensor should be at the FRONT (to detect obstacles ahead)
+  • Arduino and motor driver should be accessible for debugging
+
+🔨 PRACTICAL: CHASSIS ASSEMBLY
+
+Step-by-step:
+  1. Lay out all chassis parts and identify them
+  2. Mount the two DC motors to the chassis using the included brackets
+     and screws. Motors should be at the REAR or MIDDLE of the chassis.
+  3. Press-fit the wheels onto the motor shafts
+  4. Mount the caster wheel at the front or back (opposite to drive motors)
+  5. Test: push the chassis across a table — it should roll smoothly
+  6. Plan where to mount:
+     • Arduino (center-top, accessible via USB)
+     • Motor driver (near motors, for short wire runs)
+     • Battery (low, centered for balance)
+     • Ultrasonic sensor (front-facing, mounted at obstacle height)
+
+  Tips:
+  • Use hot glue, zip ties, or double-sided tape if screws don't fit
+  • Leave space for wiring between components
+  • Make sure the USB port is accessible for reprogramming
+
+✅ DAY 22 CHECKPOINT:
+  □ Is the chassis fully assembled?
+  □ Do both wheels spin freely?
+  □ Does the robot roll smoothly on a flat surface?
+  □ Have you planned component placement?
+
+
+--------------------------------------------------------------------------------
+DAY 23: MOTOR CONTROL SYSTEM — WIRING EVERYTHING UP
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Mount and wire BOTH motors through the L298N driver
+  • Connect Arduino to the motor driver
+  • Test both motors independently
+  • Verify direction control for each motor
+
+📖 THEORY:
+
+TWO-MOTOR CONTROL:
+  The L298N can control TWO motors independently:
+  • Motor A: IN1, IN2, ENA → OUT1, OUT2
+  • Motor B: IN3, IN4, ENB → OUT3, OUT4
+
+  This is essential because to steer, we need independent control of
+  each wheel.
+
+WIRING DIAGRAM:
+  L298N          Arduino          Notes
+  ─────          ───────          ─────
+  IN1         →  pin 5            Motor A direction
+  IN2         →  pin 4            Motor A direction
+  ENA         →  pin 6 (~PWM)     Motor A speed
+  IN3         →  pin 8            Motor B direction
+  IN4         →  pin 7            Motor B direction
+  ENB         →  pin 3 (~PWM)     Motor B speed
+  GND         →  GND              MUST connect!
+  +12V        ←  Battery +        Motor power (6V)
+  GND         ←  Battery −        Motor power ground
+
+  Motor A wires → OUT1, OUT2 (left wheel)
+  Motor B wires → OUT3, OUT4 (right wheel)
+
+🔨 PRACTICAL: DUAL MOTOR TEST
+
+Code:
+  // Motor A (Left)
+  const int in1 = 5, in2 = 4, enA = 6;
+  // Motor B (Right)
+  const int in3 = 8, in4 = 7, enB = 3;
+
+  void setup() {
+    pinMode(in1, OUTPUT); pinMode(in2, OUTPUT); pinMode(enA, OUTPUT);
+    pinMode(in3, OUTPUT); pinMode(in4, OUTPUT); pinMode(enB, OUTPUT);
+    Serial.begin(9600);
+  }
+
+  void motorA(int speed, bool forward) {
+    digitalWrite(in1, forward ? HIGH : LOW);
+    digitalWrite(in2, forward ? LOW : HIGH);
+    analogWrite(enA, abs(speed));
+  }
+
+  void motorB(int speed, bool forward) {
+    digitalWrite(in3, forward ? HIGH : LOW);
+    digitalWrite(in4, forward ? LOW : HIGH);
+    analogWrite(enB, abs(speed));
+  }
+
+  void stopAll() {
+    analogWrite(enA, 0);
+    analogWrite(enB, 0);
+  }
+
+  void loop() {
+    Serial.println("Motor A Forward");
+    motorA(200, true);
+    delay(2000);
+    stopAll();
+    delay(500);
+
+    Serial.println("Motor B Forward");
+    motorB(200, true);
+    delay(2000);
+    stopAll();
+    delay(500);
+
+    Serial.println("Both Forward");
+    motorA(200, true);
+    motorB(200, true);
+    delay(2000);
+    stopAll();
+    delay(2000);
+  }
+
+⚠️ IMPORTANT: When testing on the chassis, LIFT THE ROBOT so wheels
+   spin freely. Don't let it drive off the table!
+
+   If one motor goes the wrong direction, simply swap its two wires
+   at the L298N output terminals (OUT1↔OUT2 or OUT3↔OUT4).
+
+✅ DAY 23 CHECKPOINT:
+  □ Are both motors wired and tested?
+  □ Can you control each motor independently?
+  □ Do both motors go forward in the same direction?
+  □ Is the wiring neat and secure?
+
+
+--------------------------------------------------------------------------------
+DAY 24: MOVEMENT PROGRAMMING — FORWARD, BACKWARD, TURN
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Create reusable movement functions
+  • Program forward, backward, left turn, and right turn
+  • Test each movement with the robot on the ground
+  • Fine-tune motor speeds for straight-line driving
+
+📖 THEORY:
+
+DIFFERENTIAL DRIVE STEERING:
+  With two wheels, steering works by varying wheel speeds:
+  • Forward: Both wheels same speed, same direction
+  • Backward: Both wheels same speed, reverse direction
+  • Turn left: Right wheel forward, left wheel stopped (or slower)
+  • Turn right: Left wheel forward, right wheel stopped (or slower)
+  • Spin left: Right wheel forward, left wheel backward
+  • Spin right: Left wheel forward, right wheel backward
+
+MOTOR SPEED CALIBRATION:
+  No two motors are identical. Even with the same PWM value, one motor
+  might spin slightly faster than the other, causing the robot to drift.
+  You'll need to calibrate by reducing the faster motor's PWM value.
+
+🔨 PRACTICAL: MOVEMENT FUNCTION LIBRARY
+
+Code:
+  const int in1 = 5, in2 = 4, enA = 6;  // Left motor
+  const int in3 = 8, in4 = 7, enB = 3;  // Right motor
+
+  // Calibration offsets (adjust these!)
+  const int leftOffset = 0;    // Reduce if left motor is faster
+  const int rightOffset = 0;   // Reduce if right motor is faster
+
+  void setup() {
+    pinMode(in1, OUTPUT); pinMode(in2, OUTPUT); pinMode(enA, OUTPUT);
+    pinMode(in3, OUTPUT); pinMode(in4, OUTPUT); pinMode(enB, OUTPUT);
+    Serial.begin(9600);
+    delay(3000);  // 3-second delay to place robot on ground
+    Serial.println("Starting movement test...");
+  }
+
+  void moveForward(int speed) {
+    digitalWrite(in1, HIGH); digitalWrite(in2, LOW);
+    analogWrite(enA, speed - leftOffset);
+    digitalWrite(in3, HIGH); digitalWrite(in4, LOW);
+    analogWrite(enB, speed - rightOffset);
+  }
+
+  void moveBackward(int speed) {
+    digitalWrite(in1, LOW); digitalWrite(in2, HIGH);
+    analogWrite(enA, speed - leftOffset);
+    digitalWrite(in3, LOW); digitalWrite(in4, HIGH);
+    analogWrite(enB, speed - rightOffset);
+  }
+
+  void turnLeft(int speed) {
+    analogWrite(enA, 0);                          // Left wheel stops
+    digitalWrite(in3, HIGH); digitalWrite(in4, LOW);
+    analogWrite(enB, speed);                      // Right wheel forward
+  }
+
+  void turnRight(int speed) {
+    digitalWrite(in1, HIGH); digitalWrite(in2, LOW);
+    analogWrite(enA, speed);                      // Left wheel forward
+    analogWrite(enB, 0);                          // Right wheel stops
+  }
+
+  void spinLeft(int speed) {
+    digitalWrite(in1, LOW); digitalWrite(in2, HIGH);  // Left backward
+    analogWrite(enA, speed);
+    digitalWrite(in3, HIGH); digitalWrite(in4, LOW);  // Right forward
+    analogWrite(enB, speed);
+  }
+
+  void stopRobot() {
+    analogWrite(enA, 0);
+    analogWrite(enB, 0);
+  }
+
+  void loop() {
+    Serial.println("Forward");
+    moveForward(180);
+    delay(2000);
+
+    stopRobot();
+    delay(500);
+
+    Serial.println("Turn Right");
+    turnRight(180);
+    delay(800);
+
+    stopRobot();
+    delay(500);
+
+    Serial.println("Forward");
+    moveForward(180);
+    delay(2000);
+
+    stopRobot();
+    delay(500);
+
+    Serial.println("Turn Left");
+    turnLeft(180);
+    delay(800);
+
+    stopRobot();
+    delay(500);
+
+    Serial.println("Backward");
+    moveBackward(150);
+    delay(1000);
+
+    stopRobot();
+    delay(3000);  // Pause before repeating
+  }
+
+Calibration:
+  1. Place robot on smooth floor
+  2. Run moveForward(180) for 3 seconds
+  3. Does it drift left? Increase rightOffset (or decrease leftOffset)
+  4. Does it drift right? Increase leftOffset (or decrease rightOffset)
+  5. Repeat until it drives reasonably straight
+
+✅ DAY 24 CHECKPOINT:
+  □ Can the robot move forward and backward?
+  □ Can it turn left and right?
+  □ Have you calibrated for straight-line driving?
+  □ Are movement functions organized and reusable?
+
+
+--------------------------------------------------------------------------------
+DAY 25: SENSOR INTEGRATION — ADDING EYES TO THE ROBOT
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Mount the ultrasonic sensor on the robot chassis
+  • Integrate sensor reading with movement code
+  • Test sensor accuracy while the robot is moving
+  • Prepare for autonomous obstacle avoidance
+
+📖 THEORY:
+
+SENSOR PLACEMENT:
+  • Mount the HC-SR04 at the front of the robot
+  • Aim it forward, at approximately obstacle height
+  • Secure it so it doesn't vibrate or shift during movement
+  • Keep sensor wires away from motor wires to reduce noise
+
+SENSOR WHILE MOVING:
+  Reading sensors while motors are running introduces noise. The motor
+  vibrations and electromagnetic interference can affect readings. This
+  is why the decoupling capacitors from Day 19 are critical.
+
+🔨 PRACTICAL: INTEGRATED SENSOR + MOVEMENT TEST
+
+Add the ultrasonic sensor to your Day 24 circuit:
+  • Trig → pin 9
+  • Echo → pin 10
+  • VCC → 5V
+  • GND → GND
+
+Add this to your code from Day 24:
+  const int trigPin = 9;
+  const int echoPin = 10;
+
+  // Add to setup():
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  float getDistance() {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    long duration = pulseIn(echoPin, HIGH, 30000);
+    if (duration == 0) return 999;
+    return duration / 58.0;
+  }
+
+  // New loop — forward with live distance display
+  void loop() {
+    float dist = getDistance();
+    Serial.print("Distance: ");
+    Serial.print(dist);
+    Serial.println(" cm");
+
+    moveForward(150);  // Slow speed for testing
+
+    if (dist < 20) {
+      Serial.println("OBSTACLE! Stopping.");
+      stopRobot();
+      delay(5000);  // Stop and wait — tomorrow we add smart avoidance
+    }
+    delay(50);
+  }
+
+Test:
+  • Place the robot on the floor
+  • Let it drive forward slowly
+  • Place your hand or a box in front of it
+  • It should stop when it detects the obstacle!
+
+✅ DAY 25 CHECKPOINT:
+  □ Is the ultrasonic sensor mounted on the chassis?
+  □ Can the robot detect obstacles while moving?
+  □ Does it stop when something is too close?
+  □ Are sensor readings stable during movement?
+
+
+--------------------------------------------------------------------------------
+DAY 26: OBSTACLE AVOIDANCE LOGIC
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Implement full obstacle avoidance behavior
+  • Program the sense-think-act loop for autonomous navigation
+  • Handle edge cases (corners, dead ends)
+  • Create a truly autonomous robot
+
+📖 THEORY:
+
+OBSTACLE AVOIDANCE ALGORITHM:
+  The basic algorithm is simple but effective:
+
+  LOOP FOREVER:
+    1. Read distance ahead
+    2. IF distance > safe threshold:
+         Drive forward
+    3. ELSE:
+         Stop
+         Look left (or just turn)
+         IF left is clear:
+           Turn left
+         ELSE:
+           Turn right
+         Resume driving
+
+  With a single front-facing sensor, we use a simpler version:
+    IF obstacle detected:
+       Stop
+       Back up slightly
+       Turn a random direction
+    ELSE:
+       Drive forward
+
+PSEUDOCODE:
+  IF obstacle_ahead:
+     stop
+     backup(500ms)
+     turn_right(600ms)    // Or random direction
+  ELSE:
+     move_forward
+
+🔨 PRACTICAL: AUTONOMOUS OBSTACLE AVOIDANCE
+
+Complete code:
+  const int in1 = 5, in2 = 4, enA = 6;
+  const int in3 = 8, in4 = 7, enB = 3;
+  const int trigPin = 9, echoPin = 10;
+
+  const int SAFE_DISTANCE = 25;    // cm
+  const int DRIVE_SPEED = 180;
+  const int TURN_SPEED = 200;
+
+  void setup() {
+    pinMode(in1, OUTPUT); pinMode(in2, OUTPUT); pinMode(enA, OUTPUT);
+    pinMode(in3, OUTPUT); pinMode(in4, OUTPUT); pinMode(enB, OUTPUT);
+    pinMode(trigPin, OUTPUT); pinMode(echoPin, INPUT);
+    Serial.begin(9600);
+    delay(3000);
+    Serial.println("Obstacle Avoidance Robot Active!");
+  }
+
+  float getDistance() {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    long duration = pulseIn(echoPin, HIGH, 30000);
+    if (duration == 0) return 999;
+    return duration / 58.0;
+  }
+
+  void moveForward(int speed) {
+    digitalWrite(in1, HIGH); digitalWrite(in2, LOW);
+    analogWrite(enA, speed);
+    digitalWrite(in3, HIGH); digitalWrite(in4, LOW);
+    analogWrite(enB, speed);
+  }
+
+  void moveBackward(int speed) {
+    digitalWrite(in1, LOW); digitalWrite(in2, HIGH);
+    analogWrite(enA, speed);
+    digitalWrite(in3, LOW); digitalWrite(in4, HIGH);
+    analogWrite(enB, speed);
+  }
+
+  void turnRight(int speed) {
+    digitalWrite(in1, HIGH); digitalWrite(in2, LOW);
+    analogWrite(enA, speed);
+    digitalWrite(in3, LOW); digitalWrite(in4, HIGH);
+    analogWrite(enB, speed);
+  }
+
+  void stopRobot() {
+    analogWrite(enA, 0); analogWrite(enB, 0);
+  }
+
+  void loop() {
+    float distance = getDistance();
+
+    Serial.print("Dist: ");
+    Serial.print(distance);
+
+    if (distance < SAFE_DISTANCE) {
+      Serial.println(" → OBSTACLE! Avoiding...");
+      stopRobot();
+      delay(200);
+
+      moveBackward(DRIVE_SPEED);
+      delay(400);
+      stopRobot();
+      delay(200);
+
+      turnRight(TURN_SPEED);
+      delay(600);
+      stopRobot();
+      delay(200);
+    } else {
+      Serial.println(" → Clear, driving forward");
+      moveForward(DRIVE_SPEED);
+    }
+    delay(50);
+  }
+
+Test on the floor:
+  • Place the robot in an open area
+  • Watch it drive forward
+  • When it detects an obstacle, it should stop, back up, turn, and continue
+  • Try placing obstacles at different angles
+
+✅ DAY 26 CHECKPOINT:
+  □ Does the robot avoid obstacles autonomously?
+  □ Does it stop, back up, and turn when detecting obstacles?
+  □ Can it navigate around a room without getting stuck?
+  □ Is the behavior reliable and consistent?
+
+
+--------------------------------------------------------------------------------
+DAY 27: IMPROVE BEHAVIOR — SMARTER NAVIGATION
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Improve obstacle avoidance with smarter turning logic
+  • Add variable speed based on proximity
+  • Implement better edge-case handling
+  • Make the robot behave more naturally
+
+📖 THEORY:
+
+IMPROVING BASIC AVOIDANCE:
+  The Day 26 robot always turns right. This means it can get stuck in
+  corners (turning right repeatedly into the same wall). Improvements:
+
+  1. SPEED ZONES: Drive slower as obstacles approach
+  2. RANDOM TURNS: Alternate between left and right to avoid loops
+  3. MULTI-CHECK: After turning, verify the path is clear before driving
+  4. GRADUAL RESPONSE: Proportional speed reduction instead of sudden stop
+
+🔨 PRACTICAL: ENHANCED OBSTACLE AVOIDANCE
+
+Code improvements to add to Day 26:
+
+  const int in1 = 5, in2 = 4, enA = 6;
+  const int in3 = 8, in4 = 7, enB = 3;
+  const int trigPin = 9, echoPin = 10;
+
+  const int DANGER_DIST = 15;
+  const int CAUTION_DIST = 30;
+  const int CLEAR_DIST = 50;
+  int turnDirection = 1;  // 1 = right, -1 = left
+
+  void setup() {
+    pinMode(in1, OUTPUT); pinMode(in2, OUTPUT); pinMode(enA, OUTPUT);
+    pinMode(in3, OUTPUT); pinMode(in4, OUTPUT); pinMode(enB, OUTPUT);
+    pinMode(trigPin, OUTPUT); pinMode(echoPin, INPUT);
+    Serial.begin(9600);
+    randomSeed(analogRead(A5));  // Seed random with noise
+    delay(3000);
+    Serial.println("Enhanced Avoidance Robot v2.0");
+  }
+
+  float getDistance() {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    long duration = pulseIn(echoPin, HIGH, 30000);
+    if (duration == 0) return 999;
+    return duration / 58.0;
+  }
+
+  void moveForward(int spd) {
+    digitalWrite(in1, HIGH); digitalWrite(in2, LOW); analogWrite(enA, spd);
+    digitalWrite(in3, HIGH); digitalWrite(in4, LOW); analogWrite(enB, spd);
+  }
+
+  void moveBackward(int spd) {
+    digitalWrite(in1, LOW); digitalWrite(in2, HIGH); analogWrite(enA, spd);
+    digitalWrite(in3, LOW); digitalWrite(in4, HIGH); analogWrite(enB, spd);
+  }
+
+  void turnRight(int spd) {
+    digitalWrite(in1, HIGH); digitalWrite(in2, LOW); analogWrite(enA, spd);
+    digitalWrite(in3, LOW); digitalWrite(in4, HIGH); analogWrite(enB, spd);
+  }
+
+  void turnLeft(int spd) {
+    digitalWrite(in1, LOW); digitalWrite(in2, HIGH); analogWrite(enA, spd);
+    digitalWrite(in3, HIGH); digitalWrite(in4, LOW); analogWrite(enB, spd);
+  }
+
+  void stopRobot() {
+    analogWrite(enA, 0); analogWrite(enB, 0);
+  }
+
+  void avoidObstacle() {
+    stopRobot();
+    delay(150);
+
+    // Back up
+    moveBackward(180);
+    delay(400);
+    stopRobot();
+    delay(150);
+
+    // Random turn direction
+    turnDirection = random(0, 2) == 0 ? 1 : -1;
+    if (turnDirection == 1) {
+      turnRight(200);
+    } else {
+      turnLeft(200);
+    }
+    delay(random(400, 900));  // Random turn duration
+    stopRobot();
+    delay(150);
+
+    // Verify path is clear after turning
+    float newDist = getDistance();
+    if (newDist < CAUTION_DIST) {
+      // Still blocked — turn more
+      if (turnDirection == 1) { turnRight(200); }
+      else { turnLeft(200); }
+      delay(500);
+      stopRobot();
+    }
+  }
+
+  void loop() {
+    float distance = getDistance();
+
+    if (distance < DANGER_DIST) {
+      Serial.println("DANGER! Avoiding...");
+      avoidObstacle();
+    } else if (distance < CAUTION_DIST) {
+      int speed = map(distance, DANGER_DIST, CAUTION_DIST, 100, 200);
+      Serial.print("CAUTION - Speed: ");
+      Serial.println(speed);
+      moveForward(speed);
+    } else {
+      Serial.println("CLEAR - Full speed");
+      moveForward(220);
+    }
+    delay(50);
+  }
+
+✅ DAY 27 CHECKPOINT:
+  □ Does the robot turn in different directions?
+  □ Does it slow down gradually near obstacles?
+  □ Does it handle corners better than the Day 26 version?
+  □ Is the behavior smoother and more natural?
+
+
+--------------------------------------------------------------------------------
+DAY 28: POWER OPTIMIZATION — MAKING IT LAST
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Understand battery capacity and runtime calculations
+  • Learn about voltage regulators and power distribution
+  • Optimize wiring for reliability
+  • Improve overall robot construction quality
+
+📖 THEORY:
+
+BATTERY BASICS FOR ROBOTS:
+  Battery capacity is measured in milliamp-hours (mAh).
+  • A 2000mAh battery can supply 2000mA for 1 hour, or 500mA for 4 hours
+
+  Runtime estimate:
+  Runtime (hours) = Battery capacity (mAh) / Total current draw (mA)
+
+  Typical current draws in your robot:
+  • Arduino: ~50mA
+  • Ultrasonic sensor: ~15mA
+  • Motor driver (L298N): ~36mA (idle)
+  • Each motor (running): ~200-400mA
+  • Total while driving: ~500-900mA
+
+  With 4xAA batteries (total ~2000mAh at 6V):
+  Runtime ≈ 2000 / 700 ≈ 2.8 hours (rough estimate)
+
+  With a 9V battery (~500mAh):
+  Runtime ≈ 500 / 700 ≈ 0.7 hours = ~40 minutes
+  → 9V batteries are NOT ideal for robots with motors!
+
+POWER SUPPLY OPTIONS (BEST TO WORST):
+  1. Li-Po battery (7.4V, 2200mAh) — Best but requires special charger
+  2. 4xAA rechargeable NiMH (4.8V, 2000mAh) — Good, affordable
+  3. 6xAA alkaline (9V, 2000mAh) — Decent but heavy
+  4. 9V battery (9V, 500mAh) — Poor, drains fast
+
+WIRING OPTIMIZATION:
+  • Solder connections where possible (more reliable than breadboard)
+  • Use heat-shrink tubing on exposed connections
+  • Zip-tie wire bundles to the chassis to prevent snagging
+  • Label wires if possible (colored tape works great)
+  • Keep motor wires short and twisted together
+  • Ensure all ground connections are solid
+
+VOLTAGE MONITORING:
+  You can monitor battery voltage with the Arduino:
+
+  // Connect battery + through a voltage divider to A1
+  // R1 = 10kΩ (battery to A1), R2 = 10kΩ (A1 to GND)
+  // This halves the voltage so Arduino can safely read it
+
+  float getBatteryVoltage() {
+    int raw = analogRead(A1);
+    float voltage = raw * (5.0 / 1023.0) * 2.0; // ×2 for divider
+    return voltage;
+  }
+
+  // In loop():
+  float battery = getBatteryVoltage();
+  if (battery < 4.5) {
+    Serial.println("LOW BATTERY WARNING!");
+    // Flash an LED, slow down, or stop
+  }
+
+🔨 PRACTICAL: OPTIMIZE YOUR ROBOT
+
+  1. Replace breadboard connections with more secure wiring
+  2. Add battery voltage monitoring to your code
+  3. Clean up wire routing on the chassis
+  4. Secure all components (hot glue, zip ties, tape)
+  5. Test runtime — how long does your robot run before batteries die?
+
+✅ DAY 28 CHECKPOINT:
+  □ Is your wiring clean and secure?
+  □ Have you added battery monitoring?
+  □ Do you know approximately how long your batteries last?
+  □ Is the robot mechanically robust?
+
+
+--------------------------------------------------------------------------------
+DAY 29: FINAL ROBOT BUILD — PUTTING IT ALL TOGETHER
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Perform final assembly and integration testing
+  • Fix any remaining issues
+  • Run the complete autonomous robot
+  • Document your build
+
+📖 THEORY:
+
+INTEGRATION TESTING CHECKLIST:
+  Before declaring your robot "done," systematically verify:
+
+  Hardware:
+  □ All wires are secure and won't come loose during movement
+  □ Motors are firmly mounted and wheels are attached
+  □ Sensor is pointing forward and mounted securely
+  □ Battery is secured and won't shift during turns
+  □ No bare wires are touching each other (short circuit risk)
+  □ Capacitors are installed across power supplies
+
+  Software:
+  □ Robot drives forward when path is clear
+  □ Robot detects obstacles at appropriate distance
+  □ Robot stops, backs up, and turns to avoid obstacles
+  □ Robot doesn't get stuck in corners (random turn direction)
+  □ Speed is appropriate (not too fast to react, not too slow)
+  □ Serial output shows correct sensor readings
+
+🔨 PRACTICAL: FINAL BUILD + OBSTACLE COURSE
+
+  1. Perform complete hardware check using the checklist above
+  2. Upload your best code from Day 27 (enhanced avoidance)
+  3. Create a simple obstacle course:
+     • Use books, boxes, or chairs as obstacles
+     • Create a few "corridors" the robot must navigate
+     • Include a corner to test edge-case handling
+  4. Place the robot at the start and let it run!
+  5. Observe and note any issues:
+     • Does it get stuck anywhere? → Adjust turn duration/randomness
+     • Does it hit obstacles? → Increase SAFE_DISTANCE
+     • Does it turn too much? → Decrease turn delay
+     • Does it jitter? → Add more sensor averaging
+
+  6. Fine-tune your code based on observations
+  7. Run the course again — iterate until satisfied
+
+TAKE PHOTOS AND VIDEOS:
+  Document your build! You'll want to remember this milestone.
+  • Photo of the assembled robot from multiple angles
+  • Video of it navigating the obstacle course
+  • Screenshot of your final Arduino code
+
+✅ DAY 29 CHECKPOINT:
+  □ Is the robot fully assembled and tested?
+  □ Can it navigate an obstacle course autonomously?
+  □ Have you fixed any remaining issues?
+  □ Did you document your build?
+
+
+--------------------------------------------------------------------------------
+DAY 30: REFLECTION + UPGRADE PATH
+--------------------------------------------------------------------------------
+
+🎯 LEARNING OBJECTIVES:
+  • Reflect on what you've learned and accomplished
+  • Identify areas for improvement
+  • Plan your next steps in robotics
+  • Celebrate your achievement!
+
+📖 REFLECTION:
+
+SELF-ASSESSMENT:
+  Ask yourself honestly:
+  • What was the hardest part of this 30-day journey?
+  • What concept took the longest to understand?
+  • What surprised you the most?
+  • What failed the most spectacularly? (Those are often the best lessons!)
+  • What would you do differently if you started over?
+
+SKILLS INVENTORY:
+  You now have REAL, hands-on skills in:
+  □ Basic electronics (V, I, R, P — Ohm's Law, power calculations)
+  □ Component knowledge (resistors, capacitors, diodes, transistors)
+  □ Circuit design (series, parallel, protection circuits)
+  □ Tool usage (multimeter, breadboard, wire strippers)
+  □ Microcontroller programming (Arduino, C/C++)
+  □ Sensor integration (analog reading, ultrasonic distance)
+  □ Motor control (transistors, H-Bridge, motor drivers, PWM)
+  □ System integration (combining sensors + logic + actuators)
+  □ Debugging (hardware and software troubleshooting)
+  □ Autonomous behavior (obstacle avoidance algorithm)
+
+  That's an impressive list for 30 days of work!
+
+YOUR ROBOT:
+  You built a WORKING, AUTONOMOUS robot. It:
+  • Senses its environment with ultrasonic
+  • Processes information with an Arduino
+  • Acts on the world with motors
+  • Makes decisions autonomously
+  • Navigates without human control
+
+  This is REAL robotics. The same fundamental loop (sense-think-act) is
+  used in industrial robots, self-driving cars, and Mars rovers.
+
+
+================================================================================
+🧠 WHAT YOU'VE ACHIEVED IN 30 DAYS
+================================================================================
+
+You now:
+  ✓ Understand circuits and can design them from scratch
+  ✓ Use a microcontroller to read sensors and control actuators
+  ✓ Control motors with proper drivers and protection circuits
+  ✓ Read ultrasonic distance sensors
+  ✓ Write Arduino programs with functions, conditionals, and loops
+  ✓ Debug hardware and software issues systematically
+  ✓ Built a fully autonomous obstacle-avoiding robot
+
+You are NOT yet a "professional robotics engineer" — but you are FAR ahead
+of most beginners, and you have a solid foundation to build on.
+
+
+================================================================================
+🔥 AFTER DAY 30: THE REAL GROWTH PHASE
+================================================================================
+
+Now that you have the basics, here's where to go next:
+
+LEVEL 2 — INTERMEDIATE PROJECTS:
+  1. LINE-FOLLOWING ROBOT
+     • Add IR line sensors to follow a black line on white surface
+     • Learn PID control for smooth line tracking
+
+  2. PID CONTROL (Proportional-Integral-Derivative)
+     • Advanced algorithm for precise motor control
+     • Makes your robot follow lines perfectly and drive straight
+     • Formula: output = Kp×error + Ki×∫error + Kd×(Δerror/Δt)
+
+  3. REMOTE CONTROL
+     • Add Bluetooth module (HC-05/HC-06)
+     • Control your robot from your phone
+     • Build a custom app with MIT App Inventor
+
+  4. MORE SENSORS
+     • IR obstacle sensors (digital, faster than ultrasonic)
+     • Temperature/humidity sensors (DHT11/DHT22)
+     • Light sensors (LDR — photoresistor)
+     • IMU/accelerometer (MPU6050)
+
+LEVEL 3 — ADVANCED:
+  1. RASPBERRY PI
+     • Full Linux computer on a board
+     • Camera vision, WiFi, machine learning
+     • Program in Python
+
+  2. ROS (Robot Operating System)
+     • Industry-standard robotics framework
+     • Simulation, mapping, path planning
+     • Used in research and commercial robots
+
+  3. 3D PRINTING
+     • Design and print custom robot parts
+     • Use Fusion 360 or TinkerCAD for design
+
+  4. COMPUTER VISION
+     • Camera + OpenCV for object detection
+     • Face tracking, color tracking
+     • QR code reading
+
+  5. ROBOTIC ARM
+     • Servo motors for precise positioning
+     • Inverse kinematics
+     • Pick-and-place tasks
+
+
+================================================================================
+⚠️ HONEST ADVICE FROM THE TRENCHES
+================================================================================
+
+Things you WILL struggle with:
+  • Wiring mistakes — you'll spend 30 minutes only to find one loose wire
+  • Code bugs — typos, wrong pin numbers, missing semicolons
+  • Motors not working — power issues, driver connections, dead batteries
+  • Sensors giving garbage data — noise, bad connections, wrong code
+  • Robot going in circles — motor calibration, wheel alignment
+  • Components burning out — wrong voltage, wrong polarity, no protection
+
+THAT'S NOT A PROBLEM — THAT'S THE TRAINING.
+
+Every professional robotics engineer has burned out dozens of LEDs, fried
+a few Arduinos, and spent hours debugging a wire that was one row off on
+the breadboard. The difference between a beginner and an expert isn't that
+experts don't make mistakes — it's that experts know how to find and fix
+them quickly.
+
+Keep building. Keep breaking things. Keep learning.
+
+Welcome to robotics. 🤖
+
+
+================================================================================
+                    END OF 30-DAY ROBOTICS GUIDE
+================================================================================

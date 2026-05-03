@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>30-Day Robotics Plan — Beginner to Builder</title>
+  <meta name="description"
+    content="A comprehensive 30-day hands-on guide to building your first autonomous robot, from basic electronics to obstacle avoidance.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg: #0a0e17;
+      --bg2: #111827;
+      --bg3: #1a2236;
+      --bg4: #243049;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --accent: #3b82f6;
+      --accent2: #8b5cf6;
+      --accent3: #06b6d4;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --orange: #f97316;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass2: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.08);
+      --radius: 12px;
+      --radius2: 16px;
+      --shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: 700;
+      line-height: 1.3
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar {
+      width: 6px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg)
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg4);
+      border-radius: 3px
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      z-index: 100;
+      transition: transform .3s
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: center
+    }
+
+    .sidebar-header h2 {
+      font-size: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
+
+    .sidebar-header .progress-bar {
+      margin-top: 12px;
+      height: 6px;
+      background: var(--bg4);
+      border-radius: 3px;
+      overflow: hidden
+    }
+
+    .sidebar-header .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      border-radius: 3px;
+      transition: width .5s ease
+    }
+
+    .sidebar-header .progress-text {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 6px
+    }
+
+    .week-group {
+      padding: 8px 0
+    }
+
+    .week-label {
+      padding: 8px 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      opacity: .8
+    }
+
+    .day-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 13px;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      border-left: 3px solid transparent
+    }
+
+    .day-link:hover {
+      background: var(--glass);
+      color: var(--text)
+    }
+
+    .day-link.active {
+      background: var(--glass2);
+      color: var(--accent);
+      border-left-color: var(--accent)
+    }
+
+    .day-link.completed .day-dot {
+      background: var(--green)
+    }
+
+    .day-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--bg4);
+      flex-shrink: 0;
+      transition: background .3s
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: 280px;
+      min-height: 100vh
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: 80px 60px 60px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+      overflow: hidden
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent 60%);
+      pointer-events: none
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 60%);
+      pointer-events: none
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--glass2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 20px
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.15;
+      max-width: 700px
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
+
+    .hero p {
+      margin-top: 16px;
+      font-size: 17px;
+      color: var(--text2);
+      max-width: 600px
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 32px;
+      flex-wrap: wrap
+    }
+
+    .hero-stat {
+      text-align: center
+    }
+
+    .hero-stat .num {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
+
+    .hero-stat .lbl {
+      font-size: 12px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 2px
+    }
+
+    /* CONTENT AREA */
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 60px 80px
+    }
+
+    /* DAY CARD */
+    .day-card {
+      margin-bottom: 48px;
+      animation: fadeUp .5s ease
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .day-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .day-number {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0
+    }
+
+    .week1-color {
+      background: linear-gradient(135deg, #3b82f6, #2563eb)
+    }
+
+    .week2-color {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed)
+    }
+
+    .week3-color {
+      background: linear-gradient(135deg, #06b6d4, #0891b2)
+    }
+
+    .week4-color {
+      background: linear-gradient(135deg, #f59e0b, #d97706)
+    }
+
+    .day-title {
+      font-size: 22px;
+      font-weight: 700
+    }
+
+    .day-subtitle {
+      font-size: 13px;
+      color: var(--text3);
+      margin-top: 2px
+    }
+
+    /* SECTIONS */
+    .section {
+      margin-bottom: 24px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      overflow: hidden
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background .2s
+    }
+
+    .section-header:hover {
+      background: var(--glass)
+    }
+
+    .section-header .icon {
+      font-size: 18px
+    }
+
+    .section-header h3 {
+      font-size: 15px;
+      font-weight: 600;
+      flex: 1
+    }
+
+    .section-header .chevron {
+      transition: transform .3s;
+      color: var(--text3);
+      font-size: 12px
+    }
+
+    .section-header.open .chevron {
+      transform: rotate(180deg)
+    }
+
+    .section-body {
+      padding: 0 20px 20px;
+      display: none
+    }
+
+    .section-body.open {
+      display: block
+    }
+
+    .section-body p,
+    .section-body li {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.8
+    }
+
+    .section-body ul,
+    .section-body ol {
+      padding-left: 20px;
+      margin: 8px 0
+    }
+
+    .section-body li {
+      margin: 4px 0
+    }
+
+    .section-body h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 16px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .section-body strong {
+      color: var(--text);
+      font-weight: 600
+    }
+
+    /* CODE BLOCKS */
+    pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 12px 0;
+      font-size: 13px;
+      line-height: 1.6
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px
+    }
+
+    .inline-code {
+      background: var(--bg);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      border: 1px solid var(--border)
+    }
+
+    /* FORMULA BOX */
+    .formula {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 12px 0;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--accent)
+    }
+
+    /* CIRCUIT DIAGRAM SVG */
+    .circuit-diagram {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      text-align: center
+    }
+
+    .circuit-diagram svg {
+      max-width: 100%;
+      height: auto
+    }
+
+    /* TIPS / WARNINGS */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 12px 0;
+      font-size: 13px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start
+    }
+
+    .callout.warning {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      color: #fbbf24
+    }
+
+    .callout.danger {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #f87171
+    }
+
+    .callout.tip {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: #34d399
+    }
+
+    .callout.info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      color: #60a5fa
+    }
+
+    /* CHECKPOINT */
+    .checkpoint {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 20px;
+      margin-top: 20px
+    }
+
+    .checkpoint h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--text2);
+      cursor: pointer;
+      transition: color .2s
+    }
+
+    .check-item:hover {
+      color: var(--text)
+    }
+
+    .check-item input[type=checkbox] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--green);
+      cursor: pointer
+    }
+
+    .check-item.checked {
+      color: var(--green);
+      text-decoration: line-through;
+      opacity: .7
+    }
+
+    /* WEEK DIVIDER */
+    .week-divider {
+      text-align: center;
+      padding: 48px 0 32px;
+      position: relative
+    }
+
+    .week-divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .week-divider span {
+      position: relative;
+      background: var(--bg);
+      padding: 0 24px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent)
+    }
+
+    /* MATERIALS TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--bg);
+      color: var(--accent);
+      font-weight: 600;
+      border-bottom: 2px solid var(--border)
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2)
+    }
+
+    tr:hover td {
+      background: var(--glass)
+    }
+
+    /* HAMBURGER */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 200;
+      width: 40px;
+      height: 40px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--text)
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+      .sidebar {
+        transform: translateX(-100%)
+      }
+
+      .sidebar.open {
+        transform: translateX(0)
+      }
+
+      .main {
+        margin-left: 0
+      }
+
+      .hamburger {
+        display: flex
+      }
+
+      .hero {
+        padding: 60px 24px 40px
+      }
+
+      .hero h1 {
+        font-size: 28px
+      }
+
+      .content {
+        padding: 24px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <main class="main">
+    <section class="hero">
+      <div class="hero-badge">🚀 30-Day Plan</div>
+      <h1>From Zero to <span>Robot Builder</span></h1>
+      <p>A complete hands-on guide taking you from absolute beginner to building a fully autonomous obstacle-avoiding
+        robot. No prior experience required.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="num">30</div>
+          <div class="lbl">Days</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">4</div>
+          <div class="lbl">Weeks</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">1-2h</div>
+          <div class="lbl">Per Day</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num" id="progressPct">0%</div>
+          <div class="lbl">Complete</div>
+        </div>
+      </div>
+    </section>
+    <div class="content" id="content"></div>
+  </main>
+
+  <script>
+    // ========== DAY CONTENT DATA ==========
+    const DAYS = [
+      {
+        title: "What is Electricity?", short: "Electricity", subtitle: "Voltage, Current, Resistance & Ohm's Law",
+        objectives: ["Understand voltage, current, and resistance", "Learn Ohm's Law and apply it to a real circuit", "Light your first LED with proper current limiting"],
+        diagram: `<svg width="100%" height="240" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <rect width="400" height="240" fill="none" />
+  <path d="M 60 120 L 60 60 L 200 60" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 60 180 L 60 210 L 340 210 L 340 180" fill="none" stroke="var(--text3)" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="35" y="120" width="50" height="60" fill="var(--bg4)" stroke="var(--accent)" stroke-width="2" rx="4"/>
+  <text x="60" y="155" fill="var(--accent)" font-family="Inter" font-size="12" text-anchor="middle" font-weight="bold">9V</text>
+  <rect x="200" y="50" width="60" height="20" fill="var(--bg4)" stroke="var(--text2)" stroke-width="1" rx="4"/>
+  <path d="M 215 50 L 215 70" stroke="var(--red)" stroke-width="4"/>
+  <path d="M 225 50 L 225 70" stroke="var(--red)" stroke-width="4"/>
+  <path d="M 235 50 L 235 70" stroke="#b45309" stroke-width="4"/>
+  <text x="230" y="85" fill="var(--text3)" font-family="Inter" font-size="10" text-anchor="middle">220Ω</text>
+  <path d="M 260 60 L 340 60 L 340 100" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 320 120 A 20 20 0 1 1 360 120 L 360 150 L 320 150 Z" fill="rgba(16, 185, 129, 0.1)" stroke="var(--green)" stroke-width="2"/>
+  <line x1="320" y1="150" x2="360" y2="150" stroke="var(--green)" stroke-width="2"/>
+  <line x1="340" y1="150" x2="340" y2="180" stroke="var(--text3)" stroke-width="2.5"/>
+  <text x="340" y="140" fill="var(--green)" font-family="Inter" font-size="12" text-anchor="middle" font-weight="bold">LED</text>
+</svg>`,
+        theory: `<h4>Three Fundamental Concepts</h4>
+<p><strong>Voltage (V)</strong> — Measured in Volts. The "electrical pressure" that pushes electrons through a circuit. Like water pressure in a pipe.</p>
+<p><strong>Current (I)</strong> — Measured in Amperes (Amps). The actual flow of electrons. Like the volume of water flowing through a pipe.</p>
+<p><strong>Resistance (R)</strong> — Measured in Ohms (Ω). Opposes the flow of current. Like the narrowness of the pipe.</p>
+<div class="formula">V = I × R &nbsp;&nbsp;(Ohm's Law)</div>
+<p>Rearranged: <strong>I = V / R</strong> &nbsp;|&nbsp; <strong>R = V / I</strong></p>
+<p><strong>Example:</strong> 5V supply, want 20mA through LED (2V drop). R = 3V / 0.020A = 150Ω. Use 220Ω for safety.</p>
+<div class="callout info">💡 Every motor, sensor, and microcontroller operates within specific voltage and current ranges. Exceed them, and you destroy components.</div>`,
+        practical: `<h4>Light an LED with a Resistor</h4>
+<p><strong>Materials:</strong> Breadboard, LED, 220Ω resistor, jumper wires, 9V battery</p>
+<h4>Understanding the Breadboard</h4>
+<ul><li>Outer columns (+/−) are <strong>power rails</strong> — connected vertically</li>
+<li>Inner rows connected <strong>horizontally</strong> in groups of 5</li><li>Gap in the middle separates left and right</li></ul>
+<h4>Step-by-Step</h4>
+<ol><li>Insert LED — <strong>longer leg = positive (anode)</strong>, shorter = negative (cathode)</li>
+<li>Connect 220Ω resistor to the same row as the LED's anode</li>
+<li>Wire the resistor's other end to the + power rail</li>
+<li>Wire the LED cathode to the − power rail</li>
+<li>Connect battery: + to + rail, − to − rail</li>
+<li>LED lights up! 🎉</li></ol>
+<div class="callout tip">💡 Try reversing the LED — it won't light because LEDs only allow current in one direction.</div>`,
+        troubleshooting: ["<strong>LED doesn't light:</strong> Check polarity (long leg = positive). Ensure components are in the SAME row.", "<strong>LED is dim:</strong> Battery might be dead.", "<strong>LED burned out:</strong> You probably forgot the resistor."],
+        checkpoints: ["Can you explain voltage, current, and resistance?", "Can you use Ohm's Law to calculate a resistor value?", "Did your LED circuit work?", "Do you understand why the resistor is needed?"]
+      },
+
+      {
+        title: "Using Tools — The Multimeter", short: "Multimeter", subtitle: "Measuring Voltage, Resistance & Continuity",
+        objectives: ["Understand what a multimeter measures", "Measure voltage and resistance", "Learn continuity testing for debugging"],
+        theory: `<h4>The Multimeter — Your Most Important Tool</h4>
+<p>A multimeter measures three things:</p>
+<table><tr><th>Mode</th><th>Measures</th><th>Use For</th></tr>
+<tr><td>V⎓ (DC Voltage)</td><td>Voltage between two points</td><td>Checking batteries, voltage drops</td></tr>
+<tr><td>Ω (Resistance)</td><td>Resistance of a component</td><td>Verifying resistor values</td></tr>
+<tr><td>🔊 (Continuity)</td><td>Whether two points are connected</td><td>Finding broken wires, tracing circuits</td></tr></table>
+<h4>Reading Resistor Color Bands</h4>
+<table><tr><th>Color</th><th>Value</th><th>Color</th><th>Value</th></tr>
+<tr><td>Black</td><td>0</td><td>Green</td><td>5</td></tr>
+<tr><td>Brown</td><td>1</td><td>Blue</td><td>6</td></tr>
+<tr><td>Red</td><td>2</td><td>Violet</td><td>7</td></tr>
+<tr><td>Orange</td><td>3</td><td>Gray</td><td>8</td></tr>
+<tr><td>Yellow</td><td>4</td><td>White</td><td>9</td></tr></table>
+<p><strong>Example:</strong> Red-Red-Brown-Gold = 2, 2, ×10 = <strong>220Ω ±5%</strong></p>
+<div class="callout info">💡 When your robot doesn't work, the multimeter finds the problem. Is the battery dead? Is a wire broken? The multimeter answers these.</div>`,
+        practical: `<h4>Exercise 1: Measure Battery Voltage</h4>
+<ol><li>Set multimeter to DC Voltage (20V range)</li><li>RED probe to battery +, BLACK to −</li><li>Fresh 9V should read 8.5–9.5V</li></ol>
+<h4>Exercise 2: Measure Resistors</h4>
+<ol><li>Set to Ω mode, 20kΩ range</li><li>Touch probes to both ends of a 220Ω resistor</li><li>Should read 209–231Ω (within ±5%)</li></ol>
+<h4>Exercise 3: Kirchhoff's Voltage Law</h4>
+<ol><li>Rebuild your Day 1 LED circuit</li><li>Measure voltage across the battery (~9V)</li><li>Measure across the resistor (~7V) and LED (~2V)</li><li>Notice: <strong>7V + 2V ≈ 9V</strong> — voltages in a loop add up!</li></ol>`,
+        troubleshooting: ["<strong>Shows 'OL':</strong> Wrong range — switch higher.", "<strong>Resistance fluctuates:</strong> Your fingers are touching both probes.", "<strong>Battery reads 0V:</strong> Check you're in DC voltage mode."],
+        checkpoints: ["Can you measure voltage from a battery?", "Can you verify a resistor's value?", "Can you use continuity mode?", "Do you understand Kirchhoff's Voltage Law?"]
+      },
+
+      {
+        title: "Series & Parallel Circuits", short: "Series/Parallel", subtitle: "Two Ways to Connect Components",
+        objectives: ["Understand series vs parallel circuits", "Build both and observe differences", "Learn voltage and current distribution"],
+        theory: `<h4>Series Circuits</h4>
+<p>Components connected end-to-end — one path for current.</p>
+<svg width="100%" height="120" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px; margin: 10px 0;">
+  <rect x="20" y="45" width="40" height="30" fill="var(--bg4)" stroke="var(--accent)" stroke-width="2" rx="4"/>
+  <text x="40" y="64" fill="var(--accent)" font-size="10" text-anchor="middle">9V</text>
+  <path d="M 60 60 L 100 60" stroke="var(--red)" stroke-width="2" />
+  <path d="M 140 60 L 180 60" stroke="var(--orange)" stroke-width="2" />
+  <path d="M 220 60 L 260 60" stroke="var(--yellow)" stroke-width="2" />
+  <path d="M 300 60 L 340 60 L 340 90 L 40 90 L 40 75" fill="none" stroke="var(--text3)" stroke-width="2" />
+  <path d="M 100 50 L 130 60 L 100 70 Z" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1.5" />
+  <line x1="130" y1="50" x2="130" y2="70" stroke="var(--text)" stroke-width="2" />
+  <text x="115" y="85" fill="var(--text3)" font-size="9" text-anchor="middle">LED 1</text>
+  <path d="M 180 50 L 210 60 L 180 70 Z" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1.5" />
+  <line x1="210" y1="50" x2="210" y2="70" stroke="var(--text)" stroke-width="2" />
+  <text x="195" y="85" fill="var(--text3)" font-size="9" text-anchor="middle">LED 2</text>
+  <path d="M 260 50 L 290 60 L 260 70 Z" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1.5" />
+  <line x1="290" y1="50" x2="290" y2="70" stroke="var(--text)" stroke-width="2" />
+  <text x="275" y="85" fill="var(--text3)" font-size="9" text-anchor="middle">LED 3</text>
+</svg>
+<ul><li>Current is the <strong>SAME</strong> through all components</li><li>Voltage is <strong>DIVIDED</strong> among components</li><li>If one fails, <strong>ALL stop</strong></li><li>Total R = R1 + R2 + R3</li></ul>
+<h4>Parallel Circuits</h4>
+<p>Components side-by-side — each has its own path.</p>
+<svg width="100%" height="160" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px; margin: 10px 0;">
+  <rect x="20" y="65" width="40" height="30" fill="var(--bg4)" stroke="var(--accent)" stroke-width="2" rx="4"/>
+  <text x="40" y="84" fill="var(--accent)" font-size="10" text-anchor="middle">9V</text>
+  <path d="M 60 80 L 120 80" stroke="var(--red)" stroke-width="2" />
+  <path d="M 120 40 L 120 120" stroke="var(--red)" stroke-width="2" />
+  <path d="M 120 40 L 180 40 M 120 80 L 180 80 M 120 120 L 180 120" stroke="var(--red)" stroke-width="2" />
+  <path d="M 180 30 L 210 40 L 180 50 Z" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1.5" />
+  <line x1="210" y1="30" x2="210" y2="50" stroke="var(--text)" stroke-width="2" />
+  <path d="M 180 70 L 210 80 L 180 90 Z" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1.5" />
+  <line x1="210" y1="70" x2="210" y2="90" stroke="var(--text)" stroke-width="2" />
+  <path d="M 180 110 L 210 120 L 180 130 Z" fill="rgba(16,185,129,0.2)" stroke="var(--green)" stroke-width="1.5" />
+  <line x1="210" y1="110" x2="210" y2="130" stroke="var(--text)" stroke-width="2" />
+  <text x="235" y="43" fill="var(--text3)" font-size="9" text-anchor="middle">LED 1</text>
+  <text x="235" y="83" fill="var(--text3)" font-size="9" text-anchor="middle">LED 2</text>
+  <text x="235" y="123" fill="var(--text3)" font-size="9" text-anchor="middle">LED 3</text>
+  <path d="M 210 40 L 280 40 M 210 80 L 280 80 M 210 120 L 280 120" stroke="var(--text3)" stroke-width="2" />
+  <path d="M 280 40 L 280 120" stroke="var(--text3)" stroke-width="2" />
+  <path d="M 280 80 L 320 80 L 320 140 L 40 140 L 40 95" fill="none" stroke="var(--text3)" stroke-width="2" />
+</svg>
+<ul><li>Voltage is the <strong>SAME</strong> across all</li><li>Current is <strong>DIVIDED</strong> among branches</li><li>If one fails, <strong>others keep working</strong></li><li>1/Rtotal = 1/R1 + 1/R2 + 1/R3</li></ul>
+<div class="callout info">💡 <strong>Robotics use:</strong> Motors wired in parallel (independent control). Sensor power lines in parallel.</div>`,
+        practical: `<h4>Build 1: Three LEDs in Series</h4>
+<p>3 LEDs + 1 resistor (100–150Ω). Connect anode→cathode→anode→cathode chain.</p>
+<p><strong>Observe:</strong> All LEDs light but are <strong>DIMMER</strong> than a single LED.</p>
+<h4>Build 2: Three LEDs in Parallel</h4>
+<p>3 LEDs + 3 resistors (220Ω each). Each LED has its own resistor to + rail.</p>
+<p><strong>Observe:</strong> All LEDs are <strong>BRIGHTER</strong> than series.</p>
+<h4>Experiment</h4>
+<p>Remove one LED from each circuit:</p>
+<ul><li><strong>Series:</strong> remaining LEDs go OUT</li><li><strong>Parallel:</strong> remaining LEDs STAY ON</li></ul>`,
+        troubleshooting: ["<strong>Series LEDs don't light:</strong> All LEDs must face the same direction.", "<strong>Parallel LEDs uneven:</strong> Check all resistors are the same value."],
+        checkpoints: ["Can you explain series vs parallel?", "Did you observe brightness differences?", "Can you predict what happens when removing one component?", "Can you identify which type is used in a diagram?"]
+      },
+
+      {
+        title: "Resistors Deep Dive — Power", short: "Power & Heat", subtitle: "Power Formula, Ratings & Voltage Dividers",
+        objectives: ["Understand electrical power", "Learn resistor power ratings", "Calculate resistors for different LEDs", "Understand voltage dividers"],
+        theory: `<h4>Power (P) — Measured in Watts</h4>
+<div class="formula">P = V × I &nbsp;&nbsp;|&nbsp;&nbsp; P = I² × R &nbsp;&nbsp;|&nbsp;&nbsp; P = V² / R</div>
+<p><strong>Example:</strong> 220Ω resistor, 20mA → P = (0.020)² × 220 = 88mW. Standard 250mW resistor is safe.</p>
+<p><strong>Danger:</strong> 10Ω resistor, 500mA → P = 2.5W → Standard resistor would <strong>BURN UP!</strong></p>
+<h4>Voltage Dividers</h4>
+<p>Two resistors creating a fraction of input voltage:</p>
+<svg width="100%" height="180" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px; margin: 10px 0;">
+  <text x="100" y="30" fill="var(--red)" font-size="12" text-anchor="middle" font-weight="bold">Vin</text>
+  <path d="M 100 40 L 100 60" stroke="var(--red)" stroke-width="2" />
+  <rect x="85" y="60" width="30" height="40" fill="var(--bg4)" stroke="var(--text2)" stroke-width="1.5" />
+  <text x="65" y="85" fill="var(--text3)" font-size="10" text-anchor="end">R1</text>
+  <path d="M 100 100 L 100 120" stroke="var(--orange)" stroke-width="2" />
+  <path d="M 100 110 L 160 110" stroke="var(--accent3)" stroke-width="2" />
+  <circle cx="100" cy="110" r="3" fill="var(--orange)" />
+  <text x="170" y="114" fill="var(--accent3)" font-size="12" text-anchor="start" font-weight="bold">Vout = Vin × R2 / (R1 + R2)</text>
+  <rect x="85" y="120" width="30" height="40" fill="var(--bg4)" stroke="var(--text2)" stroke-width="1.5" />
+  <text x="65" y="145" fill="var(--text3)" font-size="10" text-anchor="end">R2</text>
+  <path d="M 100 160 L 100 170" stroke="var(--text3)" stroke-width="2" />
+  <path d="M 85 170 L 115 170 M 90 175 L 110 175 M 95 180 L 105 180" stroke="var(--text3)" stroke-width="1.5" />
+</svg>
+<p><strong>Example:</strong> Vin=9V, R1=R2=10kΩ → Vout = 4.5V</p>
+<div class="callout warning">⚠️ Motors draw significant current. Wrong resistor = overheat = potential fire. Always check power calculations!</div>`,
+        practical: `<h4>Calculate Resistors for Different LEDs</h4>
+<table><tr><th>LED Color</th><th>Forward V</th><th>R (with 9V)</th></tr>
+<tr><td>🔴 Red</td><td>~1.8V</td><td>(9-1.8)/0.02 = 360Ω → use 390Ω</td></tr>
+<tr><td>🟢 Green</td><td>~2.2V</td><td>(9-2.2)/0.02 = 340Ω → use 330Ω</td></tr>
+<tr><td>🔵 Blue</td><td>~3.2V</td><td>(9-3.2)/0.02 = 290Ω → use 330Ω</td></tr></table>
+<h4>Try Different Resistor Values</h4>
+<table><tr><th>Resistor</th><th>Current</th><th>Brightness</th></tr>
+<tr><td>100Ω</td><td>~72mA</td><td>Very bright (near max!)</td></tr>
+<tr><td>220Ω</td><td>~33mA</td><td>Medium</td></tr>
+<tr><td>1kΩ</td><td>~7mA</td><td>Dim</td></tr>
+<tr><td>10kΩ</td><td>~0.7mA</td><td>Barely visible</td></tr></table>`,
+        troubleshooting: ["<strong>Resistor getting hot:</strong> Check power calculations — may need higher value.", "<strong>Voltage divider wrong:</strong> Ensure nothing else is connected to the output point."],
+        checkpoints: ["Can you calculate power dissipation?", "Can you choose the right resistor for any LED color?", "Can you build and measure a voltage divider?", "Do you understand why power ratings matter?"]
+      },
+
+      {
+        title: "Capacitors — Energy Storage", short: "Capacitors", subtitle: "Charging, Discharging & Power Smoothing",
+        objectives: ["Understand what capacitors do", "Learn the RC time constant", "Build a charging/discharging demo", "Understand decoupling capacitors"],
+        theory: `<h4>Capacitor Basics</h4>
+<p>A capacitor stores electrical energy — like a tiny rechargeable battery that charges/discharges very quickly.</p>
+<table><tr><th>Type</th><th>Values</th><th>Polarized?</th><th>Use</th></tr>
+<tr><td>Electrolytic</td><td>1μF–10000μF</td><td>YES ⚠️</td><td>Power smoothing</td></tr>
+<tr><td>Ceramic</td><td>0.001μF–1μF</td><td>No</td><td>High-freq filtering</td></tr></table>
+<div class="callout danger">🚫 Electrolytic capacitors MUST have correct polarity. Reversing can cause <strong>EXPLOSION</strong>.</div>
+<h4>RC Time Constant</h4>
+<div class="formula">τ = R × C</div>
+<ul><li>After 1τ: 63% charged</li><li>After 3τ: 95% charged</li><li>After 5τ: 99% charged</li></ul>
+<p><strong>Example:</strong> R=10kΩ, C=100μF → τ = 1 second → Full charge ≈ 5 seconds</p>
+<h4>Decoupling — The Unsung Hero</h4>
+<p>Without decoupling capacitors, your robot's Arduino will randomly reset when motors start. Sensors give garbage readings.</p>
+<div class="callout tip">💡 <strong>Rule of thumb:</strong> 100μF electrolytic near power input + 0.1μF ceramic near each IC.</div>`,
+        practical: `<h4>Exercise 1: Observe Charging/Discharging</h4>
+<p><strong>Materials:</strong> 1000μF capacitor, 10kΩ resistor, LED, 9V battery</p>
+<ol><li>Connect resistor + capacitor in series across battery</li>
+<li>Add LED in parallel with capacitor</li>
+<li>Connect battery — LED starts bright, slowly dims as capacitor charges</li>
+<li>Disconnect battery — LED glows briefly as capacitor discharges!</li></ol>
+<h4>Exercise 2: Power Supply Smoothing</h4>
+<ol><li>Build Day 1 LED circuit</li><li>Add 100μF capacitor across power rails</li><li>Effect is subtle with LEDs but critical with motors and microcontrollers</li></ol>`,
+        troubleshooting: ["<strong>Capacitor gets hot:</strong> WRONG POLARITY — disconnect immediately!", "<strong>LED stays lit after removing power:</strong> Capacitor discharging — expected behavior!"],
+        checkpoints: ["Can you identify electrolytic vs ceramic capacitors?", "Can you calculate the RC time constant?", "Did you observe charging and discharging?", "Do you understand why decoupling capacitors are needed?"]
+      }
+      // ---- MORE_DAYS ----
+      , {
+        title: "Diodes — One-Way Valves", short: "Diodes", subtitle: "Forward Voltage, Flyback & Protection",
+        objectives: ["Understand how diodes work", "Learn about forward voltage drop", "Build a protection circuit", "Understand flyback diodes for motors"],
+        theory: `<h4>Diode Basics</h4><p>Allows current in only ONE direction — anode (+) to cathode (−). Cathode marked with a <strong>BAND/STRIPE</strong>.</p>
+<table><tr><th>Type</th><th>Forward Drop</th><th>Use</th></tr><tr><td>Silicon (1N4007)</td><td>~0.7V</td><td>Protection</td></tr><tr><td>Schottky</td><td>~0.3V</td><td>Fast switching</td></tr><tr><td>LED</td><td>1.8–3.3V</td><td>Light!</td></tr></table>
+<p>Yes — an LED <strong>IS</strong> a diode! That's why it only works in one direction.</p>
+<h4>Flyback Diodes — Protecting From Motors</h4>
+<p>When a spinning motor is cut off, it generates a <strong>50V+ reverse spike</strong> that can destroy your Arduino.</p>
+<svg width="100%" height="160" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px; margin: 10px 0;">
+  <!-- Labels -->
+  <text x="40" y="50" fill="var(--red)" font-size="11" font-weight="bold">Motor +</text>
+  <text x="320" y="50" fill="var(--text3)" font-size="11" font-weight="bold">Motor -</text>
+  
+  <!-- Rails -->
+  <path d="M 40 60 L 150 60" stroke="var(--red)" stroke-width="2.5" />
+  <circle cx="110" cy="60" r="3" fill="var(--red)" />
+  <path d="M 250 60 L 360 60" stroke="var(--text3)" stroke-width="2.5" />
+  <circle cx="290" cy="60" r="3" fill="var(--text3)" />
+  
+  <!-- Motor -->
+  <circle cx="200" cy="60" r="25" fill="var(--bg4)" stroke="var(--text)" stroke-width="2" />
+  <text x="200" y="64" fill="var(--text)" font-size="10" text-anchor="middle" font-weight="bold">MOTOR</text>
+  
+  <!-- Diode Branch -->
+  <path d="M 110 60 L 110 110 L 180 110" fill="none" stroke="var(--red)" stroke-width="2" />
+  <path d="M 220 110 L 290 110 L 290 60" fill="none" stroke="var(--text3)" stroke-width="2" />
+  
+  <!-- Diode Symbol -->
+  <polygon points="195,100 195,120 215,110" fill="var(--text)" />
+  <line x1="215" y1="100" x2="215" y2="120" stroke="var(--text)" stroke-width="2.5" />
+  
+  <!-- Annotation -->
+  <text x="200" y="140" fill="var(--text2)" font-size="10" text-anchor="middle">Flyback Diode (1N4007)</text>
+</svg>
+<div class="callout danger">🚫 Every motor NEEDS a flyback diode. A $0.05 diode protects a $25 Arduino.</div>`,
+        practical: `<h4>Exercise 1: Test Diode Direction</h4><ol><li>Add 1N4007 in series with LED circuit</li><li>LED lights (current flows)</li><li>Reverse the diode → LED goes dark (blocked!)</li></ol>
+<h4>Exercise 2: Reverse Polarity Protection</h4><ol><li>Place diode between battery + and circuit</li><li>Voltage is ~0.7V less (diode drop)</li><li>Reverse battery → circuit stays OFF (protected!)</li></ol>`,
+        troubleshooting: ["<strong>Circuit dead after adding diode:</strong> Check orientation — band = cathode."],
+        checkpoints: ["Can you identify anode and cathode?", "Do you understand forward voltage drop?", "Can you explain why flyback diodes are needed?", "Did you build reverse polarity protection?"]
+      },
+
+      {
+        title: "Week 1 Review + Mini Project", short: "Mini Project", subtitle: "Combining All Components Into One Circuit",
+        objectives: ["Consolidate Week 1 knowledge", "Build a complete protected circuit", "Self-assess before Week 2"],
+        theory: `<h4>Week 1 Summary</h4>
+<table><tr><th>Day</th><th>Topic</th><th>Key Formula/Concept</th></tr>
+<tr><td>1</td><td>Electricity</td><td>V = I × R</td></tr><tr><td>2</td><td>Multimeter</td><td>Measure V, R, continuity</td></tr>
+<tr><td>3</td><td>Series/Parallel</td><td>Same I vs Same V</td></tr><tr><td>4</td><td>Power</td><td>P = I²R</td></tr>
+<tr><td>5</td><td>Capacitors</td><td>τ = RC</td></tr><tr><td>6</td><td>Diodes</td><td>Flyback protection</td></tr></table>`,
+        diagram: `<svg width="100%" height="260" viewBox="0 0 450 260" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <!-- Battery -->
+  <rect x="25" y="130" width="30" height="50" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1.5" />
+  <text x="40" y="160" fill="var(--accent)" font-size="10" text-anchor="middle" font-weight="bold">9V</text>
+  <path d="M 40 130 L 40 50 L 100 50" fill="none" stroke="var(--red)" stroke-width="2" />
+  <path d="M 40 180 L 40 230 L 400 230" fill="none" stroke="var(--text3)" stroke-width="2" />
+  
+  <!-- Protection Diode -->
+  <path d="M 100 50 L 130 50" stroke="var(--red)" stroke-width="2" />
+  <polygon points="110,42 110,58 123,50" fill="var(--text)" />
+  <line x1="125" y1="42" x2="125" y2="58" stroke="var(--text)" stroke-width="2" />
+  <text x="117" y="35" fill="var(--text3)" font-size="9" text-anchor="middle">1N4007</text>
+  
+  <!-- Main Rail -->
+  <path d="M 130 50 L 400 50" stroke="var(--orange)" stroke-width="2" />
+  
+  <!-- Capacitors -->
+  <line x1="180" y1="50" x2="180" y2="90" stroke="var(--orange)" stroke-width="2" />
+  <rect x="170" y="90" width="20" height="30" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1" />
+  <line x1="180" y1="120" x2="180" y2="230" stroke="var(--text3)" stroke-width="2" />
+  <text x="180" y="145" fill="var(--text2)" font-size="9" text-anchor="middle">100µF</text>
+  
+  <line x1="250" y1="50" x2="250" y2="95" stroke="var(--orange)" stroke-width="2" />
+  <circle cx="250" cy="105" r="10" fill="var(--bg4)" stroke="var(--yellow)" stroke-width="1" />
+  <line x1="250" y1="115" x2="250" y2="230" stroke="var(--text3)" stroke-width="2" />
+  <text x="250" y="145" fill="var(--text2)" font-size="9" text-anchor="middle">0.1µF</text>
+  
+  <!-- Output Section -->
+  <line x1="340" y1="50" x2="340" y2="80" stroke="var(--orange)" stroke-width="2" />
+  <rect x="330" y="80" width="20" height="40" fill="var(--bg4)" stroke="var(--text2)" stroke-width="1" />
+  <text x="325" y="100" fill="var(--text3)" font-size="9" text-anchor="end" transform="rotate(-90 325 100)">220Ω</text>
+  <line x1="340" y1="120" x2="340" y2="150" stroke="var(--red)" stroke-width="2" />
+  <path d="M 325 150 L 355 150 L 340 175 Z" fill="rgba(16,185,129,0.1)" stroke="var(--green)" stroke-width="1.5" />
+  <line x1="340" y1="175" x2="340" y2="230" stroke="var(--text3)" stroke-width="2" />
+  <text x="340" y="195" fill="var(--green)" font-size="9" text-anchor="middle">LED</text>
+</svg>`,
+        practical: `<h4>Build: "Stable LED Indicator" Circuit</h4>
+<p>Combines <strong>everything</strong> from Week 1:</p>
+<ol><li>Battery + through <strong>1N4007 diode</strong> to + rail (reverse polarity protection)</li>
+<li>Battery − to − rail</li><li><strong>100μF electrolytic</strong> capacitor across rails (power smoothing)</li>
+<li><strong>0.1μF ceramic</strong> capacitor across rails (high-freq filtering)</li>
+<li><strong>220Ω resistor</strong> from + rail to LED anode (current limiting)</li>
+<li>LED cathode to − rail</li></ol>
+<h4>Verify with Multimeter</h4>
+<table><tr><th>Measurement</th><th>Expected</th></tr>
+<tr><td>Battery voltage</td><td>~9V</td></tr><tr><td>After diode</td><td>~8.3V</td></tr>
+<tr><td>Across resistor</td><td>~6.3V</td></tr><tr><td>Across LED</td><td>~2V</td></tr></table>`,
+        checkpoints: ["Can you use Ohm's Law to design a circuit?", "Can you use a multimeter to diagnose problems?", "Do you understand series vs parallel?", "Did your mini project work correctly?"]
+      },
+
+      {
+        title: "Transistors — Electronic Switches", short: "Transistors", subtitle: "NPN Switching, Base Current & Amplification",
+        objectives: ["Understand transistors as switches", "Learn Base, Collector, Emitter pins", "Build a transistor-controlled LED", "Understand why transistors are essential for motors"],
+        theory: `<h4>NPN Transistor (2N2222 / BC547)</h4>
+<p>A transistor lets a <strong>tiny current</strong> control a <strong>much larger current</strong>.</p>
+<table><tr><th>Pin</th><th>Role</th><th>Connects To</th></tr>
+<tr><td>Base (B)</td><td>Control input</td><td>Arduino/button via resistor</td></tr>
+<tr><td>Collector (C)</td><td>Load connection</td><td>LED/Motor</td></tr>
+<tr><td>Emitter (E)</td><td>Ground</td><td>GND</td></tr></table>
+<p><strong>Gain (β):</strong> typically 100–300. I_collector = β × I_base</p>
+<div class="formula">Small base current → Controls large collector current</div>
+<div class="callout info">💡 Arduino pins: max ~40mA. Motors need 200–1000mA+. A transistor bridges this gap.</div>`,
+        diagram: `<svg width="100%" height="240" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <!-- Battery -->
+  <rect x="20" y="80" width="40" height="80" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1.5" rx="4"/>
+  <text x="40" y="125" fill="var(--accent)" font-size="10" text-anchor="middle" font-weight="bold">9V</text>
+  <path d="M 40 80 L 40 40 L 300 40" fill="none" stroke="var(--red)" stroke-width="2" />
+  <path d="M 40 160 L 40 220 L 300 220" fill="none" stroke="var(--text3)" stroke-width="2" />
+  
+  <!-- Transistor Symbol (NPN) -->
+  <circle cx="300" cy="130" r="30" fill="var(--bg4)" stroke="var(--text)" stroke-width="2" />
+  <line x1="285" y1="115" x2="285" y2="145" stroke="var(--text)" stroke-width="3" />
+  <path d="M 285 125 L 315 105 L 315 40" fill="none" stroke="var(--orange)" stroke-width="2" />
+  <path d="M 285 135 L 315 155 L 315 220" fill="none" stroke="var(--text3)" stroke-width="2" />
+  <polygon points="305,155 315,155 315,145" fill="var(--text3)" />
+  
+  <!-- Pin Labels -->
+  <text x="330" y="100" fill="var(--text2)" font-size="10" font-weight="bold">C</text>
+  <text x="260" y="134" fill="var(--text2)" font-size="10" font-weight="bold">B</text>
+  <text x="330" y="165" fill="var(--text2)" font-size="10" font-weight="bold">E</text>
+  
+  <!-- Load (LED + Resistor) -->
+  <rect x="305" y="55" width="20" height="30" fill="var(--bg4)" stroke="var(--text2)" stroke-width="1" />
+  <text x="340" y="72" fill="var(--text3)" font-size="8">220Ω</text>
+  <path d="M 305 90 L 325 90 L 315 105 Z" fill="rgba(16,185,129,0.1)" stroke="var(--green)" stroke-width="1.5" />
+  
+  <!-- Control Input -->
+  <path d="M 285 130 L 150 130" stroke="var(--accent3)" stroke-width="2" />
+  <rect x="180" y="122" width="30" height="15" fill="var(--bg4)" stroke="var(--text2)" stroke-width="1" />
+  <text x="195" y="115" fill="var(--text3)" font-size="8" text-anchor="middle">1kΩ</text>
+  
+  <!-- Button/Switch -->
+  <circle cx="120" cy="130" r="10" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1.5" />
+  <path d="M 113 123 L 127 137 M 127 123 L 113 137" stroke="var(--accent)" stroke-width="2" />
+  <path d="M 110 130 L 40 130" stroke="var(--red)" stroke-width="2" />
+  <text x="120" y="155" fill="var(--accent)" font-size="9" text-anchor="middle">Switch</text>
+</svg>`,
+        practical: `<h4>Transistor-Controlled LED</h4>
+<p><strong>Materials:</strong> 2N2222, LED, 220Ω resistor, 1kΩ resistor, push button</p>
+<ol><li>LED + 220Ω from battery + to Collector</li><li>Emitter to GND</li>
+<li>1kΩ from battery + through button to Base</li>
+<li>Press button → LED ON, release → LED OFF</li></ol>
+<p>The button current (~4mA) controls the LED current (~30mA) — amplification in action!</p>`,
+        troubleshooting: ["<strong>LED always on:</strong> Check transistor pin order (varies by model!).", "<strong>LED never on:</strong> Verify pinout from datasheet.", "<strong>Transistor hot:</strong> Base resistor too low."],
+        checkpoints: ["Can you identify E, B, C on your transistor?", "Does the transistor switch the LED?", "Can you explain why a base resistor is needed?", "Do you understand current amplification?"]
+      },
+
+      {
+        title: "Motors + Transistors", short: "Motor Control", subtitle: "Your First Robotics Moment 🎉",
+        objectives: ["Control a DC motor with a transistor", "Understand back-EMF", "Build a protected motor circuit"],
+        theory: `<h4>DC Motors</h4>
+<ul><li>Two terminals — reversing polarity reverses direction</li>
+<li><strong>Stall current:</strong> 5–10× running current!</li><li>Running current: 200–500mA typical</li></ul>
+<div class="callout danger">🚫 NEVER connect a motor directly to an Arduino pin! Arduino: max 40mA. Motor: 200–1000mA+. Result: damaged Arduino.</div>
+<h4>Back-EMF</h4><p>When you cut power to a spinning motor, it becomes a <strong>generator</strong> creating a reverse voltage spike of 50–100V. Always use a flyback diode!</p>`,
+        diagram: `<svg width="100%" height="240" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <!-- Battery -->
+  <rect x="20" y="80" width="40" height="80" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1.5" rx="4"/>
+  <text x="40" y="125" fill="var(--accent)" font-size="10" text-anchor="middle" font-weight="bold">9V</text>
+  <path d="M 40 80 L 40 40 L 300 40" fill="none" stroke="var(--red)" stroke-width="2" />
+  <path d="M 40 160 L 40 220 L 300 220" fill="none" stroke="var(--text3)" stroke-width="2" />
+  
+  <!-- Motor with Flyback Diode -->
+  <circle cx="300" cy="80" r="25" fill="var(--bg4)" stroke="var(--text)" stroke-width="2" />
+  <text x="300" y="84" fill="var(--text)" font-size="9" text-anchor="middle" font-weight="bold">MOTOR</text>
+  
+  <!-- Diode Branch -->
+  <path d="M 260 80 L 260 50 L 340 50 L 340 110 L 260 110" fill="none" stroke="var(--orange)" stroke-width="1.5" />
+  <polygon points="255,100 265,100 260,90" fill="var(--text3)" />
+  <line x1="250" y1="90" x2="270" y2="90" stroke="var(--text3)" stroke-width="2" />
+  
+  <!-- Transistor Switch -->
+  <circle cx="300" cy="155" r="25" fill="var(--bg4)" stroke="var(--accent2)" stroke-width="2" />
+  <line x1="288" y1="145" x2="288" y2="165" stroke="var(--accent2)" stroke-width="3" />
+  <path d="M 288 150 L 305 135 L 305 110" fill="none" stroke="var(--orange)" stroke-width="2" />
+  <path d="M 288 160 L 305 175 L 305 220" fill="none" stroke="var(--text3)" stroke-width="2" />
+  <polygon points="300,175 305,175 305,168" fill="var(--text3)" />
+  
+  <!-- Control -->
+  <path d="M 288 155 L 250 155" stroke="var(--accent3)" stroke-width="2" />
+  <text x="240" y="159" fill="var(--text3)" font-size="10" text-anchor="end">To Pin/Button</text>
+</svg>`,
+        practical: `<h4>Motor Control with Protection</h4>
+<ol><li>Motor between battery + and Collector</li><li>Emitter to GND</li>
+<li><strong>1N4007 diode ACROSS motor</strong> (cathode to +, anode to −)</li>
+<li>1kΩ through button to Base</li><li>100μF capacitor across power rails</li>
+<li>Press button → <strong>MOTOR SPINS!</strong> 🎉</li></ol>
+<div class="callout tip">💡 This is your FIRST real robotics moment — electronic signals controlling mechanical motion!</div>`,
+        troubleshooting: ["<strong>Motor doesn't spin:</strong> Check transistor orientation, test motor directly on battery.", "<strong>Transistor very hot:</strong> Motor draws too much for 2N2222. Use TIP120 for >500mA."],
+        checkpoints: ["Does the motor spin when you press the button?", "Is the flyback diode installed correctly?", "Can you explain why motors can't connect directly to Arduino?", "Do you understand back-EMF?"]
+      },
+
+      {
+        title: "PWM — Speed Control", short: "PWM", subtitle: "Pulse Width Modulation & Duty Cycle",
+        objectives: ["Understand PWM", "Learn duty cycle and average voltage", "Prepare for Arduino PWM control"],
+        theory: `<h4>Pulse Width Modulation</h4>
+<p>Instead of reducing voltage (which reduces torque), PWM rapidly switches ON/OFF. The motor's inertia smooths this out.</p>
+<table><tr><th>Duty Cycle</th><th>Avg Voltage (6V)</th><th>Speed</th></tr>
+<tr><td>100%</td><td>6.0V</td><td>Full</td></tr><tr><td>75%</td><td>4.5V</td><td>Fast</td></tr>
+<tr><td>50%</td><td>3.0V</td><td>Medium</td></tr><tr><td>25%</td><td>1.5V</td><td>Slow</td></tr>
+<tr><td>0%</td><td>0V</td><td>Stopped</td></tr></table>
+<div class="formula">V_average = V_supply × (duty_cycle / 100)</div>
+<p><strong>Arduino PWM:</strong> <code class="inline-code">analogWrite(pin, value)</code> where value is 0–255</p>
+<ul><li>analogWrite(pin, 0) = 0% duty cycle</li><li>analogWrite(pin, 127) = ~50%</li><li>analogWrite(pin, 255) = 100%</li></ul>`,
+        practical: `<h4>Manual PWM Demo</h4>
+<p>Using your Day 9 motor circuit:</p>
+<ol><li>Rapidly press/release the button (~2× per second)</li><li>Motor stutters and spins slowly</li><li>Hold longer → motor speeds up</li><li>This is "manual PWM" — you're varying duty cycle by hand!</li></ol>`,
+        checkpoints: ["Can you explain PWM in your own words?", "Can you calculate average voltage for any duty cycle?", "Do you understand why PWM beats voltage reduction?", "Can you explain duty cycle?"]
+      },
+
+      {
+        title: "Potentiometer — Variable Resistance", short: "Potentiometer", subtitle: "Variable Voltage Divider & Analog Control",
+        objectives: ["Understand how potentiometers work", "Control LED brightness with a pot", "Learn pot-to-voltage-divider connection"],
+        theory: `<h4>How It Works</h4>
+<p>A potentiometer has 3 pins — turning the knob changes resistance between them.</p>
+<ul><li><strong>Pin 1:</strong> One end of resistive element</li><li><strong>Pin 2:</strong> Wiper (output)</li><li><strong>Pin 3:</strong> Other end</li></ul>
+<p>A potentiometer <strong>IS</strong> a variable voltage divider! With Pin 1 at 5V and Pin 3 at GND:</p>
+<table><tr><th>Knob Position</th><th>Pin 2 Output</th></tr>
+<tr><td>Full to Pin 1</td><td>~5V</td></tr><tr><td>Middle</td><td>~2.5V</td></tr><tr><td>Full to Pin 3</td><td>~0V</td></tr></table>
+<div class="callout info">💡 Joysticks are just two potentiometers! One for X-axis, one for Y-axis.</div>`,
+        practical: `<h4>Potentiometer-Controlled LED</h4>
+<ol><li>Pot Pin 1 → battery +</li><li>Pot Pin 3 → battery −</li><li>Pot Pin 2 → 220Ω resistor → LED anode</li><li>LED cathode → battery −</li><li>Turn knob → brightness changes smoothly!</li></ol>
+<p>Use multimeter on Pin 2 to watch voltage change as you turn.</p>`,
+        troubleshooting: ["<strong>No brightness change:</strong> Check middle pin is the output.", "<strong>Pot gets warm:</strong> Don't use pots under 1kΩ across full voltage."],
+        checkpoints: ["Can you explain how a potentiometer works?", "Does brightness change smoothly?", "Can you measure the voltage output?", "Do you see the connection to voltage dividers?"]
+      },
+
+      {
+        title: "Analog vs Digital Signals", short: "Analog/Digital", subtitle: "Understanding Signal Types & ADC",
+        objectives: ["Understand analog vs digital difference", "Learn ADC conversion", "Know which sensors produce which type"],
+        theory: `<h4>Digital Signals</h4>
+<p>Only two states: <strong>HIGH</strong> (5V) or <strong>LOW</strong> (0V). Like a light switch — on or off.</p>
+<p>Perfect for YES/NO: Is button pressed? Is sensor blocked?</p>
+<h4>Analog Signals</h4>
+<p>Any value in a range — continuous. Like a dimmer switch.</p>
+<p>Answers "how much": How far? How hot? How bright?</p>
+<h4>ADC (Analog-to-Digital Conversion)</h4>
+<p>Arduino's ADC converts 0–5V to a number <strong>0–1023</strong> (10-bit resolution).</p>
+<div class="formula">Resolution: 5V / 1024 ≈ 4.9mV per step</div>
+<table><tr><th>Input Voltage</th><th>ADC Value</th></tr>
+<tr><td>0V</td><td>0</td></tr><tr><td>1V</td><td>205</td></tr><tr><td>2.5V</td><td>512</td></tr><tr><td>3.3V</td><td>675</td></tr><tr><td>5V</td><td>1023</td></tr></table>
+<p>Code: <code class="inline-code">int value = analogRead(A0);</code></p>`,
+        practical: `<h4>Classify Signals</h4>
+<table><tr><th>Signal</th><th>Type</th></tr>
+<tr><td>Room temperature</td><td>Analog</td></tr><tr><td>Light switch</td><td>Digital</td></tr>
+<tr><td>Volume knob</td><td>Analog</td></tr><tr><td>Keyboard key</td><td>Digital</td></tr></table>
+<h4>Hands-On Preview</h4><p>Using your potentiometer: measure Pin 2 voltage with multimeter as you turn. This is exactly what Arduino's analogRead() will do!</p>`,
+        checkpoints: ["Can you classify any signal as analog or digital?", "Can you calculate ADC values for given voltages?", "Do you understand 10-bit resolution?", "Can you explain analogRead vs digitalRead?"]
+      }
+      // ---- MORE_DAYS_2 ----
+      , {
+        title: "Intro to Microcontrollers — Arduino", short: "Arduino Intro", subtitle: "Setup, First Upload & Blink",
+        objectives: ["Understand what a microcontroller is", "Set up Arduino IDE", "Upload your first program", "Learn Arduino program structure"],
+        theory: `<h4>Arduino Uno R3 Specs</h4>
+<table><tr><th>Feature</th><th>Value</th></tr><tr><td>Microcontroller</td><td>ATmega328P</td></tr><tr><td>Clock</td><td>16MHz</td></tr><tr><td>Digital I/O</td><td>14 pins (6 PWM)</td></tr><tr><td>Analog Inputs</td><td>6 (A0–A5)</td></tr><tr><td>Flash Memory</td><td>32KB</td></tr><tr><td>RAM</td><td>2KB</td></tr><tr><td>Operating Voltage</td><td>5V</td></tr><tr><td>Max per pin</td><td>20mA (40mA absolute)</td></tr></table>
+<h4>Program Structure</h4>
+<pre><code>void setup() {
+  // Runs ONCE at startup
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  // Runs FOREVER after setup
+  digitalWrite(13, HIGH);
+  delay(1000);
+  digitalWrite(13, LOW);
+  delay(1000);
+}</code></pre>`,
+        diagram: `<svg width="100%" height="240" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <rect x="50" y="40" width="220" height="160" fill="var(--bg4)" stroke="var(--accent)" stroke-width="2" rx="8"/>
+  <rect x="30" y="80" width="40" height="30" fill="#64748b" rx="2"/>
+  <rect x="60" y="50" width="200" height="15" fill="#1e293b" />
+  <rect x="60" y="175" width="200" height="15" fill="#1e293b" />
+  <text x="160" y="120" fill="var(--accent)" font-size="14" text-anchor="middle" font-weight="bold">ARDUINO UNO</text>
+  <path d="M 255 50 L 255 20 L 320 20" fill="none" stroke="var(--orange)" stroke-width="2" />
+  <text x="255" y="65" fill="var(--yellow)" font-size="8" text-anchor="middle">D13</text>
+  <rect x="320" y="10" width="30" height="20" fill="var(--bg4)" stroke="var(--text2)" stroke-width="1" rx="2"/>
+  <text x="335" y="24" fill="var(--text3)" font-size="9" text-anchor="middle">220Ω</text>
+  <path d="M 350 20 L 370 20 L 370 120" fill="none" stroke="var(--orange)" stroke-width="2" />
+  <path d="M 355 120 L 385 120 L 370 145 Z" fill="rgba(16,185,129,0.1)" stroke="var(--green)" stroke-width="2" />
+  <line x1="370" y1="145" x2="370" y2="185" stroke="var(--text3)" stroke-width="2" />
+  <path d="M 370 185 L 205 185 L 205 175" fill="none" stroke="var(--text3)" stroke-width="2" />
+  <text x="205" y="168" fill="var(--text3)" font-size="8" text-anchor="middle">GND</text>
+</svg>`,
+        practical: `<h4>Setup & Blink</h4>
+<ol><li>Install Arduino IDE from arduino.cc</li><li>Connect Arduino via USB</li><li>Tools → Board → Arduino Uno</li><li>Tools → Port → select COM port</li><li>File → Examples → 01.Basics → Blink</li><li>Click Upload (→ arrow)</li><li>Built-in LED blinks! 🎉</li></ol>
+<h4>Experiment</h4><ul><li>Change delay(1000) to delay(200) → faster blink</li><li>Try an external LED on pin 8 with 220Ω resistor</li></ul>`,
+        troubleshooting: ["<strong>Board not found:</strong> Try different USB cable (some are charge-only).", "<strong>Upload fails:</strong> Check Board and Port settings."],
+        checkpoints: ["Is Arduino IDE installed?", "Can you upload a sketch?", "Does the LED blink?", "Did you modify the timing?", "Can you blink an external LED?"]
+      },
+
+      {
+        title: "Digital Inputs + Outputs", short: "Button → LED", subtitle: "Pull-up/Pull-down Resistors & Debouncing",
+        objectives: ["Read buttons with Arduino", "Combine inputs with outputs", "Understand pull-up/pull-down resistors", "Write interactive programs"],
+        theory: `<h4>Pull-Up & Pull-Down Resistors</h4>
+<p>Without one, a disconnected pin "floats" and reads random noise.</p>
+<table><tr><th>Type</th><th>Default</th><th>When Pressed</th></tr>
+<tr><td>Pull-DOWN (10kΩ to GND)</td><td>LOW</td><td>HIGH</td></tr>
+<tr><td>Pull-UP (10kΩ to 5V)</td><td>HIGH</td><td>LOW</td></tr>
+<tr><td>Internal Pull-UP</td><td>HIGH</td><td>LOW</td></tr></table>
+<p>Internal pull-up: <code class="inline-code">pinMode(pin, INPUT_PULLUP);</code> — no external resistor needed!</p>
+<h4>Debouncing</h4><p>Buttons "bounce" mechanically. Add <code class="inline-code">delay(50)</code> after detecting a press.</p>`,
+        practical: `<h4>Button → LED Control</h4>
+<pre><code>const int buttonPin = 2;
+const int ledPin = 8;
+void setup() {
+  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(ledPin, OUTPUT);
+}
+void loop() {
+  if (digitalRead(buttonPin) == LOW) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+}</code></pre>
+<p>Wire: Button from pin 2 to GND. LED + 220Ω from pin 8 to GND.</p>`,
+        troubleshooting: ["<strong>LED flickers randomly:</strong> Missing pull-up/pull-down resistor.", "<strong>Multiple triggers:</strong> Add debounce delay."],
+        checkpoints: ["Can you read a button with digitalRead()?", "Do you understand pull-up vs pull-down?", "Can you combine input + output?", "Did you try the toggle version?"]
+      },
+
+      {
+        title: "Reading Sensors — analogRead()", short: "Analog Sensors", subtitle: "Potentiometer Reading & Serial Monitor",
+        objectives: ["Use analogRead() to read a potentiometer", "Display values on Serial Monitor", "Use the map() function"],
+        theory: `<h4>Analog Input</h4><p>6 analog pins (A0–A5), each converts 0–5V to 0–1023.</p>
+<h4>Serial Monitor</h4>
+<pre><code>Serial.begin(9600);    // In setup()
+Serial.println(value); // Print + newline
+// Open: Tools → Serial Monitor</code></pre>
+<h4>map() Function</h4>
+<pre><code>int output = map(input, 0, 1023, 0, 255);</code></pre>`,
+        diagram: `<svg width="100%" height="240" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <!-- Arduino Uno -->
+  <rect x="30" y="40" width="160" height="160" fill="var(--bg4)" stroke="var(--accent)" stroke-width="2" rx="8"/>
+  <text x="110" y="125" fill="var(--accent)" font-size="14" text-anchor="middle" font-weight="bold">ARDUINO</text>
+  
+  <!-- Potentiometer -->
+  <rect x="280" y="60" width="80" height="120" fill="var(--bg4)" stroke="var(--accent3)" stroke-width="2" rx="10"/>
+  <circle cx="320" cy="110" r="25" fill="var(--bg3)" stroke="var(--text2)" stroke-width="2"/>
+  <line x1="320" y1="110" x2="320" y2="90" stroke="var(--accent3)" stroke-width="3" transform="rotate(45 320 110)" stroke-linecap="round" />
+  <text x="320" y="155" fill="var(--accent3)" font-size="10" text-anchor="middle" font-weight="bold">POTENTIOMETER</text>
+  
+  <!-- Wiring -->
+  <path d="M 190 60 L 280 60" stroke="var(--red)" stroke-width="2" />
+  <text x="200" y="55" fill="var(--red)" font-size="8">5V</text>
+  
+  <path d="M 190 120 L 280 120" stroke="var(--yellow)" stroke-width="2" stroke-dasharray="4"/>
+  <text x="200" y="115" fill="var(--yellow)" font-size="8">A0 (Wiper)</text>
+  
+  <path d="M 190 180 L 280 180" stroke="var(--text3)" stroke-width="2" />
+  <text x="200" y="175" fill="var(--text3)" font-size="8">GND</text>
+  
+  <!-- Terminals -->
+  <circle cx="280" cy="60" r="3" fill="var(--red)" />
+  <circle cx="280" cy="120" r="3" fill="var(--yellow)" />
+  <circle cx="280" cy="180" r="3" fill="var(--text3)" />
+</svg>`,
+        practical: `<h4>Potentiometer Reading</h4>
+<p>Wire: Pot Pin 1→5V, Pin 2→A0, Pin 3→GND</p>
+<pre><code>void setup() { Serial.begin(9600); }
+void loop() {
+  int val = analogRead(A0);
+  float voltage = val * (5.0 / 1023.0);
+  Serial.print("Raw: "); Serial.print(val);
+  Serial.print("  V: "); Serial.println(voltage);
+  delay(100);
+}</code></pre>
+<h4>Control LED Brightness</h4>
+<pre><code>void loop() {
+  int val = analogRead(A0);
+  int brightness = map(val, 0, 1023, 0, 255);
+  analogWrite(9, brightness); // PWM pin
+  delay(50);
+}</code></pre>`,
+        checkpoints: ["Can you read analog values on Serial Monitor?", "Do you understand the 0–1023 range?", "Can you convert raw values to voltage?", "Did you control LED brightness with the pot?"]
+      },
+
+      {
+        title: "Ultrasonic Sensor — Distance", short: "Ultrasonic", subtitle: "HC-SR04: Measuring Distance with Sound",
+        objectives: ["Understand ultrasonic sensing", "Wire the HC-SR04", "Calculate distance from time", "Build a distance measurement system"],
+        theory: `<h4>How It Works</h4>
+<ol><li>Sends ultrasonic burst (40kHz)</li><li>Sound bounces off object</li><li>Measures round-trip time</li><li>Calculates distance</li></ol>
+<div class="formula">Distance (cm) = duration (μs) / 58</div>`,
+        diagram: `<svg width="100%" height="240" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <!-- Arduino -->
+  <rect x="20" y="40" width="160" height="160" fill="var(--bg4)" stroke="var(--accent)" stroke-width="2" rx="8"/>
+  <text x="100" y="125" fill="var(--accent)" font-size="14" text-anchor="middle" font-weight="bold">ARDUINO</text>
+  
+  <!-- Ultrasonic Module -->
+  <rect x="260" y="70" width="110" height="100" fill="var(--bg4)" stroke="var(--accent3)" stroke-width="2" rx="4"/>
+  <circle cx="290" cy="110" r="18" fill="var(--bg3)" stroke="var(--text2)" />
+  <circle cx="340" cy="110" r="18" fill="var(--bg3)" stroke="var(--text2)" />
+  <text x="315" y="160" fill="var(--accent3)" font-size="10" text-anchor="middle" font-weight="bold">HC-SR04</text>
+  
+  <!-- Wiring -->
+  <!-- VCC -->
+  <path d="M 180 60 L 220 60 L 220 80 L 260 80" fill="none" stroke="var(--red)" stroke-width="1.5" />
+  <text x="185" y="55" fill="var(--red)" font-size="8">5V -> VCC</text>
+  
+  <!-- Trig -->
+  <path d="M 180 90 L 260 90" stroke="var(--orange)" stroke-width="1.5" />
+  <text x="185" y="85" fill="var(--orange)" font-size="8">D9 -> Trig</text>
+  
+  <!-- Echo -->
+  <path d="M 180 120 L 260 120" stroke="var(--yellow)" stroke-width="1.5" />
+  <text x="185" y="115" fill="var(--yellow)" font-size="8">D10 -> Echo</text>
+  
+  <!-- GND -->
+  <path d="M 180 150 L 220 150 L 220 130 L 260 130" fill="none" stroke="var(--text3)" stroke-width="1.5" />
+  <text x="185" y="145" fill="var(--text3)" font-size="8">GND -> GND</text>
+</svg>`,
+        practical: `<h4>Distance Measurement</h4>
+<table><tr><th>Pin</th><th>Connection</th></tr><tr><td>VCC</td><td>5V</td></tr><tr><td>Trig</td><td>Digital pin (output)</td></tr><tr><td>Echo</td><td>Digital pin (input)</td></tr><tr><td>GND</td><td>GND</td></tr></table>
+<pre><code>const int trigPin = 9, echoPin = 10;
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  Serial.begin(9600);
+}
+void loop() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  long duration = pulseIn(echoPin, HIGH);
+  float distance = duration / 58.0;
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  delay(200);
+}</code></pre>`,
+        troubleshooting: ["<strong>Always reads 0:</strong> Trig and Echo may be swapped.", "<strong>Erratic readings:</strong> Add 100μF capacitor across VCC/GND."],
+        checkpoints: ["Can you explain ultrasonic sensing?", "Does distance measurement work?", "Can you apply the distance formula?", "Did you verify with known distances?"]
+      },
+
+      {
+        title: "Motor Driver — L298N", short: "Motor Driver", subtitle: "H-Bridge, Direction & Speed Control",
+        objectives: ["Understand why motor drivers are needed", "Learn H-Bridge operation", "Wire and test the L298N", "Control direction and speed"],
+        theory: `<h4>H-Bridge Concept</h4>
+<svg width="100%" height="220" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px; margin: 10px 0;">
+  <text x="120" y="30" fill="var(--red)" font-size="12" text-anchor="middle" font-weight="bold">+V</text>
+  <text x="280" y="30" fill="var(--red)" font-size="12" text-anchor="middle" font-weight="bold">+V</text>
+  <path d="M 120 40 L 120 60 M 280 40 L 280 60" stroke="var(--red)" stroke-width="2" />
+  <rect x="100" y="60" width="40" height="25" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1.5" rx="4"/>
+  <text x="120" y="76" fill="var(--accent)" font-size="10" text-anchor="middle">S1</text>
+  <rect x="260" y="60" width="40" height="25" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1.5" rx="4"/>
+  <text x="280" y="76" fill="var(--accent)" font-size="10" text-anchor="middle">S2</text>
+  <path d="M 120 85 L 120 120 M 280 85 L 280 120" stroke="var(--orange)" stroke-width="2" />
+  <circle cx="200" cy="120" r="25" fill="var(--bg4)" stroke="var(--text2)" stroke-width="2" />
+  <text x="200" y="124" fill="var(--text2)" font-size="10" text-anchor="middle">MOTOR</text>
+  <path d="M 120 120 L 175 120 M 225 120 L 280 120" stroke="var(--orange)" stroke-width="2" />
+  <circle cx="120" cy="120" r="4" fill="var(--orange)" />
+  <circle cx="280" cy="120" r="4" fill="var(--orange)" />
+  <path d="M 120 120 L 120 135 M 280 120 L 280 135" stroke="var(--orange)" stroke-width="2" />
+  <rect x="100" y="135" width="40" height="25" fill="var(--bg4)" stroke="var(--accent2)" stroke-width="1.5" rx="4"/>
+  <text x="120" y="151" fill="var(--accent2)" font-size="10" text-anchor="middle">S3</text>
+  <rect x="260" y="135" width="40" height="25" fill="var(--bg4)" stroke="var(--accent2)" stroke-width="1.5" rx="4"/>
+  <text x="280" y="151" fill="var(--accent2)" font-size="10" text-anchor="middle">S4</text>
+  <path d="M 120 160 L 120 180 M 280 160 L 280 180" stroke="var(--text3)" stroke-width="2" />
+  <path d="M 110 180 L 130 180 M 115 185 L 125 185 M 120 190 L 120 190 M 270 180 L 290 180 M 275 185 L 285 185 M 280 190 L 280 190" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" />
+</svg>
+<table><tr><th>IN1</th><th>IN2</th><th>Result</th></tr>
+<tr><td>HIGH</td><td>LOW</td><td>Forward</td></tr><tr><td>LOW</td><td>HIGH</td><td>Reverse</td></tr>
+<tr><td>LOW</td><td>LOW</td><td>Stop</td></tr><tr><td>HIGH</td><td>HIGH</td><td>Brake</td></tr></table>
+<p><strong>ENA/ENB:</strong> PWM speed control (0–255)</p>`,
+        diagram: `<svg width="100%" height="260" viewBox="0 0 450 260" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <!-- L298N Module -->
+  <rect x="200" y="40" width="120" height="120" fill="var(--bg4)" stroke="var(--red)" stroke-width="2.5" rx="6"/>
+  <rect x="240" y="20" width="40" height="30" fill="#444" />
+  <text x="260" y="105" fill="var(--red)" font-size="12" text-anchor="middle" font-weight="bold">L298N</text>
+  
+  <!-- Arduino -->
+  <rect x="20" y="40" width="100" height="120" fill="var(--bg4)" stroke="var(--accent)" stroke-width="2" rx="4"/>
+  <text x="70" y="105" fill="var(--accent)" font-size="11" text-anchor="middle" font-weight="bold">ARDUINO</text>
+  
+  <!-- Motor -->
+  <circle cx="390" cy="100" r="35" fill="var(--bg4)" stroke="var(--text)" stroke-width="2" />
+  <text x="390" y="104" fill="var(--text)" font-size="10" text-anchor="middle" font-weight="bold">MOTOR</text>
+  
+  <!-- Logic Control Wires -->
+  <path d="M 120 70 L 200 70" stroke="var(--orange)" stroke-width="2" />
+  <text x="160" y="65" fill="var(--orange)" font-size="8" text-anchor="middle">IN1 (D5)</text>
+  <path d="M 120 100 L 200 100" stroke="var(--yellow)" stroke-width="2" />
+  <text x="160" y="95" fill="var(--yellow)" font-size="8" text-anchor="middle">IN2 (D4)</text>
+  <path d="M 120 130 L 200 130" stroke="var(--accent3)" stroke-width="2" />
+  <text x="160" y="125" fill="var(--accent3)" font-size="8" text-anchor="middle">ENA (D6)</text>
+  
+  <!-- Motor Output Wires -->
+  <path d="M 320 85 L 355 85" stroke="var(--orange)" stroke-width="2.5" />
+  <path d="M 320 115 L 355 115" stroke="var(--orange)" stroke-width="2.5" />
+  
+  <!-- Power -->
+  <rect x="230" y="190" width="60" height="40" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1.5" rx="4"/>
+  <text x="260" y="215" fill="var(--accent)" font-size="9" text-anchor="middle" font-weight="bold">BATTERY</text>
+  <path d="M 260 190 L 260 160" stroke="var(--red)" stroke-width="2" />
+  <path d="M 290 210 L 330 210 L 330 150" fill="none" stroke="var(--text3)" stroke-width="2" />
+</svg>`,
+        practical: `<h4>Motor Driver Test</h4>
+<pre><code>const int in1=5, in2=4, enA=6;
+void setup() {
+  pinMode(in1,OUTPUT);
+  pinMode(in2,OUTPUT);
+  pinMode(enA,OUTPUT);
+}
+void loop() {
+  // Forward full speed
+  digitalWrite(in1,HIGH); digitalWrite(in2,LOW);
+  analogWrite(enA,255);
+  delay(2000);
+  // Half speed
+  analogWrite(enA,127);
+  delay(2000);
+  // Stop
+  digitalWrite(in1,LOW); digitalWrite(in2,LOW);
+  delay(1000);
+  // Reverse
+  digitalWrite(in1,LOW); digitalWrite(in2,HIGH);
+  analogWrite(enA,255);
+  delay(2000);
+  // Stop
+  digitalWrite(in1,LOW); digitalWrite(in2,LOW);
+  delay(2000);
+}</code></pre>`,
+        troubleshooting: ["<strong>Motor doesn't spin:</strong> Check GND connection between L298N and Arduino.", "<strong>No speed control:</strong> ENA must be on a PWM pin (~)."],
+        checkpoints: ["Can you explain why a motor driver is needed?", "Can you control direction?", "Can you control speed with PWM?", "Do you understand the H-Bridge?"]
+      },
+
+      {
+        title: "Sensor + Motor — Reactive System", short: "Reactive System", subtitle: "Sense → Think → Act Loop",
+        objectives: ["Combine ultrasonic + motor driver", "Create distance-reactive motor", "Write conditional sensor logic"],
+        theory: `<h4>The Robotics Loop</h4>
+<ol><li><strong>SENSE</strong> — Read sensor data</li><li><strong>THINK</strong> — Process & decide</li><li><strong>ACT</strong> — Control motor</li><li><strong>REPEAT</strong></li></ol>
+<div class="callout info">💡 This sense-think-act loop is the fundamental pattern of ALL robotics — from hobby robots to Mars rovers.</div>`,
+        diagram: `<svg width="100%" height="240" viewBox="0 0 450 240" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <!-- Block Diagram Layout -->
+  <!-- Sensor -->
+  <rect x="30" y="90" width="90" height="60" fill="var(--bg4)" stroke="var(--accent3)" stroke-width="2" rx="6"/>
+  <text x="75" y="125" fill="var(--accent3)" font-size="10" text-anchor="middle" font-weight="bold">SENSOR</text>
+  
+  <!-- Arduino (Processor) -->
+  <rect x="180" y="80" width="100" height="80" fill="var(--bg4)" stroke="var(--accent)" stroke-width="2" rx="4"/>
+  <text x="230" y="125" fill="var(--accent)" font-size="11" text-anchor="middle" font-weight="bold">PROCESSOR</text>
+  <text x="230" y="140" fill="var(--text3)" font-size="8" text-anchor="middle">(Arduino)</text>
+  
+  <!-- Actuator (Motor Driver + Motor) -->
+  <rect x="340" y="90" width="90" height="60" fill="var(--bg4)" stroke="var(--red)" stroke-width="2" rx="6"/>
+  <text x="385" y="125" fill="var(--red)" font-size="10" text-anchor="middle" font-weight="bold">ACTUATOR</text>
+  
+  <!-- Flow Arrows -->
+  <!-- Sense to Think -->
+  <path d="M 120 120 L 170 120" stroke="var(--yellow)" stroke-width="3" />
+  <polygon points="170,120 160,115 160,125" fill="var(--yellow)" />
+  <text x="145" y="110" fill="var(--yellow)" font-size="8" text-anchor="middle">SENSE</text>
+  
+  <!-- Think to Act -->
+  <path d="M 280 120 L 330 120" stroke="var(--orange)" stroke-width="3" />
+  <polygon points="330,120 320,115 320,125" fill="var(--orange)" />
+  <text x="305" y="110" fill="var(--orange)" font-size="8" text-anchor="middle">ACT</text>
+  
+  <!-- Feedback Loop -->
+  <path d="M 385 150 L 385 200 L 75 200 L 75 150" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-dasharray="5,5" />
+  <text x="230" y="215" fill="var(--text3)" font-size="9" text-anchor="middle">The Reactive Feedback Loop</text>
+</svg>`,
+        practical: `<h4>Distance-Reactive Motor</h4>
+<pre><code>void loop() {
+  float distance = getDistance();
+  if (distance > 30) {
+    // Far — full speed
+    moveForward(255);
+  } else if (distance > 15) {
+    // Close — slow down
+    int speed = map(distance, 15, 30, 100, 255);
+    moveForward(speed);
+  } else {
+    // Too close — STOP!
+    stopMotor();
+  }
+  delay(100);
+}</code></pre>`,
+        checkpoints: ["Does the motor react to distance?", "Does it slow down as objects approach?", "Does it stop when very close?", "Can you explain the sense-think-act loop?"]
+      },
+
+      {
+        title: "Noise & Stability", short: "Noise Filtering", subtitle: "Making Circuits Reliable",
+        objectives: ["Understand electrical noise", "Learn filtering techniques", "Apply capacitors and software averaging"],
+        theory: `<h4>Noise Sources</h4>
+<ul><li>Motors (electromagnetic interference)</li><li>Power fluctuations (voltage drops under load)</li><li>Long wires (act as antennas)</li></ul>
+<h4>Solutions</h4>
+<table><tr><th>Method</th><th>Implementation</th></tr>
+<tr><td>Decoupling caps</td><td>100μF near power, 0.1μF near each IC</td></tr>
+<tr><td>Separate power</td><td>Motors on own supply, common GND</td></tr>
+<tr><td>Software filter</td><td>Average multiple readings</td></tr>
+<tr><td>Good wiring</td><td>Short wires, twist power+GND</td></tr></table>`,
+        diagram: `<svg width="100%" height="240" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" style="background:var(--bg3); border-radius:8px;">
+  <!-- Power Rails -->
+  <line x1="50" y1="60" x2="350" y2="60" stroke="var(--red)" stroke-width="3" />
+  <text x="360" y="65" fill="var(--red)" font-size="10" font-weight="bold">VCC</text>
+  
+  <line x1="50" y1="180" x2="350" y2="180" stroke="var(--text3)" stroke-width="3" />
+  <text x="360" y="185" fill="var(--text3)" font-size="10" font-weight="bold">GND</text>
+  
+  <!-- Electrolytic Cap -->
+  <rect x="120" y="90" width="30" height="50" fill="var(--bg4)" stroke="var(--accent)" stroke-width="1.5" />
+  <line x1="135" y1="60" x2="135" y2="90" stroke="var(--accent)" stroke-width="2" />
+  <line x1="135" y1="140" x2="135" y2="180" stroke="var(--accent)" stroke-width="2" />
+  <text x="135" y="155" fill="var(--accent)" font-size="9" text-anchor="middle" font-weight="bold">100µF</text>
+  <text x="135" y="80" fill="var(--accent)" font-size="8" text-anchor="middle">Electrolytic</text>
+  
+  <!-- Ceramic Cap -->
+  <circle cx="260" cy="115" r="12" fill="var(--bg4)" stroke="var(--yellow)" stroke-width="1.5" />
+  <line x1="260" y1="60" x2="260" y2="103" stroke="var(--yellow)" stroke-width="2" />
+  <line x1="260" y1="127" x2="260" y2="180" stroke="var(--yellow)" stroke-width="2" />
+  <text x="260" y="155" fill="var(--yellow)" font-size="9" text-anchor="middle" font-weight="bold">0.1µF</text>
+  <text x="260" y="80" fill="var(--yellow)" font-size="8" text-anchor="middle">Ceramic</text>
+  
+  <!-- Label -->
+  <text x="200" y="215" fill="var(--text2)" font-size="11" text-anchor="middle" font-style="italic">Parallel Decoupling Filters Noise</text>
+</svg>`,
+        practical: `<h4>Software Averaging</h4>
+<pre><code>float getAvgDistance(int samples) {
+  float total = 0;
+  for (int i = 0; i < samples; i++) {
+    total += getDistance();
+    delay(10);
+  }
+  return total / samples;
+}</code></pre>
+<p>Add capacitors across power supplies and compare readings before/after.</p>`,
+        checkpoints: ["Can you identify noise sources?", "Did you add decoupling capacitors?", "Is software filtering implemented?", "Are readings more stable now?"]
+      },
+
+      {
+        title: "Debugging Skills", short: "Debugging", subtitle: "Systematic Problem-Solving",
+        objectives: ["Develop debugging techniques", "Use Serial Monitor diagnostics", "Learn common mistakes and fixes"],
+        theory: `<h4>The Debugging Process</h4>
+<ol><li><strong>OBSERVE:</strong> What happens vs what should happen?</li><li><strong>HYPOTHESIZE:</strong> What could cause this?</li><li><strong>TEST:</strong> Check one thing at a time</li><li><strong>FIX:</strong> Apply the solution</li><li><strong>VERIFY:</strong> Confirm nothing else broke</li></ol>
+<h4>Common Hardware Problems</h4>
+<ul><li>Loose breadboard connections</li><li>Wrong pin connections</li><li>Dead battery</li><li>Reversed polarity</li></ul>
+<h4>Common Software Problems</h4>
+<ul><li>Wrong pin number in code</li><li>Missing pinMode()</li><li>Integer division: 5/9=0 in C!</li><li>Forgot Serial.begin()</li></ul>`,
+        practical: `<h4>Serial Monitor Debugging</h4>
+<pre><code>void loop() {
+  Serial.println("--- Loop Start ---");
+  float dist = getDistance();
+  Serial.print("Distance: ");
+  Serial.println(dist);
+  if (dist > 30)
+    Serial.println("Decision: FORWARD");
+  else
+    Serial.println("Decision: STOP");
+}</code></pre>`,
+        checkpoints: ["Can you systematically debug hardware?", "Can you find and fix code bugs?", "Are you comfortable with Serial Monitor?"]
+      },
+
+      {
+        title: "Mini Robot System", short: "Robot Brain", subtitle: "Sensor + Logic + Output (Tabletop)",
+        objectives: ["Build complete tabletop system", "Implement multi-threshold logic", "Add LED status indicators"],
+        theory: `<h4>Complete System</h4>
+<p>Today you build a stationary robot "brain" — ready for chassis integration.</p>
+<table><tr><th>Component</th><th>Role</th></tr>
+<tr><td>Ultrasonic sensor</td><td>Perceive the world</td></tr>
+<tr><td>Motor driver + motor</td><td>Act on the world</td></tr>
+<tr><td>Status LEDs</td><td>Visual feedback</td></tr>
+<tr><td>Arduino</td><td>Process & decide</td></tr></table>`,
+        practical: `<h4>Smart Proximity System</h4>
+<p>Add status LEDs: 🟢 Green (pin 11), 🟡 Yellow (pin 12), 🔴 Red (pin 13)</p>
+<pre><code>void loop() {
+  float dist = getAverageDistance();
+  allLEDsOff();
+  if (dist > 40) {
+    digitalWrite(greenLED, HIGH);
+    moveForward(255);       // Full speed
+  } else if (dist > 20) {
+    digitalWrite(yellowLED, HIGH);
+    int spd = map(dist, 20, 40, 80, 200);
+    moveForward(spd);       // Slowing
+  } else {
+    digitalWrite(redLED, HIGH);
+    stopMotor();            // Stopped!
+  }
+  delay(100);
+}</code></pre>`,
+        checkpoints: ["Does the complete system work?", "Are LED indicators correct?", "Is motor response smooth?", "Have you added noise filtering?"]
+      },
+
+      {
+        title: "Build the Chassis", short: "Chassis Build", subtitle: "Mechanical Assembly & Component Placement",
+        objectives: ["Assemble robot chassis", "Mount motors and wheels", "Plan component placement"],
+        theory: `<h4>2WD Robot Design</h4>
+<ul><li>2 powered DC motors with wheels (drive + steer)</li><li>1 caster wheel for balance</li></ul>
+<h4>Differential Drive</h4>
+<table><tr><th>Left Wheel</th><th>Right Wheel</th><th>Result</th></tr>
+<tr><td>Forward</td><td>Forward</td><td>Straight</td></tr>
+<tr><td>Stop</td><td>Forward</td><td>Turn left</td></tr>
+<tr><td>Forward</td><td>Stop</td><td>Turn right</td></tr>
+<tr><td>Backward</td><td>Forward</td><td>Spin left</td></tr></table>`,
+        practical: `<h4>Assembly Steps</h4>
+<ol><li>Mount DC motors to chassis with brackets</li><li>Press-fit wheels onto motor shafts</li><li>Mount caster wheel opposite to drive motors</li><li>Test: push chassis — should roll smoothly</li></ol>
+<h4>Component Placement Plan</h4>
+<ul><li><strong>Arduino:</strong> Center-top, USB accessible</li><li><strong>Motor driver:</strong> Near motors</li><li><strong>Battery:</strong> Low, centered</li><li><strong>Sensor:</strong> Front-facing</li></ul>`,
+        checkpoints: ["Is the chassis assembled?", "Do wheels spin freely?", "Does it roll smoothly?", "Have you planned component placement?"]
+      }
+      // ---- MORE_DAYS_3 ----
+      , {
+        title: "Motor Control System", short: "Dual Motors", subtitle: "Wiring Both Motors Through L298N",
+        objectives: ["Wire both motors through L298N", "Test each motor independently", "Verify direction control"],
+        theory: `<h4>Two-Motor Control</h4><p>L298N controls TWO motors independently for steering.</p>
+<table><tr><th>L298N</th><th>Arduino</th><th>Notes</th></tr>
+<tr><td>IN1</td><td>Pin 5</td><td>Motor A direction</td></tr><tr><td>IN2</td><td>Pin 4</td><td>Motor A direction</td></tr>
+<tr><td>ENA</td><td>Pin 6 (~)</td><td>Motor A speed</td></tr><tr><td>IN3</td><td>Pin 8</td><td>Motor B direction</td></tr>
+<tr><td>IN4</td><td>Pin 7</td><td>Motor B direction</td></tr><tr><td>ENB</td><td>Pin 3 (~)</td><td>Motor B speed</td></tr></table>`,
+        practical: `<h4>Dual Motor Test</h4>
+<pre><code>const int in1=5,in2=4,enA=6;
+const int in3=8,in4=7,enB=3;
+void setup() {
+  // Set all pins as OUTPUT
+  pinMode(in1,OUTPUT); pinMode(in2,OUTPUT);
+  pinMode(enA,OUTPUT); pinMode(in3,OUTPUT);
+  pinMode(in4,OUTPUT); pinMode(enB,OUTPUT);
+}
+void loop() {
+  // Motor A only
+  digitalWrite(in1,HIGH); digitalWrite(in2,LOW);
+  analogWrite(enA,200); delay(2000);
+  analogWrite(enA,0); delay(500);
+  // Motor B only
+  digitalWrite(in3,HIGH); digitalWrite(in4,LOW);
+  analogWrite(enB,200); delay(2000);
+  analogWrite(enB,0); delay(500);
+  // Both forward
+  analogWrite(enA,200); analogWrite(enB,200);
+  delay(2000);
+  analogWrite(enA,0); analogWrite(enB,0);
+  delay(2000);
+}</code></pre>
+<div class="callout warning">⚠️ LIFT the robot when testing! Don't let it drive off the table.</div>`,
+        checkpoints: ["Are both motors wired and tested?", "Can you control each independently?", "Do both go forward in the same direction?", "Is wiring neat and secure?"]
+      },
+
+      {
+        title: "Movement Programming", short: "Movement Code", subtitle: "Forward, Backward, Turn Functions",
+        objectives: ["Create reusable movement functions", "Program all directions", "Calibrate for straight driving"],
+        theory: `<h4>Differential Drive Steering</h4>
+<table><tr><th>Action</th><th>Left Motor</th><th>Right Motor</th></tr>
+<tr><td>Forward</td><td>Forward</td><td>Forward</td></tr><tr><td>Backward</td><td>Backward</td><td>Backward</td></tr>
+<tr><td>Turn Left</td><td>Stop</td><td>Forward</td></tr><tr><td>Turn Right</td><td>Forward</td><td>Stop</td></tr>
+<tr><td>Spin Left</td><td>Backward</td><td>Forward</td></tr></table>`,
+        practical: `<h4>Movement Functions</h4>
+<pre><code>void moveForward(int spd) {
+  digitalWrite(in1,HIGH); digitalWrite(in2,LOW);
+  analogWrite(enA, spd);
+  digitalWrite(in3,HIGH); digitalWrite(in4,LOW);
+  analogWrite(enB, spd);
+}
+void turnRight(int spd) {
+  analogWrite(enA, spd);  // Left forward
+  analogWrite(enB, 0);    // Right stop
+}
+void stopRobot() {
+  analogWrite(enA,0); analogWrite(enB,0);
+}</code></pre>
+<h4>Calibration</h4><p>If robot drifts, reduce the faster motor's PWM slightly until it drives straight.</p>`,
+        checkpoints: ["Can the robot move forward and backward?", "Can it turn left and right?", "Have you calibrated for straight driving?", "Are functions organized and reusable?"]
+      },
+
+      {
+        title: "Sensor Integration", short: "Adding Eyes", subtitle: "Mounting Ultrasonic on the Chassis",
+        objectives: ["Mount sensor on chassis", "Integrate sensor with movement", "Test while moving"],
+        theory: `<h4>Sensor Placement</h4>
+<ul><li>Mount HC-SR04 at the <strong>front</strong></li><li>Aim forward at obstacle height</li><li>Secure firmly (no vibration)</li><li>Keep wires away from motor wires</li></ul>
+<div class="callout tip">💡 Decoupling capacitors from Day 19 are critical here — motors create noise that affects sensor readings.</div>`,
+        practical: `<h4>Forward with Live Distance</h4>
+<pre><code>void loop() {
+  float dist = getDistance();
+  Serial.print("Dist: ");
+  Serial.println(dist);
+  moveForward(150);
+  if (dist < 20) {
+    Serial.println("OBSTACLE!");
+    stopRobot();
+    delay(5000);
+  }
+  delay(50);
+}</code></pre>
+<p>Place robot on floor, let it drive. Put hand in front — it should stop!</p>`,
+        checkpoints: ["Is the sensor mounted on chassis?", "Can it detect obstacles while moving?", "Does it stop when too close?", "Are readings stable during movement?"]
+      },
+
+      {
+        title: "Obstacle Avoidance Logic", short: "Avoidance", subtitle: "Autonomous Navigation Algorithm",
+        objectives: ["Implement obstacle avoidance", "Program sense-think-act loop", "Create autonomous behavior"],
+        theory: `<h4>Algorithm</h4>
+<pre><code>LOOP:
+  Read distance
+  IF clear → drive forward
+  ELSE →
+    Stop
+    Back up
+    Turn (random direction)
+    Resume</code></pre>`,
+        practical: `<h4>Complete Obstacle Avoidance</h4>
+<pre><code>const int SAFE_DIST = 25;
+void loop() {
+  float dist = getDistance();
+  if (dist < SAFE_DIST) {
+    stopRobot(); delay(200);
+    moveBackward(180); delay(400);
+    stopRobot(); delay(200);
+    turnRight(200); delay(600);
+    stopRobot(); delay(200);
+  } else {
+    moveForward(180);
+  }
+  delay(50);
+}</code></pre>
+<div class="callout tip">💡 Place the robot in an open area and watch it navigate around obstacles autonomously!</div>`,
+        checkpoints: ["Does it avoid obstacles autonomously?", "Does it stop, back up, and turn?", "Can it navigate a room?", "Is behavior reliable?"]
+      },
+
+      {
+        title: "Improve Behavior", short: "Smarter Nav", subtitle: "Random Turns, Speed Zones & Edge Cases",
+        objectives: ["Add random turn direction", "Implement speed zones", "Handle corners better"],
+        theory: `<h4>Improvements Over Basic Avoidance</h4>
+<ul><li><strong>Speed zones:</strong> Slow down gradually near obstacles</li>
+<li><strong>Random turns:</strong> Alternate left/right to avoid loops</li>
+<li><strong>Multi-check:</strong> Verify path after turning</li></ul>`,
+        practical: `<h4>Enhanced Avoidance</h4>
+<pre><code>void loop() {
+  float dist = getDistance();
+  if (dist < 15) {
+    avoidObstacle(); // Stop, back, random turn
+  } else if (dist < 30) {
+    int spd = map(dist, 15, 30, 100, 200);
+    moveForward(spd); // Gradual slowdown
+  } else {
+    moveForward(220); // Full speed
+  }
+}
+void avoidObstacle() {
+  stopRobot(); delay(150);
+  moveBackward(180); delay(400);
+  // Random direction
+  if (random(0,2) == 0) turnRight(200);
+  else turnLeft(200);
+  delay(random(400, 900));
+  stopRobot();
+}</code></pre>`,
+        checkpoints: ["Does it turn different directions?", "Does it slow gradually?", "Better in corners?", "Smoother behavior?"]
+      },
+
+      {
+        title: "Power Optimization", short: "Power", subtitle: "Batteries, Runtime & Wiring Quality",
+        objectives: ["Understand battery capacity", "Calculate runtime", "Optimize wiring"],
+        theory: `<h4>Battery Options</h4>
+<table><tr><th>Type</th><th>Voltage</th><th>Capacity</th><th>Rating</th></tr>
+<tr><td>Li-Po 7.4V</td><td>7.4V</td><td>2200mAh</td><td>⭐⭐⭐</td></tr>
+<tr><td>4×AA NiMH</td><td>4.8V</td><td>2000mAh</td><td>⭐⭐</td></tr>
+<tr><td>6×AA Alkaline</td><td>9V</td><td>2000mAh</td><td>⭐⭐</td></tr>
+<tr><td>9V Battery</td><td>9V</td><td>500mAh</td><td>⭐</td></tr></table>
+<div class="formula">Runtime (hrs) = Capacity (mAh) / Current Draw (mA)</div>
+<h4>Battery Monitoring</h4>
+<pre><code>float getBatteryV() {
+  int raw = analogRead(A1);
+  return raw * (5.0/1023.0) * 2.0;
+}
+if (getBatteryV() < 4.5)
+  Serial.println("LOW BATTERY!");</code></pre>`,
+        practical: `<h4>Optimize Your Robot</h4>
+<ol><li>Secure all wiring (zip ties, tape)</li><li>Add battery voltage monitoring</li><li>Clean up wire routing</li><li>Test runtime</li></ol>`,
+        checkpoints: ["Is wiring clean and secure?", "Battery monitoring added?", "Know your runtime?", "Is the robot robust?"]
+      },
+
+      {
+        title: "Final Robot Build", short: "Final Build", subtitle: "Integration Testing & Obstacle Course",
+        objectives: ["Final assembly and testing", "Fix remaining issues", "Run the complete robot"],
+        theory: `<h4>Integration Checklist</h4>
+<table><tr><th>Category</th><th>Check</th></tr>
+<tr><td>Hardware</td><td>All wires secure, motors mounted, sensor forward</td></tr>
+<tr><td>Power</td><td>Battery secured, capacitors installed</td></tr>
+<tr><td>Software</td><td>Drives forward, detects obstacles, avoids them</td></tr>
+<tr><td>Edge cases</td><td>Handles corners, doesn't get stuck</td></tr></table>`,
+        practical: `<h4>Obstacle Course Challenge</h4>
+<ol><li>Perform complete hardware check</li><li>Upload enhanced avoidance code</li>
+<li>Create obstacle course with books/boxes</li><li>Place robot and let it run!</li>
+<li>Observe and tune: adjust distances, speeds, turn durations</li><li>Document your build with photos/video!</li></ol>`,
+        checkpoints: ["Is the robot fully assembled?", "Can it navigate an obstacle course?", "Have you fixed remaining issues?", "Did you document your build?"]
+      },
+
+      {
+        title: "Reflection + Upgrade Path", short: "Reflection", subtitle: "What You've Achieved & What's Next",
+        objectives: ["Reflect on your journey", "Identify areas for improvement", "Plan next steps", "Celebrate! 🎉"],
+        theory: `<h4>Skills You Now Have</h4>
+<ul><li>✅ Circuit design (Ohm's Law, power, protection)</li>
+<li>✅ Component knowledge (R, C, diodes, transistors)</li>
+<li>✅ Arduino programming (digital, analog, PWM)</li>
+<li>✅ Sensor integration (ultrasonic, analog)</li>
+<li>✅ Motor control (H-Bridge, L298N, differential drive)</li>
+<li>✅ System integration (sense-think-act)</li>
+<li>✅ Debugging (hardware + software)</li>
+<li>✅ Autonomous behavior!</li></ul>
+<div class="callout tip">💡 You built a WORKING, AUTONOMOUS robot. The same sense-think-act loop is used in industrial robots, self-driving cars, and Mars rovers.</div>`,
+        practical: `<h4>Self-Assessment</h4>
+<ul><li>What was the hardest part?</li><li>What concept took longest?</li><li>What failed most spectacularly?</li><li>What would you do differently?</li></ul>
+<div class="callout info">💡 Every professional has burned out LEDs, fried Arduinos, and spent hours debugging one loose wire. That's not failure — that's training. Keep building. Keep learning. Welcome to robotics! 🤖</div>`,
+        checkpoints: ["Did you complete all 30 days?", "Can you build circuits from scratch?", "Can you program Arduino confidently?", "Did you build a working robot? 🎉"]
+      }
+    ];
+
+    const WEEKS = [
+      { name: "Week 1: Electrical Foundations", color: "week1-color", emoji: "⚡", days: [1, 7] },
+      { name: "Week 2: Control Components", color: "week2-color", emoji: "🎛️", days: [8, 14] },
+      { name: "Week 3: Sensors & Interaction", color: "week3-color", emoji: "📡", days: [15, 21] },
+      { name: "Week 4: Full Robot Build", color: "week4-color", emoji: "🤖", days: [22, 30] }
+    ];
+
+    // ========== STATE ==========
+    let checks = JSON.parse(localStorage.getItem('robotics30_checks') || '{}');
+
+    function saveChecks() { localStorage.setItem('robotics30_checks', JSON.stringify(checks)) }
+
+    function getWeekColor(dayNum) {
+      for (const w of WEEKS) if (dayNum >= w.days[0] && dayNum <= w.days[1]) return w.color;
+      return 'week1-color';
+    }
+
+    // ========== RENDER SIDEBAR ==========
+    function renderSidebar() {
+      const sb = document.getElementById('sidebar');
+      const completedDays = DAYS.filter((_, i) => {
+        const dayChecks = Object.keys(checks).filter(k => k.startsWith(`d${i + 1}_`));
+        return dayChecks.length > 0 && dayChecks.every(k => checks[k]);
+      }).length;
+      const pct = DAYS.length ? Math.round(completedDays / DAYS.length * 100) : 0;
+      document.getElementById('progressPct').textContent = pct + '%';
+
+      let html = `<div class="sidebar-header">
+    <h2>🤖 30-Day Robotics</h2>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-text">${completedDays}/${DAYS.length} days completed · ${pct}%</div>
+  </div>`;
+
+      for (const w of WEEKS) {
+        html += `<div class="week-group"><div class="week-label">${w.emoji} ${w.name}</div>`;
+        for (let d = w.days[0]; d <= w.days[1]; d++) {
+          const day = DAYS[d - 1];
+          if (!day) continue;
+          const dayChecks = Object.keys(checks).filter(k => k.startsWith(`d${d}_`));
+          const done = dayChecks.length > 0 && dayChecks.every(k => checks[k]);
+          html += `<a class="day-link ${done ? 'completed' : ''}" href="#day${d}" onclick="document.querySelector('.sidebar').classList.remove('open')">
+        <span class="day-dot"></span>Day ${d}: ${day.short || day.title}
+      </a>`;
+        }
+        html += `</div>`;
+      }
+      sb.innerHTML = html;
+    }
+
+    // ========== RENDER CONTENT ==========
+    function renderContent() {
+      const ct = document.getElementById('content');
+      let html = '';
+      let lastWeek = -1;
+
+      DAYS.forEach((day, i) => {
+        const dNum = i + 1;
+        const weekIdx = WEEKS.findIndex(w => dNum >= w.days[0] && dNum <= w.days[1]);
+        if (weekIdx !== lastWeek) {
+          lastWeek = weekIdx;
+          const w = WEEKS[weekIdx];
+          html += `<div class="week-divider"><span>${w.emoji} ${w.name} (Days ${w.days[0]}–${w.days[1]})</span></div>`;
+        }
+
+        html += `<div class="day-card" id="day${dNum}">
+      <div class="day-header">
+        <div class="day-number ${getWeekColor(dNum)}">${dNum}</div>
+        <div><div class="day-title">${day.title}</div>
+        <div class="day-subtitle">${day.subtitle || ''}</div></div>
+      </div>`;
+
+        // Objectives
+        if (day.objectives) {
+          html += renderSection('🎯', 'Learning Objectives', `<ul>${day.objectives.map(o => `<li>${o}</li>`).join('')}</ul>`, true);
+        }
+
+        // Theory
+        if (day.theory) {
+          html += renderSection('📖', 'Theory', day.theory, true);
+        }
+
+        // Diagram
+        if (day.diagram) {
+          html += `<div class="circuit-diagram">${day.diagram}</div>`;
+        }
+
+        // Practical
+        if (day.practical) {
+          html += renderSection('🔨', 'Practical', day.practical, true);
+        }
+
+        // Troubleshooting
+        if (day.troubleshooting) {
+          html += renderSection('⚠️', 'Troubleshooting', `<ul>${day.troubleshooting.map(t => `<li>${t}</li>`).join('')}</ul>`, false);
+        }
+
+        // Checkpoint
+        if (day.checkpoints) {
+          html += `<div class="checkpoint"><h4>✅ Day ${dNum} Checkpoint</h4>`;
+          day.checkpoints.forEach((c, ci) => {
+            const key = `d${dNum}_${ci}`;
+            const chk = checks[key] ? 'checked' : '';
+            html += `<label class="check-item ${chk ? 'checked' : ''}">
+          <input type="checkbox" ${chk} onchange="toggleCheck('${key}',this)"> ${c}
+        </label>`;
+          });
+          html += `</div>`;
+        }
+
+        html += `</div>`;
+      });
+
+      // After Day 30 sections
+      html += `
+  <div class="week-divider"><span>🎓 What You've Achieved</span></div>
+  <div class="day-card">
+    <div class="section" style="border-color:rgba(16,185,129,0.3)">
+      <div class="section-body open" style="display:block;padding-top:20px">
+        <h4 style="color:var(--green);font-size:18px">🏆 Skills Mastered</h4>
+        <ul>
+          <li><strong>Circuit Design</strong> — Ohm's Law, series/parallel, power calculations</li>
+          <li><strong>Components</strong> — Resistors, capacitors, diodes, transistors</li>
+          <li><strong>Tools</strong> — Multimeter, breadboard, Arduino IDE</li>
+          <li><strong>Programming</strong> — Arduino C/C++, digital/analog I/O, PWM</li>
+          <li><strong>Sensors</strong> — Ultrasonic distance, analog reading</li>
+          <li><strong>Motor Control</strong> — H-Bridge, L298N driver, differential drive</li>
+          <li><strong>System Integration</strong> — Sense → Think → Act loop</li>
+          <li><strong>Autonomous Behavior</strong> — Obstacle avoidance algorithm</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-divider"><span>🔥 What's Next</span></div>
+  <div class="day-card">
+    <div class="section">
+      <div class="section-body open" style="display:block;padding-top:20px">
+        <h4>Level 2 — Intermediate</h4>
+        <ul>
+          <li><strong>Line-Following Robot</strong> — IR sensors + PID control</li>
+          <li><strong>Remote Control</strong> — Bluetooth HC-05 + phone app</li>
+          <li><strong>More Sensors</strong> — Temperature, light, IMU/accelerometer</li>
+        </ul>
+        <h4>Level 3 — Advanced</h4>
+        <ul>
+          <li><strong>Raspberry Pi</strong> — Linux, Python, camera vision</li>
+          <li><strong>ROS</strong> — Robot Operating System framework</li>
+          <li><strong>Computer Vision</strong> — OpenCV, object detection</li>
+          <li><strong>Robotic Arms</strong> — Servos, inverse kinematics</li>
+        </ul>
+      </div>
+    </div>
+  </div>`;
+
+      ct.innerHTML = html;
+    }
+
+    function renderSection(icon, title, body, defaultOpen) {
+      return `<div class="section">
+    <div class="section-header ${defaultOpen ? 'open' : ''}" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+      <span class="icon">${icon}</span><h3>${title}</h3><span class="chevron">▼</span>
+    </div>
+    <div class="section-body ${defaultOpen ? 'open' : ''}">${body}</div>
+  </div>`;
+    }
+
+    function toggleCheck(key, el) {
+      checks[key] = el.checked;
+      saveChecks();
+      el.parentElement.classList.toggle('checked', el.checked);
+      renderSidebar();
+    }
+
+    // Active link on scroll
+    function updateActiveLink() {
+      const links = document.querySelectorAll('.day-link');
+      let current = '';
+      DAYS.forEach((_, i) => {
+        const el = document.getElementById(`day${i + 1}`);
+        if (el && el.getBoundingClientRect().top <= 150) current = `day${i + 1}`;
+      });
+      links.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#' + current) });
+    }
+    window.addEventListener('scroll', updateActiveLink);
+
+    // Init
+    renderSidebar();
+    renderContent();
+  </script>
+</body>
+
+</html>

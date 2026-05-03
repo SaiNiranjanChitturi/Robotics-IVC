@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Robotics Explorer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-panel: rgba(20, 20, 30, 0.6);
+            --border-glow: rgba(0, 255, 255, 0.3);
+            --cyan: #00f0ff;
+            --magenta: #ff003c;
+            --text-main: #e0e0ff;
+            --text-dim: #8b8b9e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 0, 60, 0.05), transparent 25%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        /* Glassmorphism Panels */
+        .glass-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        header {
+            text-align: center;
+            padding: 6rem 0 4rem;
+        }
+
+        .title-gradient {
+            background: linear-gradient(90deg, var(--cyan), var(--magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Sense-Think-Act Interactive Loop */
+        .loop-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .node {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(30, 30, 45, 0.8);
+            border: 2px solid var(--text-dim);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .node i {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .node.active {
+            transform: scale(1.1);
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        .node-act.active {
+            border-color: var(--magenta);
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.4);
+            background: rgba(255, 0, 60, 0.1);
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: var(--text-dim);
+            animation: pulse 2s infinite;
+        }
+
+        #loop-description {
+            min-height: 80px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--cyan);
+            transition: opacity 0.3s;
+        }
+
+        /* Ohm's Law Simulator */
+        .ohm-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .ohm-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .slider-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--cyan);
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--cyan);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .pipe-visualizer {
+            background: #111;
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pipe {
+            background: rgba(0, 240, 255, 0.1);
+            border-top: 2px solid var(--cyan);
+            border-bottom: 2px solid var(--cyan);
+            width: 100%;
+            height: 50px;
+            /* Dynamic via JS */
+            position: relative;
+            transition: height 0.3s ease;
+        }
+
+        .electron {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--cyan);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .math-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        /* Hardware Explorer */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .component-card {
+            background: rgba(30, 30, 40, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .component-card:hover {
+            background: rgba(40, 40, 50, 0.8);
+            border-color: var(--magenta);
+            transform: translateY(-5px);
+        }
+
+        .component-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 10px var(--cyan);
+            }
+
+            100% {
+                opacity: 0.4;
+            }
+        }
+
+        /* --- ADVANCED SIMULATOR CSS --- */
+
+        /* 1. Kinematics Simulator */
+        .simulator-box {
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 300px;
+            background: #000;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .kinematics-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* 2. 3D Drone Simulator */
+        .scene3d {
+            width: 100%;
+            height: 300px;
+            perspective: 800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #1a1a24 0%, #000 100%);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .drone-body {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s linear;
+        }
+
+        .drone-core {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 240, 255, 0.2);
+            border: 2px solid var(--cyan);
+            top: 20px;
+            left: 20px;
+            transform: translateZ(10px);
+            box-shadow: 0 0 20px var(--cyan);
+        }
+
+        .rotor-arm {
+            position: absolute;
+            background: #555;
+            height: 4px;
+            width: 140px;
+            top: 48px;
+            left: -20px;
+            transform-origin: center;
+        }
+
+        .arm-1 {
+            transform: rotateZ(45deg);
+        }
+
+        .arm-2 {
+            transform: rotateZ(-45deg);
+        }
+
+        .rotor {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--magenta);
+            border-radius: 50%;
+            top: -18px;
+            background: rgba(255, 0, 60, 0.2);
+            animation: spin 0.2s linear infinite;
+        }
+
+        .rotor.left {
+            left: -20px;
+        }
+
+        .rotor.right {
+            right: -20px;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotateZ(360deg);
+            }
+        }
+
+        /* 3. PLC Logic Gate UI */
+        .logic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .logic-gate {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--text-dim);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logic-gate.on {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #0f0;
+            color: #0f0;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+        }
+
+        /* 4. RTOS Timeline */
+        .rtos-timeline {
+            width: 100%;
+            height: 150px;
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .rtos-task {
+            position: absolute;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #fff;
+            transition: width 0.1s linear, left 0.1s linear;
+        }
+
+        .task-high {
+            background: var(--magenta);
+            top: 10px;
+        }
+
+        .task-low {
+            background: var(--cyan);
+            top: 50px;
+        }
+
+        .task-idle {
+            background: var(--text-dim);
+            top: 90px;
+        }
+
+        /* General UI components */
+        .cyber-button {
+            background: transparent;
+            color: var(--cyan);
+            border: 1px solid var(--cyan);
+            padding: 0.5rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .cyber-button:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--cyan);
+        }
+    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <h1 class="title-gradient">Robotics Foundation</h1>
+            <p class="subtitle">An interactive guide to understanding the electronics that bring machines to life.
+                Designed for beginners.</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- SENSE THINK ACT LOOP -->
+        <section class="glass-panel" id="sta-section">
+            <h2>The "Sense-Think-Act" Loop</h2>
+            <p>Every true robot operates on this continuous loop. It is what separates a robot from a remote-controlled
+                toy. Click the nodes below to explore.</p>
+
+            <div class="loop-container">
+                <div class="node" id="node-sense" onclick="activateNode('sense')">
+                    <i class="fa-solid fa-eye"></i>
+                    <strong>SENSE</strong>
+                </div>
+                <div class="arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="node" id="node-think" onclick="activateNode('think')">
+                    <i class="fa-solid fa-microchip"></i>
+                    <strong>THINK</strong>
+                </div>
+                <div class="arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="node node-act" id="node-act" onclick="activateNode('act')">
+                    <i class="fa-solid fa-gear"></i>
+                    <strong>ACT</strong>
+                </div>
+            </div>
+
+            <div id="loop-description">
+                <em>Click a node above to understand its role in the robotic nervous system.</em>
+            </div>
+        </section>
+
+        <!-- OHM'S LAW SIMULATOR -->
+        <section class="glass-panel" id="ohm-section">
+            <h2>Electricity Unplugged: Ohm's Law</h2>
+            <p>Electricity is invisible, so we use the <strong>Water Analogy</strong>. Voltage is water pressure.
+                Resistance is how narrow the pipe is. Current is how fast the water is flowing.</p>
+
+            <div class="ohm-grid">
+                <div>
+                    <div class="slider-group">
+                        <label>
+                            <span>Voltage (Pressure)</span>
+                            <span id="val-v" style="color: var(--cyan);">5 V</span>
+                        </label>
+                        <input type="range" id="slider-v" min="1" max="12" value="5" step="0.1">
+                    </div>
+
+                    <div class="slider-group">
+                        <label>
+                            <span>Resistance (Pipe Width)</span>
+                            <span id="val-r" style="color: var(--magenta);">330 &Omega;</span>
+                        </label>
+                        <input type="range" id="slider-r" min="10" max="1000" value="330" step="10">
+                    </div>
+
+                    <div class="math-display">
+                        I = <span id="math-v">5</span>V / <span id="math-r">330</span>&Omega; <br>
+                        Current = <strong id="math-i" style="color: #0f0;">0.015</strong> Amps
+                    </div>
+                </div>
+
+                <div class="pipe-visualizer">
+                    <div class="pipe" id="visual-pipe">
+                        <!-- Electrons generated via JS -->
+                    </div>
+                    <div style="position: absolute; top: 10px; left: 10px; font-size: 0.8rem; color: var(--text-dim);">
+                        Visualizing Current Flow
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HARDWARE EXPLORER -->
+        <section class="glass-panel" id="hardware-section">
+            <h2>The Hardware Armory</h2>
+            <p>These are the physical building blocks of a robot. Hover or tap to learn more.</p>
+
+            <div class="card-grid">
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-border-all"></i></div>
+                    <h3>Breadboard</h3>
+                    <p>A plastic board with hidden metal clips. Used to quickly plug in wires and test circuits without
+                        permanent soldering.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Internal metal rails
+                        connect the holes in specific patterns. The outer rails run horizontally for power distribution,
+                        while the inner rows run vertically to connect components together.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-lightbulb" style="color: #ffff00;"></i></div>
+                    <h3>LED</h3>
+                    <p>Light Emitting Diode. A tiny digital lightbulb. It only lets electricity flow in one direction
+                        and will explode if it gets too much current!</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">LEDs have polarity: the
+                        longer leg (anode) connects to positive, and the flat edge (cathode) connects to negative.
+                        Forward voltage drops vary by color.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-wave-square"></i></div>
+                    <h3>Resistor</h3>
+                    <p>The speed bump of electronics. It slows down the flow of current to protect delicate parts like
+                        LEDs from burning out.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Resistance is measured in
+                        Ohms (&Omega;). Color bands on the resistor indicate its precise value and tolerance. Essential
+                        for voltage dividers and pull-up/pull-down circuits.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-fan" style="color: var(--magenta);"></i></div>
+                    <h3>DC Motor</h3>
+                    <p>The muscle. Give it voltage, and it spins. Give it more voltage, and it spins faster. Swap the
+                        wires, and it spins backward.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Often paired with
+                        H-Bridge motor drivers which allow a microcontroller to safely reverse the polarity and control
+                        the speed via Pulse Width Modulation (PWM).</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-satellite-dish" style="color: var(--cyan);"></i>
+                    </div>
+                    <h3>Ultrasonic Sensor</h3>
+                    <p>The robot's eyes. It acts like a bat, screaming a high-pitched sound and listening for the echo
+                        to calculate how far away a wall is.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Operating typically at
+                        40kHz, these sensors are cheap but can be confused by soft, sound-absorbing materials or highly
+                        angled surfaces that deflect the echo.</p>
+                </div>
+                <!-- NEW COMPONENTS -->
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-microchip" style="color: #00979d;"></i></div>
+                    <h3>Microcontroller (MCU)</h3>
+                    <p>The brain of the operation. It reads sensor inputs and executes code to control outputs. Unlike a
+                        PC, it runs a single program in a continuous loop.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Boards like the Arduino
+                        Uno use an ATmega328P chip, offering digital I/O, analog inputs, and built-in hardware for PWM,
+                        UART, SPI, and I2C communication.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-robot" style="color: #ff3366;"></i></div>
+                    <h3>Servo Motor</h3>
+                    <p>A smart motor with a built-in feedback loop. You command it to turn to a specific angle (e.g., 90
+                        degrees) and it firmly holds that position.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Servos are controlled
+                        using specific PWM signals where the pulse width (usually 1ms to 2ms) directly corresponds to
+                        the target angle. Ideal for steering and robotic arms.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-gear" style="color: #cc66ff;"></i></div>
+                    <h3>Stepper Motor</h3>
+                    <p>A motor that moves in discrete steps rather than spinning continuously. Used where exact,
+                        repeatable positioning is critical.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">It requires a specialized
+                        driver to sequence power across multiple internal electromagnetic coils. It provides excellent
+                        holding torque even when perfectly stationary.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-bolt" style="color: #ff9900;"></i></div>
+                    <h3>Transistor (MOSFET)</h3>
+                    <p>A microscopic electronic switch with no moving parts. It allows a tiny signal from a
+                        microcontroller to turn on a massive, power-hungry motor.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">MOSFETs are the standard
+                        for high-power switching. Applying a small voltage to the 'Gate' allows a massive current to
+                        flow between the 'Drain' and 'Source'.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-battery-half" style="color: #00ffcc;"></i></div>
+                    <h3>Capacitor</h3>
+                    <p>A temporary electrical storage tank. It smooths out sudden drops or spikes in voltage, acting
+                        like a shock absorber for the power supply.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Electrolytic capacitors
+                        have high capacity and polarity, while ceramic capacitors are tiny, non-polarized, and excellent
+                        at filtering out high-frequency electrical noise.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-toggle-on" style="color: #ff5050;"></i></div>
+                    <h3>Relay</h3>
+                    <p>An electromechanical switch. A small electromagnet pulls a physical metal contact closed,
+                        allowing a 5V Arduino to safely turn on a 120V AC appliance.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Because it uses a
+                        physical air gap, it provides complete galvanic isolation. You will hear a distinct 'click' when
+                        the relay engages or disengages.</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-compass" style="color: #ffcc00;"></i></div>
+                    <h3>IMU (Gyro/Accelerometer)</h3>
+                    <p>The inner ear of a robot. It combines accelerometers and gyroscopes to measure exactly how the
+                        robot is tilting, falling, or accelerating in 3D space.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Crucial for
+                        self-balancing robots and drones. Advanced IMUs also include magnetometers (digital compasses)
+                        to correct long-term gyroscopic drift (Sensor Fusion).</p>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fa-solid fa-tower-broadcast" style="color: #3399ff;"></i>
+                    </div>
+                    <h3>LiDAR</h3>
+                    <p>Light Detection and Ranging. It rapidly fires lasers and times the reflection to build a highly
+                        precise, 360-degree 3D map of the surroundings.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-dim);">Used extensively in
+                        self-driving cars and autonomous warehouse robots for SLAM (Simultaneous Localization and
+                        Mapping) and long-range obstacle avoidance.</p>
+                </div>
+            </div>
+        </section>
+
+        </section>
+
+        <!-- ADVANCED ENCYCLOPEDIA SECTION -->
+        <section class="glass-panel" id="advanced-chapters">
+            <h2 class="title-gradient" style="font-size: 2.5rem;">The Advanced Robotics Encyclopedia</h2>
+            <p>Dive deep into the professional engineering concepts that power industrial automation, aerospace drones,
+                and complex autonomous systems.</p>
+
+            <!-- MODULE 1 -->
+            <h3
+                style="color: var(--cyan); margin-top: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                Module 1: The Foundations of Robotics</h3>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 1: Introduction to Mechatronics</h4>
+                <p>Mechatronics is the synergistic integration of mechanical engineering, electronics, and intelligent
+                    computer control. In modern robotics, mechanical design cannot happen in isolation; the placement of
+                    a sensor or the choice of a motor (electronics) directly dictates the mass distribution and dynamics
+                    (mechanics) of the robot.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">Beyond basic integration, modern mechatronics
+                    relies heavily on <strong>Model-Based Design (MBD)</strong>. Before a single piece of metal is cut,
+                    engineers create highly accurate digital twins of the system in software like MATLAB/Simulink or
+                    Gazebo. This allows them to simulate the precise electrical loads on a motor under different
+                    mechanical stress conditions, optimizing the battery size and thermal management systems
+                    simultaneously.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Furthermore, the integration of <em>smart
+                        sensors</em>—which contain onboard microprocessors to filter noise and pre-process data—has
+                    drastically reduced the computational burden on the central robot controller. This localized
+                    processing enables higher bandwidth control loops, which are essential for tasks requiring extreme
+                    precision, such as surgical robotics or high-speed pick-and-place machines.</p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        Anti-Lock Braking Systems (ABS)</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">In modern vehicles, an ABS is a classic
+                        mechatronic system. Wheel speed sensors (electronics) detect when a tire is about to lock up, a
+                        microcontroller (computing) analyzes this data in milliseconds, and hydraulic valves (mechanics)
+                        rapidly pulse the brakes to maintain traction. This synergy prevents skidding and allows the
+                        driver to maintain steering control during emergency stops.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 2: Advanced Kinematics</h4>
+                <p>Kinematics is the geometry of motion. <strong>Forward Kinematics (FK)</strong> uses the joint angles
+                    of a robot arm to calculate the position of the end-effector (the hand). <strong>Inverse Kinematics
+                        (IK)</strong> does the reverse: given a desired XYZ coordinate, what angles must the joints
+                    achieve? IK is highly complex and often yields multiple solutions (e.g., "elbow up" vs "elbow
+                    down"). Engineers use the <em>Denavit-Hartenberg (DH)</em> convention to standardize these
+                    mathematical transformations.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">At an advanced level, engineers must calculate the
+                    <strong>Jacobian Matrix</strong> of the robot. While basic kinematics deals with static positions,
+                    the Jacobian maps the <em>velocities</em> of the robot's joints to the linear and angular velocity
+                    of the end-effector. This is critical for tasks like drawing a straight line at a constant speed,
+                    where each joint must continuously accelerate and decelerate at different, coordinated rates.
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">A major challenge in kinematics is dealing with
+                    <strong>Singularities</strong> (often known as Gimbal Lock in aerospace). These are physical
+                    configurations where the robot mathematically loses one or more degrees of freedom, causing the IK
+                    algorithms to demand infinite joint velocities. Modern controllers must constantly look ahead and
+                    adjust paths to gracefully avoid or pass through these singular zones.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        CNC Machining and 3D Printing</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">When a 3D printer creates an object, the slicing
+                        software generates a series of XYZ coordinates for the nozzle to follow. The printer's firmware
+                        continuously performs Inverse Kinematics to calculate exactly how much each stepper motor needs
+                        to rotate to move the print head smoothly along those 3D paths, ensuring the filament is
+                        deposited accurately layer by layer.</p>
+                </div>
+
+                <div class="simulator-box" id="kinematics-sim">
+                    <h5>Interactive Forward Kinematics (2-DOF Arm)</h5>
+                    <div class="kinematics-controls">
+                        <div class="slider-group">
+                            <label>Base Joint Angle (&theta;1): <span id="val-theta1">45&deg;</span></label>
+                            <input type="range" id="slider-theta1" min="0" max="180" value="45">
+                        </div>
+                        <div class="slider-group">
+                            <label>Elbow Joint Angle (&theta;2): <span id="val-theta2">45&deg;</span></label>
+                            <input type="range" id="slider-theta2" min="-180" max="180" value="45">
+                        </div>
+                    </div>
+                    <div class="canvas-container">
+                        <canvas id="kinematicsCanvas" width="800" height="300"
+                            style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 3: Dynamics and Control Theory</h4>
+                <p>While Kinematics ignores forces, Dynamics embraces them. Using the <em>Euler-Lagrange equations</em>,
+                    engineers model the kinetic and potential energy of the robot. This allows us to calculate exactly
+                    how much torque a motor must produce to move a heavy arm against gravity at a specific acceleration.
+                    These models are then fed into advanced PID or LQR (Linear Quadratic Regulator) controllers.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">Advanced dynamics requires calculating not just
+                    gravity, but <strong>Coriolis and Centrifugal forces</strong>. When a robot arm is spinning at the
+                    base while simultaneously extending its elbow, these fictitious forces push sideways on the links.
+                    If the controller only uses a basic PID loop, the arm will wildly overshoot its target. A proper
+                    dynamic model feeds these calculations forward, applying preemptive counter-torque before the error
+                    even occurs.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Modern collaborative robots (Cobots) utilize
+                    <strong>Impedance Control</strong>. Instead of rigidly forcing the arm to a mathematical point
+                    regardless of obstacles, impedance control programs the arm to act like a virtual spring-damper
+                    system. If a human bumps the robot, the arm gracefully yields and absorbs the energy, making it safe
+                    to work alongside humans without safety cages.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        SpaceX Falcon 9 Landing</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">The autonomous landing of a Falcon 9 booster
+                        relies heavily on complex control theory. As the rocket descends, it must account for changing
+                        mass (burning fuel), aerodynamic forces, and wind shear. An LQR controller continuously adjusts
+                        the thrust and angle of the rocket engine (gimbaling) to keep the massive booster perfectly
+                        balanced, much like trying to balance a broomstick on your finger in a windstorm.</p>
+                </div>
+            </div>
+
+            <!-- MODULE 2 -->
+            <h3
+                style="color: var(--magenta); margin-top: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                Module 2: Industrial Automation (SCADA & PLC)</h3>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 4: Programmable Logic Controllers (PLCs)</h4>
+                <p>Before microcontrollers, factories used massive banks of mechanical relays. PLCs are ruggedized,
+                    industrial computers designed to replace these relays. They are built to withstand extreme
+                    temperatures, electrical noise, and vibration. Unlike an Arduino, a PLC operates on a strict "scan
+                    cycle": read inputs, execute logic, write outputs, repeat.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">The internal architecture of a PLC is specifically
+                    hardened against industrial hazards. Their I/O (Input/Output) modules utilize <strong>Optical
+                        Isolation</strong>. This means the 24V sensor signals on the factory floor are converted into
+                    light and passed across a physical gap to the sensitive 3.3V CPU inside. If a massive 480V power
+                    spike hits a sensor, it only destroys the cheap I/O card, completely saving the CPU.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">To guarantee safety, PLCs feature hardware
+                    <strong>Watchdog Timers</strong>. The main program must reset this timer every few milliseconds. If
+                    the software ever freezes or enters an infinite loop, the timer hits zero, instantly triggering a
+                    hardware interrupt that cuts power to all outputs and safely shuts down the machine.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Amusement Park Rides</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">Roller coasters and complex theme park rides are
+                        governed by PLCs. The PLC monitors dozens of safety sensors (checking if harnesses are locked,
+                        track sections are clear, and brakes are engaged) in real-time. If any sensor reports an
+                        anomaly, the PLC instantly halts the ride, preventing catastrophic failures with deterministic
+                        reliability that a standard PC OS could not guarantee.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 5: Ladder Logic (IEC 61131-3)</h4>
+                <p>PLCs are traditionally programmed using Ladder Logic, a visual language that looks like an electrical
+                    schematic with "rungs" and "contacts". It was designed so electricians could program computers
+                    without needing to learn C++. Modern PLCs also support Structured Text and Function Block Diagrams.
+                </p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">While Ladder Logic appears simple, it requires a
+                    unique mindset. Because the PLC executes the entire ladder top-to-bottom every millisecond,
+                    engineers must carefully manage <strong>State Machines</strong> using latching relays or integer
+                    state variables. A common pitfall for beginners is writing logic that rapidly toggles an output on
+                    and off within a single scan, destroying physical valves.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Modern complex automation relies on
+                    <strong>Structured Text (ST)</strong> alongside Ladder. ST is a high-level, Pascal-like language
+                    perfect for complex mathematical calculations, PID loops, and array manipulation. A standard
+                    practice is to use ST for the heavy math "under the hood" inside custom Function Blocks, while
+                    keeping the top-level program in Ladder Logic so maintenance technicians can visually troubleshoot
+                    the machine flow.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Automated Car Wash</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">An automated car wash uses ladder logic to
+                        sequence the cleaning process. A typical "rung" might read: IF the 'Car Present' sensor is ON
+                        AND the 'Start Button' is PRESSED, THEN activate the 'Soap Pump' coil. The visual nature allows
+                        a technician on the floor to easily trace the logic and figure out exactly why the water jets
+                        aren't turning on without digging through thousands of lines of code.</p>
+                </div>
+
+                <div class="simulator-box" id="plc-sim">
+                    <h5>Interactive PLC Logic Gates</h5>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">Click the inputs to toggle their state and
+                        observe the output.</p>
+                    <div class="logic-grid">
+                        <div class="logic-gate" id="gate-in1" onclick="toggleGate('in1')">Input A: OFF</div>
+                        <div class="logic-gate" id="gate-in2" onclick="toggleGate('in2')">Input B: OFF</div>
+                        <div class="logic-gate" id="gate-out" style="cursor: default;">AND Output: OFF</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 6: SCADA Systems</h4>
+                <p>Supervisory Control and Data Acquisition (SCADA) is the high-level software architecture used to
+                    monitor and control entire factories or regional infrastructure (like water treatment plants). SCADA
+                    software runs on standard PCs and provides Human-Machine Interfaces (HMIs) for operators to monitor
+                    thousands of PLCs in real-time.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">Modern SCADA heavily utilizes the <strong>OPC UA
+                        (Open Platform Communications Unified Architecture)</strong> standard. Historically, getting a
+                    Siemens PLC to talk to an Allen-Bradley SCADA system was a nightmare of proprietary drivers. OPC UA
+                    acts as a universal translator, standardizing data structures and providing built-in encryption,
+                    allowing seamless data flow from the factory floor directly into enterprise cloud analytics.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">A critical component of SCADA is the <strong>Data
+                        Historian</strong>. These are hyper-optimized time-series databases capable of logging millions
+                    of tag values per second (like temperature, pressure, and flow rates) for decades. Engineers mine
+                    this historical data using machine learning to predict when a machine will fail (Predictive
+                    Maintenance) before it actually breaks down.</p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: City Power Grids</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">A municipal power grid is monitored via SCADA.
+                        Operators sitting in a central control room view large screens displaying the entire grid's
+                        health. If a substation transformer overheats, the local PLC detects it and sends an alert up to
+                        the SCADA system. An operator can then click a button on the SCADA HMI to reroute power through
+                        different substations before a massive blackout occurs.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 7: Industrial Communication Protocols</h4>
+                <p>Factory floors require ultra-reliable communication. Standard Ethernet is non-deterministic (packets
+                    can collide and be delayed). Industrial networks use protocols like <strong>Modbus</strong> (a
+                    simple master/slave protocol), <strong>Profibus</strong>, and <strong>EtherCAT</strong> (which
+                    allows for microsecond-level synchronization across dozens of robotic axes).</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">Industrial Ethernet protocols like
+                    <strong>EtherCAT</strong> achieve their incredible speed through "processing on the fly." In
+                    standard Ethernet, a device receives a packet, processes it via the CPU, and replies. In EtherCAT,
+                    the packet is processed purely in hardware as it flows through the node. The node extracts its data
+                    and inserts its reply into the exact same packet without slowing it down, allowing sub-millisecond
+                    updates across 100+ servo motors.
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Another dominant protocol is
+                    <strong>PROFINET</strong>, which operates on three levels: standard TCP/IP for configuration,
+                    Real-Time (RT) for standard I/O skipping the TCP stack, and Isochronous Real-Time (IRT) which uses
+                    dedicated ASIC chips to reserve specific time slots on the physical wire exclusively for motion
+                    control data, eliminating jitter entirely.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Automotive Assembly Lines</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">In a car manufacturing plant, multiple massive
+                        robotic arms must work together to weld a chassis without colliding. They use EtherCAT to
+                        communicate. As the master controller sends out a data packet, it passes through every robot
+                        sequentially at blistering speeds, updating their target positions with microsecond precision,
+                        ensuring flawless synchronous movement.</p>
+                </div>
+            </div>
+
+            <!-- MODULE 3 -->
+            <h3
+                style="color: var(--cyan); margin-top: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                Module 3: Advanced Computing Hardware</h3>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 8: Microprocessors (MPU) vs Microcontrollers (MCU)</h4>
+                <p>An MCU (like an Arduino) has RAM, Flash, and the CPU all on one tiny chip. It is perfect for
+                    real-time hardware control but lacks the power for complex math. An MPU (like the chip in a
+                    Raspberry Pi) is a massive brain that requires external RAM and storage chips. It runs an OS (like
+                    Linux) and is used for high-level tasks like Computer Vision, while offloading real-time motor
+                    control to a connected MCU.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">A defining feature of an MPU is the presence of a
+                    <strong>Memory Management Unit (MMU)</strong>. The MMU enables Virtual Memory, allowing operating
+                    systems like Linux to isolate applications so a crashed web browser doesn't overwrite the memory of
+                    a robot's navigation stack. MCUs lack an MMU, running "bare metal" code where a single bad pointer
+                    can crash the entire chip.
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">To achieve extreme efficiency, MCUs rely on
+                    <strong>Direct Memory Access (DMA)</strong> controllers. If an MCU needs to read 1,000 samples from
+                    an Analog-to-Digital Converter, it doesn't use the CPU. The CPU configures the DMA hardware to
+                    silently move the data straight from the ADC into RAM in the background. The CPU goes to sleep to
+                    save power, and the DMA wakes it up via an interrupt only when all 1,000 samples are ready.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        Modern Smart Appliances</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">A smart refrigerator uses both. An MPU runs the
+                        embedded Linux OS to display a sleek touchscreen interface, manage Wi-Fi connections, and stream
+                        music. Meanwhile, an MCU running in the background constantly monitors internal temperatures,
+                        runs the compressor motors, and handles the ice maker, ensuring these critical real-time tasks
+                        are never interrupted by a slow touchscreen app.</p>
+                </div>
+
+                <div class="simulator-box" style="margin-top: 1rem;">
+                    <h5>Microcontroller (MCU) Internal Architecture</h5>
+                    <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 100%; height: auto; background: #050508; border-radius: 8px;">
+                        <defs>
+                            <linearGradient id="cpuGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#ff003c" />
+                                <stop offset="100%" stop-color="#80001e" />
+                            </linearGradient>
+                            <linearGradient id="memGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#00f0ff" />
+                                <stop offset="100%" stop-color="#007080" />
+                            </linearGradient>
+                            <linearGradient id="busGrad" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#555" />
+                                <stop offset="50%" stop-color="#aaa" />
+                                <stop offset="100%" stop-color="#555" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Main Bus -->
+                        <rect x="50" y="180" width="700" height="20" fill="url(#busGrad)" rx="5" />
+                        <text x="400" y="195" fill="#000" font-family="JetBrains Mono" font-size="12" font-weight="bold"
+                            text-anchor="middle">SYSTEM BUS (AHB/APB)</text>
+
+                        <!-- CPU Core -->
+                        <rect x="100" y="50" width="150" height="100" fill="url(#cpuGrad)" rx="10" stroke="#ff003c"
+                            stroke-width="2" />
+                        <text x="175" y="90" fill="#fff" font-family="Inter" font-size="18" font-weight="bold"
+                            text-anchor="middle">CPU Core</text>
+                        <text x="175" y="110" fill="#ffb3c6" font-family="JetBrains Mono" font-size="12"
+                            text-anchor="middle">(e.g., Cortex-M4)</text>
+                        <line x1="175" y1="150" x2="175" y2="180" stroke="#fff" stroke-width="4" />
+                        <polygon points="170,175 180,175 175,185" fill="#fff" />
+
+                        <!-- Memory -->
+                        <rect x="300" y="50" width="100" height="100" fill="url(#memGrad)" rx="10" stroke="#00f0ff"
+                            stroke-width="2" />
+                        <text x="350" y="90" fill="#fff" font-family="Inter" font-size="16" font-weight="bold"
+                            text-anchor="middle">Flash</text>
+                        <text x="350" y="110" fill="#b3ffff" font-family="JetBrains Mono" font-size="12"
+                            text-anchor="middle">(Program)</text>
+                        <line x1="350" y1="150" x2="350" y2="180" stroke="#fff" stroke-width="4" />
+
+                        <rect x="420" y="50" width="100" height="100" fill="url(#memGrad)" rx="10" stroke="#00f0ff"
+                            stroke-width="2" />
+                        <text x="470" y="90" fill="#fff" font-family="Inter" font-size="16" font-weight="bold"
+                            text-anchor="middle">SRAM</text>
+                        <text x="470" y="110" fill="#b3ffff" font-family="JetBrains Mono" font-size="12"
+                            text-anchor="middle">(Variables)</text>
+                        <line x1="470" y1="150" x2="470" y2="180" stroke="#fff" stroke-width="4" />
+
+                        <!-- Peripherals -->
+                        <rect x="100" y="230" width="120" height="80" fill="rgba(255,255,255,0.1)" stroke="#e0e0ff"
+                            stroke-width="2" rx="5" />
+                        <text x="160" y="260" fill="#e0e0ff" font-family="Inter" font-size="14" font-weight="bold"
+                            text-anchor="middle">GPIO</text>
+                        <line x1="160" y1="200" x2="160" y2="230" stroke="#fff" stroke-width="4" />
+
+                        <rect x="250" y="230" width="120" height="80" fill="rgba(255,255,255,0.1)" stroke="#e0e0ff"
+                            stroke-width="2" rx="5" />
+                        <text x="310" y="260" fill="#e0e0ff" font-family="Inter" font-size="14" font-weight="bold"
+                            text-anchor="middle">ADC</text>
+                        <line x1="310" y1="200" x2="310" y2="230" stroke="#fff" stroke-width="4" />
+
+                        <rect x="400" y="230" width="120" height="80" fill="rgba(255,255,255,0.1)" stroke="#e0e0ff"
+                            stroke-width="2" rx="5" />
+                        <text x="460" y="260" fill="#e0e0ff" font-family="Inter" font-size="14" font-weight="bold"
+                            text-anchor="middle">Timers/PWM</text>
+                        <line x1="460" y1="200" x2="460" y2="230" stroke="#fff" stroke-width="4" />
+
+                        <rect x="550" y="230" width="120" height="80" fill="rgba(255,255,255,0.1)" stroke="#e0e0ff"
+                            stroke-width="2" rx="5" />
+                        <text x="610" y="260" fill="#e0e0ff" font-family="Inter" font-size="14" font-weight="bold"
+                            text-anchor="middle">UART/SPI/I2C</text>
+                        <line x1="610" y1="200" x2="610" y2="230" stroke="#fff" stroke-width="4" />
+
+                        <!-- External Pins -->
+                        <path d="M 160 310 L 160 350 M 150 350 L 170 350" stroke="#ff003c" stroke-width="2"
+                            fill="none" />
+                        <text x="160" y="370" fill="#ff003c" font-size="10" text-anchor="middle">Pins</text>
+
+                        <path d="M 310 310 L 310 350 M 300 350 L 320 350" stroke="#ff003c" stroke-width="2"
+                            fill="none" />
+                        <text x="310" y="370" fill="#ff003c" font-size="10" text-anchor="middle">Analog In</text>
+
+                        <path d="M 460 310 L 460 350 M 450 350 L 470 350" stroke="#ff003c" stroke-width="2"
+                            fill="none" />
+                        <text x="460" y="370" fill="#ff003c" font-size="10" text-anchor="middle">Motor Ctrl</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 9: FPGAs in Robotics</h4>
+                <p>A Field Programmable Gate Array (FPGA) is a chip with no pre-defined hardware. Instead of writing
+                    software, an engineer writes code (VHDL or Verilog) that physically "wires" the logic gates inside
+                    the chip. FPGAs provide true parallel processing. While a CPU handles one instruction at a time very
+                    fast, an FPGA can handle thousands of independent hardware operations simultaneously. They are used
+                    in robotics for ultra-low-latency motor control and high-speed vision processing.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">FPGAs are composed of millions of tiny
+                    <strong>Look-Up Tables (LUTs)</strong> and flip-flops connected by a programmable routing matrix.
+                    When you compile VHDL code, the synthesizer calculates the boolean algebra and programs these LUTs
+                    to physically mimic the desired logic gates (AND, OR, XOR). Because it is physical hardware, a
+                    100MHz FPGA can vastly outperform a 3GHz CPU on highly parallel tasks like image filtering.
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">The modern trend is <strong>System-on-Chip (SoC)
+                        FPGAs</strong>, such as the Xilinx Zynq. These chips combine a hard silicon ARM Cortex processor
+                    directly beside the FPGA fabric. The Linux OS runs on the ARM cores to handle Wi-Fi and high-level
+                    logic, while the custom FPGA hardware handles real-time motor commutation and sensor fusion,
+                    communicating over ultra-fast internal AXI buses.</p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        High-Speed Sorting Robots</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">In massive recycling plants, robots must
+                        instantly identify and blast away thousands of pieces of trash per second as they fly by on a
+                        conveyor belt. A standard CPU cannot process images fast enough. FPGAs are programmed to process
+                        every pixel of the camera feed in parallel, identifying materials and firing pneumatic air jets
+                        with near-zero latency.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 10: Hardware Acceleration for AI</h4>
+                <p>Modern robots rely heavily on Neural Networks for perception. CPUs are too slow for this math.
+                    Engineers use GPUs (Graphics Processing Units) or NPUs (Neural Processing Units / TPUs) to perform
+                    massive matrix multiplications in parallel. This "Edge AI" allows a robot to recognize objects
+                    instantly without relying on a cloud internet connection.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">AI hardware accelerators achieve their speed using
+                    <strong>Tensor Cores</strong>. Unlike standard CPUs that calculate one math operation at a time,
+                    Tensor Cores are physically designed to multiply and add entire 4x4 or 8x8 matrices of numbers in a
+                    single clock cycle. This is exactly the math required to propagate data through the layers of a
+                    neural network.
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Deploying AI to mobile robots requires shrinking
+                    the models to fit limited VRAM and power budgets. Engineers use
+                    <strong>Quantization</strong>—converting highly precise 32-bit floating-point numbers (FP32) into
+                    smaller 8-bit integers (INT8). They also use <strong>Pruning</strong> to delete connections in the
+                    neural network that don't heavily impact the result. This allows a massive cloud-trained model to
+                    run efficiently on an edge device.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        Tesla Autopilot Hardware</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">Tesla vehicles are essentially massive mobile
+                        robots. Their "Full Self-Driving" computer contains a custom-designed NPU optimized specifically
+                        for executing deep neural networks. Instead of sending camera feeds to a cloud server, this
+                        onboard hardware accelerator processes gigabytes of video data locally, detecting pedestrians,
+                        lane lines, and traffic lights in real-time, even in tunnels where no internet connection
+                        exists.</p>
+                </div>
+            </div>
+            <!-- MODULE 4 -->
+            <h3
+                style="color: var(--magenta); margin-top: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                Module 4: Real-Time Operating Systems (RTOS)</h3>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 11: What is an RTOS?</h4>
+                <p>A standard OS (Windows, Linux) prioritizes "Throughput"—getting as much work done as possible. A
+                    Real-Time Operating System prioritizes "Determinism"—guaranteeing that a specific task will run at a
+                    specific time, without fail. If a robot's motor control loop is delayed by 10 milliseconds because
+                    the OS decided to update the UI, the robot crashes. An RTOS prevents this.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">The defining metric of an RTOS is its
+                    <strong>Interrupt Latency</strong>—the time it takes between a hardware pin changing state and the
+                    CPU executing the first line of the interrupt handler. A high-quality RTOS guarantees this latency
+                    is deterministic and bounded, often measured in just a few dozen clock cycles, ensuring the robot
+                    can react to a limit switch before tearing itself apart.
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">An RTOS uses a preemptive kernel. This means the
+                    instant a high-priority task is ready to run (perhaps woken by a timer), the RTOS will forcefully
+                    halt the currently running lower-priority task, save its CPU registers to memory (a Context Switch),
+                    and begin executing the high-priority task. This happens invisibly to the tasks themselves.</p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Automotive Airbag Deployment</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">An airbag control module runs an RTOS. When a
+                        crash is detected by impact sensors, the RTOS guarantees that the deployment task will execute
+                        within strict milliseconds, overriding any other tasks (like logging data). If it ran a standard
+                        OS, a background update could delay deployment by a fraction of a second, which is the
+                        difference between life and death.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 12: Task Scheduling Algorithms</h4>
+                <p>An RTOS kernel uses scheduling algorithms. <strong>Rate Monotonic Scheduling (RMS)</strong> assigns
+                    the highest priority to the task that runs the most frequently (e.g., a 1000Hz motor loop gets
+                    priority over a 10Hz sensor read). <strong>Earliest Deadline First (EDF)</strong> is a dynamic
+                    scheduler that constantly calculates which task is closest to failing its deadline and prioritizes
+                    it.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">Engineers use <strong>Rate Monotonic Analysis
+                        (RMA)</strong> to mathematically prove whether a set of tasks can run without missing deadlines.
+                    The RMA theorem states that if you assign priorities purely based on how often tasks run (fastest =
+                    highest priority), the system is guaranteed to never miss a deadline as long as the total CPU
+                    utilization stays below approximately 69.3%.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">A catastrophic RTOS failure mode is
+                    <strong>Priority Inversion</strong>. If a low-priority task locks a Mutex to use a resource, and a
+                    high-priority task wakes up and needs that same resource, it must wait. If a medium-priority task
+                    then wakes up and preempts the low-priority task, the high-priority task is effectively blocked by
+                    the medium one! RTOS kernels solve this using <em>Priority Inheritance</em>, temporarily boosting
+                    the low task's priority until it releases the lock.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Pacemaker Devices</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">A medical pacemaker relies on strict Rate
+                        Monotonic Scheduling (RMS). The task that reads the heart rhythm must happen continuously at a
+                        high frequency (high priority). The task that transmits data via Bluetooth to a doctor's tablet
+                        happens infrequently (low priority). The scheduler ensures the Bluetooth transmission never
+                        preempts the critical heart-monitoring function.</p>
+                </div>
+
+                <div class="simulator-box">
+                    <h5>Live RTOS Scheduler Timeline (RMS Simulation)</h5>
+                    <div class="rtos-timeline">
+                        <div class="rtos-task task-high" id="task-high" style="width: 0%; left: 0%;">Motor Control (High
+                            Priority)</div>
+                        <div class="rtos-task task-low" id="task-low" style="width: 0%; left: 0%;">Sensor Read (Low
+                            Priority)</div>
+                        <div class="rtos-task task-idle" id="task-idle" style="width: 100%; left: 0%;">Idle Task</div>
+                    </div>
+                    <button class="cyber-button" onclick="triggerRTOSEvent()">Trigger Sensor Interrupt</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 13: Concurrency and Synchronization</h4>
+                <p>When multiple tasks run concurrently, they often need to share resources (like a single I2C bus). If
+                    two tasks try to use the bus simultaneously, data corrupts. RTOS uses <strong>Mutexes</strong>
+                    (Mutual Exclusions) as digital "keys". A task must acquire the key to use the bus, and release it
+                    when done. <strong>Semaphores</strong> are used to signal between tasks (e.g., an interrupt signals
+                    a semaphore to wake up a sleeping task).</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">While Mutexes protect shared data, they introduce
+                    the risk of <strong>Deadlocks</strong>. This is the classic "Dining Philosophers" problem: Task A
+                    locks Resource 1 and waits for Resource 2. Task B locks Resource 2 and waits for Resource 1. Both
+                    tasks sleep forever, and the robot halts. Engineers avoid this by enforcing strict hierarchical lock
+                    ordering and utilizing timeout mechanisms.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">To avoid the complexities of shared memory and
+                    Mutexes entirely, modern RTOS designs heavily favor <strong>Message Queues</strong>. A Message Queue
+                    is a thread-safe mailbox managed by the kernel. The sensor task packages its data into a struct and
+                    "posts" it to the queue. The motor task "reads" from the queue. This decoupled architecture is
+                    significantly safer and easier to debug.</p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Robotic Arm Controllers</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">In a robotic arm, one task calculates movement
+                        paths while another updates the LCD display. Both tasks might try to read the joint angles from
+                        shared memory simultaneously. If the path-planning task reads half-updated data, the arm could
+                        crash. A Mutex ensures that when the sensor-update task writes new data, it locks the memory,
+                        preventing the path planner from reading until the update is complete.</p>
+                </div>
+            </div>
+
+            <!-- MODULE 5 -->
+            <h3
+                style="color: var(--cyan); margin-top: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                Module 5: The Robot Operating System (ROS)</h3>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 14: ROS Architecture (ROS 1 vs ROS 2)</h4>
+                <p>ROS is not a true OS; it is a middleware framework. ROS 1 relied on a central "Master" node. If the
+                    Master crashed, the entire robot died. ROS 2 solves this by using the DDS (Data Distribution
+                    Service) standard, creating a truly decentralized, peer-to-peer network of nodes, making it robust
+                    enough for industrial and space applications.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">ROS 2's reliance on DDS (Data Distribution Service)
+                    introduces fine-grained <strong>Quality of Service (QoS)</strong> profiles. For a LiDAR stream
+                    spinning at 20Hz, losing one packet is acceptable; you just want the newest data. You configure this
+                    topic with a "Best Effort" QoS. Conversely, for a command telling the robot to stop, losing the
+                    packet is unacceptable, so it is configured as "Reliable," meaning DDS will automatically retry
+                    transmission until acknowledged.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Another massive architectural leap in ROS 2 is
+                    <strong>SROS2 (Secure ROS)</strong>. Because ROS 2 communicates over standard DDS, it inherently
+                    inherits DDS-Security features. Engineers can generate cryptographic keys and certificates for
+                    individual nodes, meaning that even if a hacker breaches the robot's Wi-Fi network, they cannot
+                    inject malicious motor commands because their node is not cryptographically authenticated.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        NASA's VIPER Rover</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">NASA transitioned to ROS 2 for its lunar
+                        exploration rovers. The transition to a decentralized network ensures that if one specific
+                        sensor node crashes due to cosmic radiation, the rest of the rover's software stack continues
+                        functioning seamlessly, whereas in ROS 1, a failure of the central Master node could paralyze
+                        the entire robot on the moon.</p>
+                </div>
+
+                <div class="simulator-box" style="margin-top: 1rem;">
+                    <h5>ROS 2 Decentralized DDS Network Topology</h5>
+                    <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 100%; height: auto; background: #050508; border-radius: 8px;">
+                        <defs>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+
+                        <!-- Connecting Lines (Topics) -->
+                        <!-- Hardware to Sensors -->
+                        <path d="M 200 200 L 200 140" stroke="#aaa" stroke-width="2" stroke-dasharray="4 4"
+                            fill="none" />
+                        <path d="M 200 200 L 200 260" stroke="#aaa" stroke-width="2" stroke-dasharray="4 4"
+                            fill="none" />
+
+                        <!-- Camera to Perception -->
+                        <path d="M 200 100 L 400 100" stroke="#00f0ff" stroke-width="3" stroke-dasharray="10 5"
+                            fill="none">
+                            <animate attributeName="stroke-dashoffset" from="30" to="0" dur="1s"
+                                repeatCount="indefinite" />
+                        </path>
+                        <text x="300" y="90" fill="#00f0ff" font-family="JetBrains Mono" font-size="12"
+                            text-anchor="middle">/image_raw</text>
+
+                        <!-- Perception to Navigation -->
+                        <path d="M 400 100 L 600 200" stroke="#00f0ff" stroke-width="3" stroke-dasharray="10 5"
+                            fill="none">
+                            <animate attributeName="stroke-dashoffset" from="30" to="0" dur="1s"
+                                repeatCount="indefinite" />
+                        </path>
+                        <text x="530" y="140" fill="#00f0ff" font-family="JetBrains Mono" font-size="12"
+                            text-anchor="middle">/obstacles</text>
+
+                        <!-- Lidar to Navigation -->
+                        <path d="M 200 300 L 600 200" stroke="#00f0ff" stroke-width="3" stroke-dasharray="10 5"
+                            fill="none">
+                            <animate attributeName="stroke-dashoffset" from="30" to="0" dur="1s"
+                                repeatCount="indefinite" />
+                        </path>
+                        <text x="370" y="270" fill="#00f0ff" font-family="JetBrains Mono" font-size="12"
+                            text-anchor="middle">/scan</text>
+
+                        <!-- Navigation to Motor Controller -->
+                        <path d="M 600 200 L 400 300" stroke="#ff003c" stroke-width="3" stroke-dasharray="10 5"
+                            fill="none">
+                            <animate attributeName="stroke-dashoffset" from="30" to="0" dur="1s"
+                                repeatCount="indefinite" />
+                        </path>
+                        <text x="530" y="280" fill="#ff003c" font-family="JetBrains Mono" font-size="12"
+                            text-anchor="middle">/cmd_vel</text>
+
+                        <!-- Motor Controller to Hardware -->
+                        <path d="M 400 300 L 240 200" stroke="#ff003c" stroke-width="3" stroke-dasharray="10 5"
+                            fill="none">
+                            <animate attributeName="stroke-dashoffset" from="30" to="0" dur="1s"
+                                repeatCount="indefinite" />
+                        </path>
+                        <text x="320" y="240" fill="#ff003c" font-family="JetBrains Mono" font-size="12"
+                            text-anchor="middle">PWM Signals</text>
+
+                        <!-- Nodes -->
+                        <!-- Hardware Node -->
+                        <rect x="160" y="170" width="80" height="60" rx="8" fill="rgba(255, 255, 255, 0.05)"
+                            stroke="#aaa" stroke-width="2" />
+                        <text x="200" y="200" fill="#fff" font-family="Inter" font-weight="bold"
+                            text-anchor="middle">Physical</text>
+                        <text x="200" y="215" fill="#aaa" font-family="Inter" font-size="10"
+                            text-anchor="middle">Robot</text>
+
+                        <!-- Camera Node -->
+                        <circle cx="200" cy="100" r="40" fill="rgba(0, 240, 255, 0.1)" stroke="#00f0ff" stroke-width="3"
+                            filter="url(#glow)" />
+                        <text x="200" y="105" fill="#fff" font-family="Inter" font-weight="bold"
+                            text-anchor="middle">Camera</text>
+                        <text x="200" y="125" fill="#aaa" font-family="JetBrains Mono" font-size="10"
+                            text-anchor="middle">Node</text>
+
+                        <!-- Lidar Node -->
+                        <circle cx="200" cy="300" r="40" fill="rgba(0, 240, 255, 0.1)" stroke="#00f0ff" stroke-width="3"
+                            filter="url(#glow)" />
+                        <text x="200" y="305" fill="#fff" font-family="Inter" font-weight="bold"
+                            text-anchor="middle">LiDAR</text>
+                        <text x="200" y="325" fill="#aaa" font-family="JetBrains Mono" font-size="10"
+                            text-anchor="middle">Node</text>
+
+                        <!-- Perception Node -->
+                        <circle cx="400" cy="100" r="50" fill="rgba(255, 255, 255, 0.1)" stroke="#fff"
+                            stroke-width="3" />
+                        <text x="400" y="100" fill="#fff" font-family="Inter" font-weight="bold"
+                            text-anchor="middle">Perception</text>
+                        <text x="400" y="120" fill="#aaa" font-family="JetBrains Mono" font-size="10"
+                            text-anchor="middle">(OpenCV)</text>
+
+                        <!-- Navigation Node -->
+                        <circle cx="600" cy="200" r="50" fill="rgba(255, 255, 255, 0.1)" stroke="#fff"
+                            stroke-width="3" />
+                        <text x="600" y="200" fill="#fff" font-family="Inter" font-weight="bold"
+                            text-anchor="middle">Nav2</text>
+                        <text x="600" y="220" fill="#aaa" font-family="JetBrains Mono" font-size="10"
+                            text-anchor="middle">(Planner)</text>
+
+                        <!-- Motor Node -->
+                        <circle cx="400" cy="300" r="40" fill="rgba(255, 0, 60, 0.1)" stroke="#ff003c" stroke-width="3"
+                            filter="url(#glow)" />
+                        <text x="400" y="305" fill="#fff" font-family="Inter" font-weight="bold"
+                            text-anchor="middle">Motors</text>
+                        <text x="400" y="325" fill="#aaa" font-family="JetBrains Mono" font-size="10"
+                            text-anchor="middle">Node</text>
+
+                    </svg>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 15: ROS Communication Patterns</h4>
+                <p>ROS nodes communicate in three main ways: <strong>Topics</strong> (Publish/Subscribe, used for
+                    continuous data like camera streams), <strong>Services</strong> (Request/Response, used for quick
+                    calculations), and <strong>Actions</strong> (Goal/Feedback/Result, used for long-running tasks like
+                    "Navigate to the Kitchen").</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">Under the hood, ROS Topics heavily utilize
+                    <strong>UDP Multicasting</strong> for efficiency. If five different nodes need to subscribe to the
+                    same high-bandwidth camera feed, a standard TCP/IP architecture would require the camera node to
+                    send the image five separate times. With DDS multicasting, the camera node puts the image on the
+                    network exactly once, and the network hardware distributes it to all five subscribers
+                    simultaneously.
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">The <strong>Action</strong> communication pattern
+                    is essentially an asynchronous State Machine wrapped over Topics and Services. When a client sends a
+                    "Navigate to X" Goal, the Action Server accepts it and immediately returns a thread to the client so
+                    it isn't blocked. The server then continually publishes "Feedback" (current distance remaining) over
+                    a separate topic, and eventually publishes a final "Result" (Success/Failure) when finished.</p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        Autonomous Delivery Robots</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">In an autonomous delivery robot (like Starship),
+                        the LiDAR node 'Publishes' laser scan data continuously to a Topic. The obstacle avoidance node
+                        'Subscribes' to this stream to steer. However, when the robot reaches its destination and needs
+                        to open the secure lid, it makes a 'Service Call' to the lock actuator, waiting for a definitive
+                        "Lid Open" response before notifying the customer.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 16: Nav2 and MoveIt!</h4>
+                <p>Instead of writing complex path-planning from scratch, ROS provides massive open-source libraries.
+                    <strong>Nav2</strong> is the standard for 2D autonomous navigation (SLAM, A* path planning, obstacle
+                    avoidance). <strong>MoveIt!</strong> is the standard for 3D manipulation, allowing a 6-DOF robot arm
+                    to calculate Inverse Kinematics and avoid self-collision while grasping objects.
+                </p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">Nav2 replaces the rigid state machines of older
+                    systems with <strong>Behavior Trees (BTs)</strong>. BTs are hierarchical structures borrowed from
+                    the video game industry (used for AI logic). They allow engineers to create highly complex recovery
+                    behaviors easily. For example: "Try to plan a path. IF the path is blocked, THEN clear the costmap.
+                    IF it is still blocked, THEN spin 360 degrees to look around. IF still blocked, THEN call for human
+                    help."</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">MoveIt! relies heavily on <strong>OctoMaps</strong>
+                    for 3D collision checking. Standard 2D grids (like LiDAR maps) cannot represent a drone flying over
+                    a table or an arm reaching under a shelf. OctoMaps use an octree data structure to divide 3D space
+                    into volumetric pixels (voxels). MoveIt uses these voxels alongside the FCL (Flexible Collision
+                    Library) to mathematically guarantee the robot arm will not crush itself or its environment while
+                    reaching for an object.</p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(0, 240, 255, 0.05); border-left: 4px solid var(--cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyan);"><i class="fa-solid fa-earth-americas"></i> Real-World Example:
+                        Amazon Fulfillment Center Robots</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">Warehouse robots like Amazon's Proteus use
+                        customized versions of Nav2 concepts. They generate dynamic costmaps of the facility floor. If a
+                        human walks into the robot's pre-planned path, the local planner instantly updates the
+                        trajectory to curve around the person in real-time, while the global planner ensures the robot
+                        still efficiently reaches its designated charging station.</p>
+                </div>
+            </div>
+
+            <!-- MODULE 6 -->
+            <h3
+                style="color: var(--magenta); margin-top: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                Module 6: Aerospace and Drone Robotics</h3>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 17: Drone Flight Dynamics</h4>
+                <p>A quadcopter is inherently unstable. It controls its movement by varying the RPM of its four rotors.
+                    <strong>Pitch</strong> (tilting forward/back), <strong>Roll</strong> (tilting left/right), and
+                    <strong>Yaw</strong> (spinning like a top) are controlled by creating differential thrust between
+                    opposing motors. This requires a PID control loop running at 400Hz to 800Hz just to stay in the air.
+                </p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">A drone's controller must untangle the coupled
+                    nature of <strong>Rigid Body Dynamics (6-DOF)</strong>. Unlike a car, a quadcopter cannot simply
+                    turn left. To turn left (Yaw), it must torque the frame. To move left (Roll), it must tilt. But
+                    tilting left also causes it to lose altitude, meaning it must simultaneously increase overall
+                    throttle. The controller's mixing matrix instantly translates a simple "go left" joystick command
+                    into four vastly different motor RPM adjustments.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Professional flight stacks utilize a
+                    <strong>Cascaded PID Architecture</strong>. The outermost loop compares the desired GPS coordinate
+                    to the current GPS coordinate, outputting a desired velocity. The next loop compares desired
+                    velocity to actual velocity, outputting a desired tilt angle. The innermost loop, running blazingly
+                    fast at 4KHz-8KHz, reads the gyroscope to compare the desired tilt to the actual angular velocity,
+                    finally outputting the raw PWM signals to the electronic speed controllers (ESCs).
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: FPV Racing Drones</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">First-Person View (FPV) racing drones operate
+                        without self-leveling software. The pilot directly commands pitch, roll, and yaw rates. The
+                        onboard PID controller translates these raw stick commands into microsecond motor speed
+                        adjustments. To execute a sharp bank, the controller might slow down the inner motors by 30%
+                        while speeding up the outer motors by 50%, adjusting dynamically 800 times a second as wind
+                        resistance changes.</p>
+                </div>
+
+                <div class="simulator-box">
+                    <h5>3D Flight Dynamics Simulator</h5>
+                    <div class="kinematics-controls">
+                        <div class="slider-group">
+                            <label>Pitch (Forward/Back): <span id="val-pitch">0&deg;</span></label>
+                            <input type="range" id="slider-pitch" min="-45" max="45" value="0">
+                        </div>
+                        <div class="slider-group">
+                            <label>Roll (Left/Right): <span id="val-roll">0&deg;</span></label>
+                            <input type="range" id="slider-roll" min="-45" max="45" value="0">
+                        </div>
+                    </div>
+                    <div class="scene3d">
+                        <div class="drone-body" id="drone3d">
+                            <div class="drone-core"></div>
+                            <div class="rotor-arm arm-1">
+                                <div class="rotor left"></div>
+                                <div class="rotor right"></div>
+                            </div>
+                            <div class="rotor-arm arm-2">
+                                <div class="rotor left"></div>
+                                <div class="rotor right"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 18: Drone Operating Systems (PX4 & ArduPilot)</h4>
+                <p>Commercial and research drones do not run custom Arduino code; they run robust flight stacks like PX4
+                    or ArduPilot. These systems run on an RTOS (like NuttX) and handle mission planning, GPS waypoint
+                    navigation, fail-safes (Return-to-Launch on low battery), and VTOL (Vertical Take-Off and Landing)
+                    transitions.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">PX4 utilizes an elegant internal publish/subscribe
+                    messaging bus called <strong>uORB</strong>. This is essentially a micro-ROS built specifically for
+                    the tight constraints of a microcontroller. It allows the GPS driver, the IMU driver, and the PID
+                    controller to all communicate anonymously. This modularity means developers can hot-swap a
+                    completely different GPS hardware driver without rewriting any of the core navigation logic.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Advanced commercial drones employ a
+                    <strong>Companion Computer Architecture</strong>. The low-level Flight Controller (running ArduPilot
+                    on an RTOS) handles the critical physics of staying in the air. Connected via a fast serial link
+                    (like MAVLink) is a Companion Computer (like an Nvidia Jetson running Linux and ROS). The Jetson
+                    runs the heavy AI object detection, and simply sends high-level MAVLink commands ("fly 2 meters
+                    right to avoid that bird") down to the Flight Controller.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Agricultural Survey Drones</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">Massive agricultural drones flying over farmlands
+                        use ArduPilot to execute precise grid missions. The farmer draws a polygon on a tablet map; the
+                        flight stack automatically calculates the most efficient lawnmower-pattern path, manages camera
+                        triggering based on ground speed, and will autonomously pause the mission and fly home if it
+                        detects an impending storm via telemetry.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 19: Sensor Fusion (Extended Kalman Filters)</h4>
+                <p>No single sensor is perfect. GPS is slow (5Hz) and inaccurate. Accelerometers are fast but drift over
+                    time. An <strong>Extended Kalman Filter (EKF)</strong> is a beautiful mathematical algorithm that
+                    fuses data from the IMU, Barometer, Compass, and GPS. It predicts the drone's state, measures the
+                    error from the sensors, and dynamically updates its "belief" of the drone's true position in 3D
+                    space.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">The magic of the Kalman Filter lies in its
+                    management of <strong>Covariance Matrices</strong>. It doesn't just calculate where the robot is; it
+                    mathematically calculates exactly how <em>uncertain</em> it is about where the robot is. If a drone
+                    flies into a GPS-denied tunnel, the filter's GPS uncertainty skyrockets, automatically weighting the
+                    IMU data heavier. When it exits the tunnel, the GPS uncertainty drops, and the filter seamlessly
+                    snaps the position estimate back to reality.</p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">Because standard Kalman Filters only work for
+                    linear systems, robotics relies on the <strong>Extended Kalman Filter (EKF)</strong>. Since rotating
+                    a robot involves Sine and Cosine (highly nonlinear functions), the EKF uses Taylor Series expansions
+                    (specifically calculating Jacobians) to linearize the physics model around the current operating
+                    point at every single timestep, allowing it to fuse noisy data accurately even when the robot is
+                    performing aggressive acrobatics.</p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Commercial Airliner Navigation</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">Modern jets use powerful sensor fusion. When
+                        flying over oceans with poor GPS coverage, the aircraft relies on its Inertial Reference System
+                        (IRS). Because IRS drifts slightly over time, the onboard Kalman Filter continuously merges data
+                        from external air data probes, ground-based radio beacons (when in range), and satellite GPS to
+                        output an incredibly precise, reliable position to the autopilot.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4>Topic 20: Swarm Robotics and Multi-Agent Systems</h4>
+                <p>The pinnacle of advanced robotics is the Swarm. Instead of one complex, expensive robot, you deploy
+                    hundreds of simple, cheap robots. They communicate locally (like ants leaving pheromone trails) to
+                    achieve complex global objectives, such as mapping a collapsed building. Swarms rely on
+                    decentralized algorithms, ensuring that if 10% of the robots are destroyed, the mission still
+                    succeeds.</p>
+
+                <p style="margin-top: 1rem; color: var(--text-dim);">Swarm intelligence is often built on decentralized
+                    <strong>Flocking Algorithms</strong> (like Boids). Each robot obeys three simple, local rules:
+                    <em>Separation</em> (steer away from crowded neighbors), <em>Alignment</em> (steer towards the
+                    average heading of neighbors), and <em>Cohesion</em> (steer towards the average position of
+                    neighbors). From these simple local rules, complex, fluid global swarm behaviors emerge organically,
+                    just like a flock of starlings.
+                </p>
+                <p style="margin-top: 1rem; color: var(--text-dim);">To coordinate without a central server, swarms use
+                    <strong>Ultra-Wideband (UWB)</strong> radios. UWB sends billions of incredibly short, low-power
+                    pulses per second. By measuring the precise Time of Flight (ToF) of these pulses between different
+                    robots, the swarm can establish a highly accurate relative local coordinate system, maintaining
+                    perfect formation even deep underground or inside warehouses where GPS signals cannot penetrate.
+                </p>
+                <div
+                    style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 0, 60, 0.05); border-left: 4px solid var(--magenta); border-radius: 4px;">
+                    <strong style="color: var(--magenta);"><i class="fa-solid fa-earth-americas"></i> Real-World
+                        Example: Intel Drone Light Shows</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.95rem;">Instead of fireworks, cities now use swarms of
+                        hundreds of illuminated drones. A central computer broadcasts a target 3D animation, but each
+                        individual drone must autonomously calculate its own collision-free flight path to its
+                        designated coordinate in the sky, dynamically adjusting for wind gusts without needing constant
+                        micro-management from the ground station.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- SENSE THINK ACT LOGIC ---
+        const descriptions = {
+            sense: "<strong>SENSORS:</strong> The robot's eyes and ears. These components convert physical reality (light, distance, temperature) into electrical voltages the brain can understand. Examples: Cameras, Ultrasonic Sensors, Bump Switches.",
+            think: "<strong>MICROCONTROLLER:</strong> The Brain (like an Arduino). It reads the electrical signals from the sensors, runs your custom Code logic, and decides what action to take. It is fast, but physically very weak.",
+            act: "<strong>ACTUATORS:</strong> The muscles. Based on the brain's decision, power is sent to Actuators to affect the physical world. Examples: Spinning a DC motor to move away from a wall, or flashing a warning LED."
+        };
+
+        function activateNode(nodeId) {
+            // Remove active class from all
+            document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+
+            // Add to clicked
+            document.getElementById(`node-${nodeId}`).classList.add('active');
+
+            // Update text with slight fade effect
+            const descEl = document.getElementById('loop-description');
+            descEl.style.opacity = 0;
+            setTimeout(() => {
+                descEl.innerHTML = descriptions[nodeId];
+                descEl.style.opacity = 1;
+            }, 150);
+        }
+
+        // --- OHM'S LAW SIMULATOR LOGIC ---
+        const sliderV = document.getElementById('slider-v');
+        const sliderR = document.getElementById('slider-r');
+        const valV = document.getElementById('val-v');
+        const valR = document.getElementById('val-r');
+        const mathV = document.getElementById('math-v');
+        const mathR = document.getElementById('math-r');
+        const mathI = document.getElementById('math-i');
+        const visualPipe = document.getElementById('visual-pipe');
+
+        let electrons = [];
+        const pipeWidth = visualPipe.parentElement.clientWidth - 40; // Approx
+
+        // Initialize electrons
+        for (let i = 0; i < 15; i++) {
+            const el = document.createElement('div');
+            el.className = 'electron';
+            el.style.left = `${Math.random() * 100}%`;
+            // Random vertical offset within pipe
+            visualPipe.appendChild(el);
+            electrons.push({
+                element: el,
+                pos: Math.random() * 100
+            });
+        }
+
+        function updateOhmLaw() {
+            const v = parseFloat(sliderV.value);
+            const r = parseFloat(sliderR.value);
+
+            // I = V / R
+            let i = v / r;
+
+            // Update UI text
+            valV.textContent = `${v.toFixed(1)} V`;
+            valR.textContent = `${r} \u03A9`;
+            mathV.textContent = v.toFixed(1);
+            mathR.textContent = r;
+            mathI.textContent = i.toFixed(3);
+
+            // Update Visuals
+            // High resistance = narrow pipe
+            // Range 10 to 1000 ohms. Pipe height 10px to 100px.
+            // Inverted relationship: High R -> Small height
+            const maxR = 1000;
+            const minR = 10;
+            const pipeHeight = 100 - ((r - minR) / (maxR - minR) * 90);
+            visualPipe.style.height = `${Math.max(10, pipeHeight)}px`;
+
+            // High current = fast electrons
+            // Max current is 12/10 = 1.2A. Min is 1/1000 = 0.001A.
+            // Speed multiplier
+            window.currentSpeed = i * 20;
+        }
+
+        // Animation Loop for Electrons
+        function animateElectrons() {
+            electrons.forEach(e => {
+                e.pos += window.currentSpeed;
+                if (e.pos > 100) e.pos = -5; // wrap around
+                e.element.style.left = `${e.pos}%`;
+            });
+            requestAnimationFrame(animateElectrons);
+        }
+
+        // Event Listeners
+        sliderV.addEventListener('input', updateOhmLaw);
+        sliderR.addEventListener('input', updateOhmLaw);
+
+        // Init
+        updateOhmLaw();
+        animateElectrons();
+
+        // --- KINEMATICS SIMULATOR (CANVAS) ---
+        const canvas = document.getElementById('kinematicsCanvas');
+        const ctx = canvas.getContext('2d');
+        const sTheta1 = document.getElementById('slider-theta1');
+        const sTheta2 = document.getElementById('slider-theta2');
+        const vTheta1 = document.getElementById('val-theta1');
+        const vTheta2 = document.getElementById('val-theta2');
+
+        const armLength1 = 120;
+        const armLength2 = 100;
+        const originX = canvas.width / 2;
+        const originY = canvas.height - 50;
+
+        function drawKinematics() {
+            const t1 = parseFloat(sTheta1.value) * (Math.PI / 180);
+            const t2 = parseFloat(sTheta2.value) * (Math.PI / 180);
+
+            vTheta1.innerHTML = sTheta1.value + '&deg;';
+            vTheta2.innerHTML = sTheta2.value + '&deg;';
+
+            // Calculate Joint 1 (Elbow)
+            // Note: Canvas Y is inverted, so we subtract
+            const j1X = originX + armLength1 * Math.cos(t1);
+            const j1Y = originY - armLength1 * Math.sin(t1);
+
+            // Calculate Joint 2 (End Effector)
+            // Relative to elbow, total angle is t1 + t2
+            const j2X = j1X + armLength2 * Math.cos(t1 + t2);
+            const j2Y = j1Y - armLength2 * Math.sin(t1 + t2);
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 20) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+
+            // Draw Base
+            ctx.fillStyle = '#ff003c';
+            ctx.beginPath(); ctx.arc(originX, originY, 15, 0, Math.PI * 2); ctx.fill();
+
+            // Draw Arm 1
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 10;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(originX, originY);
+            ctx.lineTo(j1X, j1Y);
+            ctx.stroke();
+
+            // Draw Elbow
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(j1X, j1Y, 10, 0, Math.PI * 2); ctx.fill();
+
+            // Draw Arm 2
+            ctx.strokeStyle = '#e0e0ff';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(j1X, j1Y);
+            ctx.lineTo(j2X, j2Y);
+            ctx.stroke();
+
+            // Draw End Effector
+            ctx.fillStyle = '#ff003c';
+            ctx.beginPath(); ctx.arc(j2X, j2Y, 8, 0, Math.PI * 2); ctx.fill();
+
+            // Draw Math Coordinates
+            ctx.fillStyle = '#00f0ff';
+            ctx.font = '14px JetBrains Mono';
+            ctx.fillText(`X: ${(j2X - originX).toFixed(1)}`, 10, 20);
+            ctx.fillText(`Y: ${(originY - j2Y).toFixed(1)}`, 10, 40);
+        }
+
+        sTheta1.addEventListener('input', drawKinematics);
+        sTheta2.addEventListener('input', drawKinematics);
+        drawKinematics(); // Init
+
+        // --- 3D DRONE DYNAMICS ---
+        const sPitch = document.getElementById('slider-pitch');
+        const sRoll = document.getElementById('slider-roll');
+        const vPitch = document.getElementById('val-pitch');
+        const vRoll = document.getElementById('val-roll');
+        const drone3d = document.getElementById('drone3d');
+
+        function updateDroneFlight() {
+            const pitch = parseFloat(sPitch.value);
+            const roll = parseFloat(sRoll.value);
+
+            vPitch.innerHTML = pitch + '&deg;';
+            vRoll.innerHTML = roll + '&deg;';
+
+            // Apply 3D CSS Transform
+            // RotateX handles Pitch, RotateY handles Roll
+            drone3d.style.transform = `rotateX(${pitch}deg) rotateY(${roll}deg) rotateZ(0deg)`;
+        }
+
+        sPitch.addEventListener('input', updateDroneFlight);
+        sRoll.addEventListener('input', updateDroneFlight);
+        updateDroneFlight();
+
+        // --- PLC LOGIC GATES ---
+        let gateState = { in1: false, in2: false };
+        function toggleGate(gateId) {
+            gateState[gateId] = !gateState[gateId];
+            const el = document.getElementById('gate-' + gateId);
+            if (gateState[gateId]) {
+                el.classList.add('on');
+                el.innerHTML = (gateId === 'in1' ? 'Input A: ON' : 'Input B: ON');
+            } else {
+                el.classList.remove('on');
+                el.innerHTML = (gateId === 'in1' ? 'Input A: OFF' : 'Input B: OFF');
+            }
+            evaluatePLC();
+        }
+
+        function evaluatePLC() {
+            const outEl = document.getElementById('gate-out');
+            // Logical AND
+            if (gateState.in1 && gateState.in2) {
+                outEl.classList.add('on');
+                outEl.innerHTML = 'AND Output: ON';
+            } else {
+                outEl.classList.remove('on');
+                outEl.innerHTML = 'AND Output: OFF';
+            }
+        }
+
+        // --- RTOS SCHEDULER TIMELINE ---
+        const taskHigh = document.getElementById('task-high');
+        const taskLow = document.getElementById('task-low');
+        let rtosTime = 0;
+        let rtosInterval;
+        let sensorTaskPending = false;
+
+        function startRTOS() {
+            rtosInterval = setInterval(() => {
+                rtosTime += 1;
+                if (rtosTime > 100) {
+                    rtosTime = 0;
+                    taskHigh.style.width = '0%';
+                    taskLow.style.width = '0%';
+                    taskHigh.style.left = '0%';
+                    taskLow.style.left = '0%';
+                }
+
+                // High priority task runs 0-20%
+                if (rtosTime <= 20) {
+                    taskHigh.style.width = `${rtosTime}%`;
+                }
+                // Low priority task runs if pending and High is done
+                else if (rtosTime > 20 && sensorTaskPending && rtosTime <= 50) {
+                    if (taskLow.style.left === '0%') taskLow.style.left = `${rtosTime}%`;
+                    taskLow.style.width = `${(rtosTime - parseInt(taskLow.style.left))}%`;
+                }
+                // Preemption Simulation: High task interrupts Low task at 60%
+                else if (rtosTime > 60 && rtosTime <= 80) {
+                    taskHigh.style.left = '60%';
+                    taskHigh.style.width = `${rtosTime - 60}%`;
+                }
+                else if (rtosTime > 80 && sensorTaskPending && parseInt(taskLow.style.width) < 30) {
+                    // Low task resumes
+                    taskLow.style.width = `${parseInt(taskLow.style.width) + 1}%`;
+                }
+
+                if (parseInt(taskLow.style.width) >= 30) {
+                    sensorTaskPending = false; // Task completed
+                }
+
+            }, 50);
+        }
+
+        function triggerRTOSEvent() {
+            sensorTaskPending = true;
+        }
+
+        startRTOS();
+
+    </script>
+</body>
+
+</html>
